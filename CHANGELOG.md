@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.0] - 2026-07-07
+
+- 巡回義務として context 管理を追加 (判断木の枝 1-5 の意味・優先順位は変更なし):
+  - Plan (観測): status bar の `🧠xx%` (context 使用率) と `/clear` ヒント表示の有無を、
+    RUNNING/WAITING/IDLE/STUCK の分類と併せて記録する
+  - Do: IDLE セッションが `🧠 50% 以上` または `/clear` ヒント表示のとき、
+    `/context-reset` → (退避完了確認) → `/clear` → 再開プロンプト送信の 3 ステップを実行する。
+    RUNNING/WAITING/STUCK には実行しない。1 巡回で reset するのは最大 1 セッション、
+    reset 直後のセッションへの同一巡回内の追加指示も禁止 (全滅・作業破壊リスク回避)
+  - volante 自身は context 非依存設計 (毎巡回 state をファイルから読む) なので konuma 判断で `/clear` 可。
+    ただし session-only の cron ループの `/clear` 後の生存は未確認 (Unknown) なため巡回時に確認・再設定する
+  - 記録は既存の `decisions-YYYY-MM.md` / `templates/decision-entry.md` をそのまま使う (枝 5 内部定型作業として)
+- konuma FB (2026-07-07, #3): 「context は定期的にリセットさせることできる？各セッションは低く保ちたい」
+  に基づく巡回義務の追加 (判断木自体の枝は変更していないため範囲外の konuma 承認は不要、追加分は
+  Act フェーズの通常レビュー対象)
+
 ## [0.2.0] - 2026-07-07
 
 - 判断木 v1.1 — 枝 4 (技術的トレードオフ) の低リスク側 (内部かつ可逆) は konuma への事前確認なしに
