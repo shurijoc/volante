@@ -1,7 +1,7 @@
 {
   "name": "volante",
   "description": "Patrol and direct multiple concurrent Claude Code sessions (in kitty windows) as a development lead. One command (/volante) runs one PDCA patrol cycle: observe sessions via kitty remote control, decide per a fixed decision tree (never blanket delegation — every instruction states what and how far), log every decision to a journal, and periodically retro the decision log to improve the tree (tree changes require human approval). Loop runs (/loop + /volante) auto-stop after 2 consecutive no-op patrol cycles.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": { "name": "shurijoc", "url": "https://github.com/shurijoc" },
   "homepage": "https://github.com/shurijoc/volante",
   "repository": "https://github.com/shurijoc/volante",

@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.7.0] - 2026-07-08
+
+- ループ停止時の完了サマリを必須化 (#7): 「6. ループ自動停止」の停止手順 5 (最終報告) を拡張し、
+  新設「完了サマリ (停止時必須)」節を追加:
+  1. 成果集計 (Fact、実測): ループ開始時刻以降の repo 別 issue close 数 / PR merge 数 /
+     default branch commit 数を表で出す。対象は `journal/goals.md` 掲載の全 repo + volante 自身。
+     ループ開始時刻は `journal/patrols.md` の直近の「ループ再開/開始」行から取る。実測は
+     `gh api search/issues` (`is:issue`/`is:pr` + `closed:>=`/`merged:>=`) と
+     `gh api repos/<repo>/commits --since` で行い、失敗時は 0 件と決め付けず「実測不可」と明記する
+  2. repo 別サマリ: repo ごとに「今回やったこと (1〜3 行)」「次回以降やること (セッション作業 と
+     konuma 作業を区別して列挙)」。素材は当該期間の patrols.md/decisions と各セッションの最新 STATUS
+  3. 自動停止に限らず、konuma 指示による手動ループ停止でも同じ完了サマリを出す (自動停止専用にしない)
+  - 完了サマリは 5. 報告 の既存フォーマットを置き換えず、その後ろに追加する
+  - 判断木の枝・巡回義務 (1〜5) の判定基準・優先順位は変更なし
+- konuma FB (2026-07-08, #7): 「この数 (issue close / commit / PR) を作業完了時に報告するようにして欲しい。
+  あと repo の次回以降やることと今回やったことの要約があると良い」
+
 ## [0.6.0] - 2026-07-07
 
 - retro 更新案 1〜4 の SKILL.md 反映 (#6, konuma 承認 2026-07-07「ok.」。正本: `journal/retro-2026-07-07.md` /
