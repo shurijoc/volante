@@ -15,3 +15,4 @@
 | 2026-07-07 20:05 | 観測 5 / RUNNING 1 (w34 impl-807+803) / IDLE 3 / STUCK疑い 1 (w59) / 指示 2 (w61 公開鍵到着通知・w59 状況確認) / w34 前回指示完遂 (鍵受け渡し+mint 有効化) / ゴール未登録なし |
 | 2026-07-07 20:11 | 観測 5 / RUNNING 1 (w34 impl-807+803) / IDLE 4 / 指示 0 / w59 停滞疑い解消 (正当待機)・w61 鍵検証+#211 返信完了。結合の律速 = konuma env 反映 |
 | 2026-07-07 20:17 | 観測 5 / RUNNING 1 (w34 impl-803、impl-807 は idle 化) / IDLE 4 / 指示 0 / 変化なし。新規 window なし。konuma env 反映待ち継続 |
+| 2026-07-07 20:31 | 観測 5 / RUNNING 1 (w34 impl-803 + #211 監視) / IDLE 4 / 指示 1 (w61 §5 回答) / context reset: w24 (197.7k 解放) / goals.md 更新 1 (w24 正本に tracer goal file 追記) |
