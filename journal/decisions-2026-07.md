@@ -385,3 +385,14 @@
 - **根拠**: 明日の konuma 作業リストを確定するには navibot 側の残作業の現在地が必要。指示済みタスクの完了条件は回収するのが差配の基本
 - **結果**: 巡回#35 (23:46): 3 点とも回収 — #812/#817 は CODEOWNERS で tackeyy Approve 必須 (Approve 後は lead が merge→deploy まで自動)。FORGE_INTERNAL_API_BASE_URL は本番 .env 手動 + pm2 restart (konuma)。残作業は全て人間側に確定
 - **konuma レビュー**: 未
+
+## 2026-07-08 00:03 — w34 navibot×Forge 統合 (8 回目)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (tackeyy Approve + .env 手動の人間待ちだった)
+- **枝**: 1 (本番反映 — konuma 決定「tackeyy レビュー不要で merge 可」「ssh navibot で .env 反映可」を中継)。ゴール紐付け: epic #802 (仮:高)
+- **判断**: merge×2 → deploy → ssh で .env 追記 + pm2 restart → 疎通確認 → #211 追報まで一括差配。#220 は konuma 開始判断待ちとして境界で除外。merge 権限不足・ssh 不通時は停止条項
+- **送信指示**: (直前送信の全文参照)
+- **根拠**: konuma が明示決定 (レビュー省略・ssh 手段の提供)。.env は 1 行追記に限定し既存行の保護を明記
+- **結果**: submit 成功確認。ループ再開 (5m) で監督
+- **konuma レビュー**: OK (決定は konuma)
