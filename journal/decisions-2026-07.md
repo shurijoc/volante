@@ -360,5 +360,5 @@
 - **判断**: 宣言順 (①#6054 ②import ③#6055+3-target apply ④起動ログ ⑤結合テスト) を承認中継。追加条件: import 直後の plan 無差分確認、mutation テストはテストデータ限定、長時間処理の background 化 (v0.6.0 ルール初適用)
 - **送信指示**: (直前送信の全文参照)
 - **根拠**: #6054 は実機無変更 (plan No changes)、import は state 操作のみ、#6055 は rolling deploy 込みを konuma が了承
-- **結果**: submit 成功確認。ループ再開 (5m) で監督継続
+- **結果**: 巡回#31 (23:16): 承認チェーン ①〜④ 完遂を確認 — routing/鍵/env/fail-closed 検証すべて green、Forge 側 v1 結合準備完了。副産物: PR #6057 (mysql:// スキーム修正、急がない apply 地雷) が konuma 確認事項に追加
 - **konuma レビュー**: OK (承認は konuma 判断)
