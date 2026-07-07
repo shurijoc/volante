@@ -328,3 +328,14 @@
 - **根拠**: rule create は追加操作で既存トラフィック無影響・revert = 削除で可逆。priority 空きは w61 検証済み
 - **結果**: 巡回#24 (22:01): apply 成功 — rule 作成完了 (priority 198)、routing 開通。疎通確認 + #211 更新を処理中
 - **konuma レビュー**: OK (承認は konuma 判断)
+
+## 2026-07-07 22:11 — w34 navibot×Forge 統合 (6 回目)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (lead は worker 2 体の完成待ち。#249 完了の追報が未達)
+- **枝**: 5 (cross-session 中継 + merge トリガー通知)。ゴール紐付け: epic #802 (仮:高)
+- **判断**: routing 開通と #211 更新を通知し、#812 merge と FORGE_INTERNAL_API_BASE_URL の要否整理を指示。#220 は konuma env 反映完了まで境界で禁止
+- **送信指示**: (上記全文 — #211 確認 / #812 merge / env 値の konuma 向け整理)
+- **根拠**: w61 は「navibot 側が merge するのを volante 巡回で検知」する設計にしており、中継が volante の役割。merge 自体は既存 autonomy 内 (#814 の前例)
+- **結果**: submit 成功確認。merge 状況は次巡回で確認
+- **konuma レビュー**: 未
