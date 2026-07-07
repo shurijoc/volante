@@ -339,3 +339,15 @@
 - **根拠**: w61 は「navibot 側が merge するのを volante 巡回で検知」する設計にしており、中継が volante の役割。merge 自体は既存 autonomy 内 (#814 の前例)
 - **結果**: submit 成功確認。merge 状況は次巡回で確認
 - **konuma レビュー**: 未
+
+## 2026-07-07 22:50 — w61 AI agent v1 (14 回目)
+
+- **repo**: ma_navi_terraform
+- **状態**: IDLE
+- **状況**: konuma 決定 2 件 — RDS は実機 40GB を正とする / ma_navi_forge の env は terraform 管理なので INTERNAL_TOOLS_ED25519_PUBLIC_KEYS も terraform 側から設定
+- **枝**: 1 (本番系変更の konuma 決定を中継、apply は PR+plan 確認後の再承認と明示)
+- **判断**: #6051 の 40 追従 + 公開鍵 env の terraform 化を PR + plan 要約まで差配し停止させる
+- **送信指示**: (全文は直前送信 — PR 2 件作成 / plan 要約報告 / apply 禁止・-target 明示・秘密値禁止)
+- **根拠**: 素の apply 禁止 (#6051) が生きているため、apply 単位を konuma 承認に分離
+- **結果**: submit 成功確認。PR/plan は次巡回で確認
+- **konuma レビュー**: OK (決定は konuma。指示文は レビュー対象)
