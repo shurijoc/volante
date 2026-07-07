@@ -351,3 +351,14 @@
 - **根拠**: 素の apply 禁止 (#6051) が生きているため、apply 単位を konuma 承認に分離
 - **結果**: submit 成功確認。PR/plan は次巡回で確認
 - **konuma レビュー**: OK (決定は konuma。指示文は レビュー対象)
+
+## 2026-07-07 23:05 — w61 AI agent v1 (15 回目)
+
+- **repo**: ma_navi_terraform / ma_navi_forge
+- **状態**: IDLE (PR 2 本 + plan 実測 + import 要否の特定まで完了し、3 件の再承認要求で停止)
+- **枝**: 1 (本番反映 3 件 — konuma AskUserQuestion で全件承認 → 実行指示)
+- **判断**: 宣言順 (①#6054 ②import ③#6055+3-target apply ④起動ログ ⑤結合テスト) を承認中継。追加条件: import 直後の plan 無差分確認、mutation テストはテストデータ限定、長時間処理の background 化 (v0.6.0 ルール初適用)
+- **送信指示**: (直前送信の全文参照)
+- **根拠**: #6054 は実機無変更 (plan No changes)、import は state 操作のみ、#6055 は rolling deploy 込みを konuma が了承
+- **結果**: submit 成功確認。ループ再開 (5m) で監督継続
+- **konuma レビュー**: OK (承認は konuma 判断)
