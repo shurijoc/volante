@@ -383,5 +383,5 @@
 - **判断**: 3 点 (#812 状態 / env 要否と値 / Approve 待ち対象と自動進行範囲) の報告を要求。確認と報告のみに限定
 - **送信指示**: (直前送信の全文参照)
 - **根拠**: 明日の konuma 作業リストを確定するには navibot 側の残作業の現在地が必要。指示済みタスクの完了条件は回収するのが差配の基本
-- **結果**: submit 成功確認。報告は次巡回で確認
+- **結果**: 巡回#35 (23:46): 3 点とも回収 — #812/#817 は CODEOWNERS で tackeyy Approve 必須 (Approve 後は lead が merge→deploy まで自動)。FORGE_INTERNAL_API_BASE_URL は本番 .env 手動 + pm2 restart (konuma)。残作業は全て人間側に確定
 - **konuma レビュー**: 未
