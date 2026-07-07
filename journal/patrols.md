@@ -17,3 +17,4 @@
 | 2026-07-07 20:17 | 観測 5 / RUNNING 1 (w34 impl-803、impl-807 は idle 化) / IDLE 4 / 指示 0 / 変化なし。新規 window なし。konuma env 反映待ち継続 |
 | 2026-07-07 20:31 | 観測 5 / RUNNING 1 (w34 impl-803 + #211 監視) / IDLE 4 / 指示 1 (w61 §5 回答) / context reset: w24 (197.7k 解放) / goals.md 更新 1 (w24 正本に tracer goal file 追記) |
 | 2026-07-07 20:37 | 観測 5 / RUNNING 3 (w24 再開処理・w34 impl-803・w61 ingress 調査) / IDLE 2 / 指示 0 / w24 reset 再開成功・w61 §5 対応中 |
+| 2026-07-07 20:44 | 観測 5 / RUNNING 3 (w24 kaizen 再開・w34 PR#814 レビュー・w61 §5+#249) / IDLE 2 / 指示 1 (w61 へ枝1 ガードレール: terraform 本番反映は konuma 承認必須) / 要監視: #249 スコープ |
