@@ -27,3 +27,4 @@
 | 2026-07-07 21:33 | 観測 5 / IDLE 4 / RUNNING 1 (w61 targeted apply 開始) / 指示 1 (w61 targeted apply 承認中継) / w34 #814 本番デプロイ完遂 (事後掲載)・全 4 セッション Op4.7 化完了 / 安全弁実績: plan 停止→RDS 縮小地雷を検出 |
 | 2026-07-07 21:42 | 観測 5 / RUNNING 1 (w61 targeted apply 前検査・drift issue #6051 起票済み) / IDLE 4 / 指示 1 (w34 次子issue 差配) / 全 4 セッション Op4.7 検証済み |
 | 2026-07-07 21:53 | 観測 5 / RUNNING 1 (w34 impl-808+805) / IDLE 4 / 指示 1 (w61 PR#6052 承認中継) / w61 が前提乖離で自主停止→再承認の型が機能 |
+| 2026-07-07 22:01 | 観測 5 / RUNNING 2 (w61 疎通確認+#211 更新・w34 impl-808+805) / IDLE 3 / 指示 0 / apply 成功 = routing 開通 |

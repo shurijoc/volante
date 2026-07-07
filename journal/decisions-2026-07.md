@@ -326,5 +326,5 @@
 - **判断**: 承認を中継。path 条件の自己確認 (意図外公開の防止) と「今回想定以外の diff が出たら再停止」を境界に明記
 - **送信指示**: (decisions 上記全文参照 — merge 前 diff 確認 / 2 target apply / 疎通 / #211 更新 / navibot 追報)
 - **根拠**: rule create は追加操作で既存トラフィック無影響・revert = 削除で可逆。priority 空きは w61 検証済み
-- **結果**: submit 成功確認。apply 結果は次巡回で確認
+- **結果**: 巡回#24 (22:01): apply 成功 — rule 作成完了 (priority 198)、routing 開通。疎通確認 + #211 更新を処理中
 - **konuma レビュー**: OK (承認は konuma 判断)
