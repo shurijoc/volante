@@ -11,3 +11,4 @@
 | 2026-07-07 19:31 | 観測 5 / RUNNING 3 (w34 PR#810 レビュー・w59 impl-461 #494・w61 dev-247 完了処理) / IDLE 2 / 指示 0 / w69 reset 再開成功を確認。TODO 継続: w34 idle 時 #211 確定通知・w61 PR#248 URL 確認 |
 | 2026-07-07 19:40 | 観測 5 / RUNNING 2 (w34 PR#810 レビュー・w59 #494 待ち) / IDLE 3 / 指示 0 / context reset: w61 (54%→0%)。TODO 継続: w34 idle 時に #211 確定 + by_client 実装済みを通知 |
 | 2026-07-07 19:42 | 5 分ループ終了 (konuma 指定 19:30 到達。one-shot が REPL busy で不発だったため手動終了)。ループ内巡回 7 回 + 手動 1 回 / decisions 15 件 (レビュー待ち 15) / reset 2 件 (w69・w61) |
+| 2026-07-07 19:58 | ループ再開・goals 紐付け初運用 / 観測 5 / IDLE 4 / RUNNING 1 (w59 worker) / 指示 1 (w34 公開鍵渡し+#807/#803) / goals.md 乖離更新 1 (w61 行: navibot 残 3 件に修正) / ゴール未登録なし |
