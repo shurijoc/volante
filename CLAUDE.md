@@ -8,8 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリの現状（2026-07-07 時点）
 
-- **コードはまだ無い**。この CLAUDE.md（設計メモ）だけが存在する。ビルド・テスト・lint コマンドは存在しないので、探しても無駄
-- 独立 git repo として init 済み（2026-07-07）。**remote 未設定**、local commit のみ運用中
+- v0.1.0 scaffold あり: plugin manifest (`.claude-plugin/`) + `skills/volante/SKILL.md` + `journal/`（判断ログ置き場）。ビルド・テスト・eval はまだ無い（tracer 同様の eval gate は今後の課題）
+- remote: `git@github.com:shurijoc/volante.git`
+- **`journal/` は運用 state**。skill が巡回ごとに追記・commit する。SKILL.md の判断木を変えるときは konuma 承認 + `CHANGELOG.md` 記録が必須（SKILL.md「コンセプト」参照）
 
 ## 背景（なぜ作るか）
 

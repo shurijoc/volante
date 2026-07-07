@@ -1,0 +1,15 @@
+{
+  "name": "volante",
+  "owner": { "name": "shurijoc", "url": "https://github.com/shurijoc" },
+  "metadata": {
+    "description": "Marketplace hosting the volante plugin.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "volante",
+      "source": "./",
+      "description": "Patrol and direct multiple concurrent Claude Code sessions as a development lead (one command: /volante)."
+    }
+  ]
+}
