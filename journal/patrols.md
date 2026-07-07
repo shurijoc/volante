@@ -30,3 +30,4 @@
 | 2026-07-07 22:01 | 観測 5 / RUNNING 2 (w61 疎通確認+#211 更新・w34 impl-808+805) / IDLE 3 / 指示 0 / apply 成功 = routing 開通 |
 | 2026-07-07 22:12 | 観測 5 / RUNNING 1 (w34 worker 2 体) / IDLE 4 / 指示 1 (w34 へ #812 merge トリガー中継) / w61 インフラ側完了 (#249 close)。残: konuma env 反映のみ |
 | 2026-07-07 22:21 | 観測 5 / RUNNING 1 (w34 #807/#812 対応 + worker 2 体) / IDLE 4 / 指示 0 / 変化なし。konuma env 反映待ち継続 |
+| 2026-07-07 22:31 | 観測 5 / RUNNING 1 (w34) / IDLE 4 / 指示 0 / 変化なし |
