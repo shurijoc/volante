@@ -249,3 +249,15 @@
 - **根拠]: 受信側の善意のスコープ拡大は白紙委任事故と同型のリスク。RUNNING への割り込みコスト < 本番 terraform 事故コスト
 - **結果**: 巡回#16 (20:50): 遵守を確認 — terraform 変更は branch issue-6049 + PR #6050 まで (apply/merge なし)。巡回#17 (20:56): 停止報告完了 — 1 行 diff・draft PR・validate 済み・ロールバック手段明記。konuma 承認 (diff 確認→merge→apply) 待ちで正しく停止
 - **konuma レビュー**: 未
+
+## 2026-07-07 21:00 — w61 AI agent v1 (10 回目)
+
+- **repo**: ma-navi/ma_navi_forge (+ ma_navi_terraform PR #6050)
+- **状態**: IDLE (PR #6050 の konuma 承認待ちで停止中)
+- **状況**: konuma がチャットで承認 (「ok.confirm」2026-07-07 21:00 頃)。枝 1 の人間確認が完了
+- **枝**: 1 (本番反映 — konuma 承認取得済みの実行指示)。ゴール紐付け: v1 結合完了 (仮:高)
+- **判断**: 承認を中継し、宣言済み手順 (draft 解除→merge→apply→疎通確認→#211 更新→navibot 追報) の実行を指示。想定外 diff での停止条項とロールバック維持を境界に明記
+- **送信指示**: 全文 — 「volante 巡回より。PR #6050 の本番反映を konuma が承認した (2026-07-07 チャットで confirm)。目的: v1 結合の律速だった routing gap の開通。タスク: 宣言済みの手順を実行する — (1) PR #6050 の draft 解除 → merge (2) terraform apply (production workspace) (3) curl 疎通確認 (JSON 401 = 到達) (4) #211 §5 の確定値更新 (5) navibot への追報 (#211 comment 経由、PR #812 merge 解除トリガー)。完了条件: apply 結果・疎通確認結果・#211 更新 comment URL をこのウィンドウに報告として出す。境界: apply は #6050 の 1 行変更のみ。plan/apply で想定外のリソース diff が出たら apply せず停止して報告。ロールバック手段 (revert → 再 apply) を維持。env 設定 (.env*) は引き続き konuma 手動。外部連絡はしない。」
+- **根拠**: 枝 1 の確認プロセス完了 (1 行 diff・validate 済み・ロールバック明記の状態で konuma が diff 内容を承認)
+- **結果**: submit 成功確認。apply 結果は次巡回で確認
+- **konuma レビュー**: OK (承認自体が konuma 判断。指示文の妥当性はレビュー対象)
