@@ -9,3 +9,4 @@
 | 2026-07-07 19:14 | 観測 5 / RUNNING 3 (w34 impl-806・w59 impl-461・w61 dev-247) / IDLE 2 / 指示 0 / 全稼働順調。TODO 継続: w34 idle 時に #211 確定通知 |
 | 2026-07-07 19:27 | 観測 5 / RUNNING 3 (w34 impl-806・w59 review-466・w61 dev-247 PR#248) / IDLE 2 / 指示 0 / context reset 初適用: w69 (11%→0%, 108k 解放)。TODO 継続: w34 idle 時に #211 確定通知 |
 | 2026-07-07 19:31 | 観測 5 / RUNNING 3 (w34 PR#810 レビュー・w59 impl-461 #494・w61 dev-247 完了処理) / IDLE 2 / 指示 0 / w69 reset 再開成功を確認。TODO 継続: w34 idle 時 #211 確定通知・w61 PR#248 URL 確認 |
+| 2026-07-07 19:40 | 観測 5 / RUNNING 2 (w34 PR#810 レビュー・w59 #494 待ち) / IDLE 3 / 指示 0 / context reset: w61 (54%→0%)。TODO 継続: w34 idle 時に #211 確定 + by_client 実装済みを通知 |
