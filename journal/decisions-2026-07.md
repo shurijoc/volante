@@ -283,3 +283,26 @@
 - **根拠**: konuma のモデル使い分けルール (PM セッションは opus の領分)。4.8 既知不具合の情報は konuma 発
 - **結果**: w24/w59/w69 = Op4.7 確認済み。w34 = queue 中。w61 = Fable 維持 (結合テスト完了後に opus 化予定)
 - **konuma レビュー**: OK (konuma 指示そのもの)
+
+## 2026-07-07 21:32 — w61 AI agent v1 (12 回目)
+
+- **repo**: ma_navi_terraform (apply フロー)
+- **状態**: IDLE — plan 完了、想定外 diff (RDS 40→20 縮小 drift・由来不明 SSM param) を検出して境界どおり apply 停止
+- **枝**: 1 (本番反映の再承認 — 前回承認の前提「1 行変更のみ」が崩れたため再度 konuma 確認)
+- **判断**: konuma に AskUserQuestion (targeted apply / 停止継続 / 見送り) → 「承認する」回答を得て targeted apply + drift 別 issue 化 (素の apply 禁止警告付き) を指示
+- **送信指示**: 全文 — 「volante 巡回より。案 1 (targeted apply) を konuma が承認した (2026-07-07 チャット)。目的: v1 結合の律速である routing 開通を、意図した 1 行変更だけ安全に反映する。タスク: (1) -target='aws_lb_listener_rule.forge_routes["api"]' で apply (2) curl 疎通確認 (JSON 401 = 到達) (3) #211 §5 確定値更新 + navibot 追報 (4) RDS drift (40→20 縮小地雷) を別 issue 化し「素の apply 禁止・要 drift 解消」の警告を issue 冒頭に明記 (5) SSM dm-FORGE_DATABASE_URL の由来確認は同 issue に調査タスクとして併記。完了条件: apply 結果・疎通結果・#211 更新 URL・drift issue URL をこのウィンドウに報告として出す。境界: apply は上記 -target のみ。他リソースへの apply・force-unlock はしない。env (.env*) は konuma 手動。外部連絡はしない。」
+- **根拠**: 前提変化時の再承認は枝 1 の趣旨 (承認は前提込み)。drift 地雷は放置すると次に素の apply を打った誰かが本番 RDS を縮小させる
+- **結果**: submit 成功確認。apply 結果は次巡回で確認
+- **konuma レビュー**: OK (承認は konuma 判断)
+
+## 2026-07-07 21:32 — w34 navibot×Forge 統合 (4 回目)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE 化 (turn 完了)
+- **状況**: PR #814 (#803 sensitivity enforcement) を CI 全緑 → squash merge → 本番デプロイ (594bc6d、/health ok) まで完遂。volante 指示外の本番反映だが、セッション既存の自律範囲 (merge→deploy はこの repo の通常フロー、konuma 権限委譲済み) 内。スコープ外ギャップは epic #802 に記録済み
+- **枝**: (判断なし — 事後掲載のみ。モデル切替ダイアログを確定し Op4.7 化を検証)
+- **判断**: デプロイは覆さない。#220 前の残り (#804/#808 等) の差配は w61 の疎通結果を見てから
+- **送信指示**: モデル切替ダイアログの確定 (Enter) のみ
+- **根拠**: 既存 autonomy の尊重 (コンセプト 6 と同趣旨)。ロールバックも pm2 で可能な状態
+- **結果**: Op4.7 化を status bar で確認
+- **konuma レビュー**: 未 (本番デプロイの事後掲載を含む)
