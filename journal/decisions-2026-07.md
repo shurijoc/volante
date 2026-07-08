@@ -953,3 +953,51 @@
 - **根拠**: 状態変化なし
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 19:44 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 19:54 — w34 起票完了確認 (#838/#839)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (STATUS 完了報告)
+- **状況**: 前巡回 19:44 の背中押しを受けて #838 (ADR-0011「1 turn = 1 event」追記) と #839 (navibot /skills/registry endpoint、**blocked ラベル付与** = SoT 方向未確定) を起票完了。konuma レビュー対象は (3)(5) 2 件 + #839 SoT 方向確定に縮小。#839 blocked の理由: Forge #238 plan コメント内で「navibot 側 SoT」vs「Forge 側 registration が SoT」の議論が固まっていない (Fact = SoT 方向未合意、私の推奨は片方の case)
+- **枝**: 触らない (完了状態)
+- **判断**: 触らない。#839 の blocked ラベル付与は w34 の高いレベルの実装 (前提未合意を明示化)
+- **送信指示**: なし
+- **根拠**: (a) 完了報告受領 (b) SoT 方向確定は konuma + w61 判断領域なので volante 差配範囲外 (c) M1 実装は依然 konuma 判断領域維持
+- **結果**: 起票 2 件成功、konuma レビュー負荷 3 件 → 2 件に減少
+- **konuma レビュー**: OK (self-review 2026-07-08 19:54 by volante、根拠: 良好な差配結果 + w34 の blocked ラベル判断が SoT 未合意の状態を透明化した点は評価。retro 対象: volante の「(2) SoT は navibot 側」推奨は Forge #238 plan の 1 case で、コメント末尾での議論を見落とした → 送信前に SoT 議論の状態を追加確認すべきだった)
+
+## 2026-07-08 19:54 — w59 context reset 見送り (konuma 直接委任下)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE (STATUS 変化なし、`new task? /clear to save 295.9k tokens` 表示、🧠 29%)
+- **状況**: SKILL.md 発火条件を or 側で満たす (IDLE + /clear ヒント表示)。ただし w59 は konuma 直接委任下 (memory・issue 記載等) + goal skill active + goals.md 未登録の複合状態
+- **枝**: 巡回義務 (context 管理、判断木の枝ではなく別枠)
+- **判断**: reset 見送り
+- **送信指示**: なし
+- **根拠**: (a) konuma 直接委任下でリスク大 (b) goal skill active で reset により goal 追跡が困難化する可能性 (c) w61 の context clear 副作用 (18:34 の再開プロンプトが具体情報を持たず 18:49 User declined に至った) の学びから慎重運用 (d) 🧠 29% で余裕あり + 295.9k 解放は魅力だが即時性は低い (e) goals.md 未登録 = konuma からゴール委任が明示されていない状態で volante が context 触るのは越権感
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 19:54 by volante、根拠: 発火条件は満たすが konuma 委任下のリスク大で見送りは妥当、報告に含めて konuma 判断を仰ぐ)
+
+## 2026-07-08 19:54 — w24/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 19:44 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 19:54 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 19:54 — retro-2026-07-08-1954.md 生成 (Act 発火)
+
+- **repo**: shurijoc/volante
+- **状態**: —
+- **状況**: 前回 retro (18:24) 以降の decisions 20 件 = Act 発火条件到達 (10 件以上)
+- **枝**: Act フェーズ (振り返り)
+- **判断**: retro-2026-07-08-1954.md を生成、判断木更新案 2 件を提示 (更新案 4 = WAITING モード送信手順・更新案 5 = 送信直前 identifier 再確認)
+- **送信指示**: なし (retro ファイル生成のみ)
+- **根拠**: (a) 発火条件到達 (b) 抽出した問題エントリ 2 件 (18:49 User declined / 19:04 #259 Fact 誤認) は判断木/送信手順に反映可能 (c) 良好な挙動 (w34 の Fact 独立検証) を記録して次期実装の参考にする
+- **結果**: retro-2026-07-08-1954.md 生成、konuma 承認待ち (SKILL.md 反映は承認後)
+- **konuma レビュー**: OK (self-review 2026-07-08 19:54 by volante、根拠: Act フェーズの正規手順履行、更新案は具体的 & 検証済み問題エントリと直結)
