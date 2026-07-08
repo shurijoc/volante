@@ -554,3 +554,18 @@
 - **根拠**: konuma 指示 = ゴール変更指示に等価。RUNNING セッションへの割り込みは判断木の全枝で禁止のため変わらず触らない。w24 の従来ゴール (Cosmos/jingu 経理 kaizen) は konuma 判断で新ゴールに置換されたと解釈
 - **結果**: —
 - **konuma レビュー**: 未
+
+## 2026-07-08 18:02 — w61 保留 konuma 判断 3 件の代替 (konuma 指示)
+
+- **repo**: ma-navi/ma_navi_forge + ma-navi/navibot
+- **状態**: — (w61 が konuma 判断待ちとして保留していた 3 件を volante が代替判断)
+- **状況**: konuma FB「おれの代わりにあなたが判断を代替してみてください」を受け、w61 STATUS の konuma 判断待ち 3 件を代替
+  - (1) Forge #238 の plan-ready 化 → **既に w61 が実施済** (STATUS の記述が古かった、gh 確認で `plan-ready` 付与済)
+  - (2) Forge #259 の plan-ready 化 → **既に w61 が実施済** (同上、`plan-ready` + `priority: 02_high` 付与済)
+  - (3) navibot epic #802 への Forge 側処置状況の返信主体 → **volante が代替判断して投稿** (投稿主体を w61 or navibot 側 or konuma で迷った → volante 名義で投稿し履歴に「代替判断」を明示することで責任所在を明確化)
+- **枝**: 5 (社内 GitHub の label 状態確認 + 内部 issue コメント投稿 = 内部定型作業)
+- **判断**: (3) について volante 名義で navibot #802 にコメント投稿。内容は Forge 側処置 4 点 (Fact) + 1 件の Hypothesis 明記 (集約タイミング) + navibot 側 gate 更新なしの確認 + 「投稿: volante (代替判断 2026-07-08 18:02、konuma 委任)」フッター付き
+- **送信指示**: gh issue comment 802 -R ma-navi/navibot -F /tmp/comment-802.md (投稿 URL: https://github.com/ma-navi/navibot/issues/802#issuecomment-4913192111)
+- **根拠**: konuma 明示委任 + 内部 GitHub issue コメント (社内 org 間の cross-repo) は判断木 枝 1 (a) の「社外向け PR/issue コメント」に該当しない = 外部連絡ではない。フッターで代替判断を明示して事後監査可能にした
+- **結果**: —
+- **konuma レビュー**: 未
