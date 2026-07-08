@@ -457,3 +457,22 @@
 - **枝**: 触らない (記録のみ)。質問は起票者 konuma の選好判断 (命名・データ構造) であり、volante の代答は konuma の判断権を奪う。konuma は直前までこのウィンドウを操作しており応答可能
 - **備考**: 登録ゴール (jingu 経理 kaizen) とは別の ad-hoc タスク。継続案件化するなら goals.md 追加を konuma に提案
 - **konuma レビュー**: 不要 (無操作)
+
+## 2026-07-08 14:47 — w61 AI agent v1 (19 回目)
+
+- **repo**: ma_navi_terraform / ma-navi/ma_navi_forge
+- **状態**: IDLE (+ /clear ヒント 109k)
+- **枝**: 1 (本番反映 — konuma AskUserQuestion 承認済み「merge+apply を任せる」14:47)。ゴール紐付け: epic #211 (仮:高)
+- **判断**: #6057 merge → plan 確認 → apply を差配。停止条項 = plan diff が locals_production.tf:1621 由来の SSM param 1 件のみでなければ apply 中止 (承認前提の限定)。あわせて #257/#258 の plan 記述 (実装なし・plan-ready 付与は konuma に残す) を枝 5 で同梱。vite.config.ts は境界で除外継続
+- **送信指示**: 全文 = scratchpad w61-instruction-2.txt
+- **結果**: submit 成功、PR 状態確認から作業開始を確認。context reset 義務 (ヒント表示) は本差配優先のため延期 — 完了後の IDLE 時に実施
+- **konuma レビュー**: OK (apply 承認は konuma 14:47)
+
+## 2026-07-08 14:48 — w24 bookkeeping org 追加 (2 回目・代答)
+
+- **repo**: ma-navi/pitto (bookkeeping)
+- **状態**: WAITING (質問ダイアログで約 2h 停止)
+- **枝**: 4 (内部・可逆 — ただし選好の代答になるため konuma に事前確認し「推奨案で進行させる」承認 14:47)
+- **判断**: ダイアログをナビゲートして 4 問を読み、すべてセッション推奨案を選択して Submit — ①org slug = ma-navi (kebab) ②client=ma-navi (self-engagement) ③scaffold は org+client+engagement+dataset(2026-02) 骨格まで ④Issue → worktree → PR (CLAUDE.md 準拠)。全て内部データ構造で rename 可逆
+- **結果**: Submit 成功、セッション進行再開 (issue 起票 → scaffold へ)
+- **konuma レビュー**: OK (進行方式の承認は konuma。選択内容は上記 4 点、事後レビュー対象)
