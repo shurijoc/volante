@@ -56,3 +56,4 @@
 | 2026-07-08 12:32 | 観測 5 / RUNNING 1 (w59) / WAITING 2 (w61 差配・w77 konuma 直接対応中) / IDLE 2 (w24, w34 とも /clear 直後) / 指示 1 (w61 再発防止 3 件) |
 | 2026-07-08 12:38 | ループ再開 (5m, cron 8dd7c467)。Slack リアクション巡回ループ併設 (cron 7c183cf9, konuma 宛て channel mention に :eyes:、konuma 指示) |
 | 2026-07-08 12:41 | 観測 4 / WAITING 1 (w24 konuma宛て質問) / IDLE 3 / 指示 0 / 変化あり: w61 差配 3 件完了回収 (#257 #258 起票・PR #6057 同一確認)・w77 クローズ・w24 新タスク開始 |
+| 2026-07-08 12:45 | 観測 4 / WAITING 1 (w24 konuma宛て質問 継続) / IDLE 3 / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2、全員 konuma 待ち) |
