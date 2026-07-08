@@ -1143,3 +1143,29 @@
 - **根拠**: (a) konuma 明示指示 (b) cross-repo issue 起票 = 内部定型作業で追加的 (c) 前巡回で「cross-repo PR は konuma 判断領域」と retain したが「issue 起票 (実装ではない)」+「konuma assign 指定」で権限逸脱リスクを回避 (d) w59 の konuma 委任下 (外部連絡以外自律進行) の範囲内
 - **結果**: w59 が Imagining… で処理中
 - **konuma レビュー**: OK (self-review 2026-07-08 20:35 by volante、根拠: konuma FB を直接反映、境界を「起票のみ・実装しない」に絞って越権リスクを回避、cross-repo でも「起票」までは枝 5 の内部定型作業に含まれる)
+
+## 2026-07-08 20:44 — w59 ma_navi #17250 起票完了確認 + w24 context reset step 1
+
+- **repo**: ma-navi/ma_navi + ma-navi/pitto
+- **状態**: w59 IDLE 完了報告 / w24 IDLE (/clear ヒント 224.4k) → RUNNING (Ideating…)
+- **状況**:
+  - w59: 前巡回 20:35 の konuma FB 反映指示を受けて ma-navi/ma_navi#17250 を起票完了 (assignee=shurijoc、label=needs-plan + refactor + priority: 03_medium、Related: Forge ma_navi_forge#263 明記、境界どおり Forge #263 状態は未変更)
+  - w24: /clear ヒント新規表示 = reset 発火条件到達 (or 側)。副条件 (konuma 判断保留 + context 依存) は該当しない (「label 新規作成 konuma 判断」は context 内に詳細情報を保持していない、issue 本文に既に記録済み)
+- **枝**: w59 は完了報告 (触らない) / w24 は巡回義務 (context 管理 reset step 1)
+- **判断**: w59 は触らない、w24 に /context-reset 送信 (step 1、step 2-3 は次巡回で退避内容確認 + konuma 判断)
+- **送信指示**: w59 なし、w24 `/context-reset` (単一行 CR)
+- **根拠**: (a) w59 の起票完了で konuma FB は完璧に反映済み (b) w24 は SKILL.md 発火条件を or 側で満たし副条件該当なし = 発火が正規 (c) 段階的アプローチで w59 の context reset (20:04-20:05) と同じ手順を踏襲
+- **結果**: w24 が Ideating… で context-reset skill 実行中
+- **konuma レビュー**: OK (self-review 2026-07-08 20:44 by volante、根拠: w59 差配結果良好 + w24 の SKILL.md v0.10.0 発火判定が副条件込みで正確、段階的アプローチ継続)
+
+## 2026-07-08 20:44 — w34/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 20:35 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 20:44 by volante、根拠: 前巡回判断と同じ)
