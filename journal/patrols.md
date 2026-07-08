@@ -77,3 +77,4 @@
 | 2026-07-08 19:14 | 観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 19:04 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。konuma FB「10m のまま OK」を受領 |
 | 2026-07-08 19:15 | konuma 決定 2 件を差配: w24 → follow-up 2 issue 起票 (drift 3 件 + validate-id-registry pre-push / kaizen-loop schema-only PR サポート、needs-plan)、w34 → 設計判断 4 件アドバイス送信 (2 endpoint 要 / 3 skill 生成 / 4 turn 終了時 1 event = konuma 既承認 / 5 abortController)。両セッション RUNNING 化。w34 週次利用上限 75% 表示 (konuma 報告事項) |
 | 2026-07-08 19:24 | 観測 4 / IDLE 3 (w24 完了・w59/w61 変化なし) / RUNNING 1 (w34 draft 更新中、私の (4) Fact 主張を独立検証してフェイルセーフ実装) / 指示 0 / w24 差配結果: pitto #497 + #498 起票済み・label 新規作成は konuma 判断に retain / 自動停止カウント 0 (変化あり) |
+| 2026-07-08 19:34 | 観測 4 / IDLE 3 (w24/w59/w61 変化なし) / RUNNING 1 (w34 前提乖離チェック中) / 指示 1 (w34 に (4) Fact 確認結果通知、伝聞由来 → Fact 格上げ、出典: context-reset ログ L28 = 「konuma 全部推奨案で承認」記録) / w34 の draft §1-9 完成報告受領 |
