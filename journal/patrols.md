@@ -82,3 +82,4 @@
 | 2026-07-08 19:54 | 観測 4 / IDLE 4 (w24/w61 変化なし・w34 起票完了 = #838 ADR / #839 endpoint blocked ・w59 /clear ヒント 295.9k) / 指示 0 / w59 reset 見送り (konuma 委任下リスク大) / Act 発火 → retro-2026-07-08-1954.md 生成 (更新案 4 WAITING モード送信手順 + 更新案 5 送信直前 identifier 再確認) |
 | 2026-07-08 20:00 | konuma 承認「更新 ok」→ SKILL.md v0.10.0 反映 (retro 5 件 + konuma 決定 2 件、計 7 変更点)。CHANGELOG.md 更新、plugin.json 0.9.0 → 0.10.0、retro 2 本の承認欄更新済み |
 | 2026-07-08 20:04 | 観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset = v0.10.0 副条件フェイルセーフ発火、2 巡回連続で発火条件維持のため見送り無視して実行、段階的アプローチで step 2-3 は次巡回) / 新 SKILL.md v0.10.0 での初適用巡回 |
+| 2026-07-08 20:05 | konuma FB「WBS 以外は ma_navi schema 流用」到来 → w59 reset step 2-3 実施 (段階的アプローチ完成)。/clear で 295.9k 解放、再開プロンプトに konuma FB 追記して送信。退避内容から volante の「konuma 直接委任下」判定の正確性が Fact 確認された |
