@@ -90,3 +90,4 @@
 | 2026-07-08 20:44 | 観測 4 / IDLE 3 (w34/w61 変化なし・w59 完了報告) / RUNNING 1 (w24 context-reset skill 起動) / 指示 1 (w24 /context-reset = /clear ヒント 224.4k で発火、副条件該当なし) / w59 ma_navi#17250 起票完了 (assignee=shurijoc、label=needs-plan+refactor+priority: 03_medium、Related: Forge #263) |
 | 2026-07-08 20:54 | 観測 4 / IDLE 3 (w34/w59/w61 変化なし) / RUNNING 1 (w24 reset step 2-3 完了で Roosting…) / 指示 2 (w24 /clear + 再開プロンプト) / w24 224.4k 解放 / 段階的 reset の 2 例目成功 |
 | 2026-07-08 21:04 | 観測 4 / IDLE 3 (w34/w59/w61) / WAITING 1 (w24 reset 後の worktree 選択質問 = konuma 領域) / 指示 0 / w34 /clear ヒント 154.5k 新規表示だが副条件該当 (draft §5-6 context 依存) で reset 見送り 1 回目 |
+| 2026-07-08 21:14 | 観測 4 / IDLE 2 (w59/w61 変化なし) / WAITING 1 (w24 worktree 選択継続 = konuma 領域) / RUNNING 1 (w34 副条件フェイルセーフ発火で context-reset skill 起動) / 指示 1 (w34 /context-reset) / v0.10.0 副条件フェイルセーフ「2 巡回連続」の初適用 / 週次利用上限 w34 = 77% (前回 75%→+2%) |
