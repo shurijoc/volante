@@ -476,3 +476,21 @@
 - **判断**: ダイアログをナビゲートして 4 問を読み、すべてセッション推奨案を選択して Submit — ①org slug = ma-navi (kebab) ②client=ma-navi (self-engagement) ③scaffold は org+client+engagement+dataset(2026-02) 骨格まで ④Issue → worktree → PR (CLAUDE.md 準拠)。全て内部データ構造で rename 可逆
 - **結果**: Submit 成功、セッション進行再開 (issue 起票 → scaffold へ)
 - **konuma レビュー**: OK (進行方式の承認は konuma。選択内容は上記 4 点、事後レビュー対象)
+
+## 2026-07-08 15:08 — w24 bookkeeping org 追加 (3 回目)
+
+- **repo**: ma-navi/pitto (bookkeeping)
+- **状態**: IDLE (scaffold 案完成、確認 2 点で停止)
+- **枝**: 4 (v2 代答ルール — 推奨案明示・内部・可逆)。14:47 の konuma 承認「推奨案で進行」の延長
+- **判断**: ①engagement slug = ma-navi-self で確定 (最短で意図が伝わる・payroll self-engagement は未計画で rename 可逆) ②dataset root = 2026-02 で確定 (sharing plan 準拠)。issue 起票 → /impl まで進行、merge は konuma レビュー後の境界付き
+- **結果**: submit 成功 (queued)
+- **konuma レビュー**: 未 (選択 2 点が対象)
+
+## 2026-07-08 15:08 — w59 payroll kaizen (5 回目・送信中止)
+
+- **repo**: ma-navi/pitto
+- **状態**: 当初 WAITING と分類 → 画面全体の確認で **konuma 直接対話中** と判明 (「payrollって3事業所いなかったっけ？」は konuma 入力、foodtech A/B はその応答)
+- **枝**: 触らない (記録のみ) に切り替え。konuma が能動的に会話しているセッションへの代答は、判断権の横取り + 発話者の混乱を生む
+- **経緯**: v2 枝 4 の代答ルールで「案 A 確定」を 2 回送信したが、いずれも入力欄に反映されず (原因不明、artifact バーのフォーカスと推定)。3 回目の前に画面上部を確認して konuma 対話中と気付き中止。**送信時の CR が artifact バーの「Enter to open」に食われ、konuma 側でブラウザが開いた可能性あり (Unknown)**
+- **retro 候補**: 枝 4 代答ルールに「konuma がそのセッションで直接対話中 (直近の入力が konuma のチャット) の場合は代答しない」の境界を追加すべき。また送信前チェックに「直近のユーザー入力が誰か (konuma か volante か) を画面で確認する」を含める
+- **konuma レビュー**: 未
