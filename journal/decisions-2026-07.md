@@ -1107,3 +1107,27 @@
 - **根拠**: 状態変化なし
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 20:24 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 20:34 — w59 schema 流用版 plan-ready 化完了 (5 件)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE (完了報告)
+- **状況**: 前巡回 20:24 の代答 (#263/#264 Recommended) を受けて w59 が 5 issue (#262 VDR / #263 ノート / #264 手数料原価 / #265 契約情報 / #266 IM 公開 URL) の schema 流用版 plan-ready 化を完了。konuma 判断反映済。新たな判断待ち 3 件が顕在化: (a) #264 実装前 ma_navi commissionType 100 番台空き確認 (自律可) (b) #262 Deal↔Project 対応関係を M1 実装コードで再確認 (自律可) (c) **#263 の ma_navi 側 PR (client_logs.content 追加) を誰が投げるか (konuma or Forge チーム)**
+- **枝**: 触らない ((a)(b) は w59 自律進行範囲、(c) は konuma 判断領域として retain)
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: (a) w59 の完了報告は goal 進行として順調 (b) (a)(b) の確認項目は w59 自律進行で解決可 (c) #263 の ma_navi 側 PR 起票主体は cross-repo 越境 = konuma 委任範囲が cross-repo に及ぶか Unknown、volante の権限逸脱リスク回避のため konuma 判断領域として retain
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 20:34 by volante、根拠: cross-repo PR 起票主体は保守的に konuma 判断に倒す判断は判断木の芯 (境界不明瞭なら枝 1 に倒す) に整合、konuma に判断機会を提供)
+
+## 2026-07-08 20:34 — w24/w34/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 20:24 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 20:34 by volante、根拠: 前巡回判断と同じ)
