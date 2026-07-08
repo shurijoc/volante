@@ -92,3 +92,4 @@
 | 2026-07-08 21:04 | 観測 4 / IDLE 3 (w34/w59/w61) / WAITING 1 (w24 reset 後の worktree 選択質問 = konuma 領域) / 指示 0 / w34 /clear ヒント 154.5k 新規表示だが副条件該当 (draft §5-6 context 依存) で reset 見送り 1 回目 |
 | 2026-07-08 21:14 | 観測 4 / IDLE 2 (w59/w61 変化なし) / WAITING 1 (w24 worktree 選択継続 = konuma 領域) / RUNNING 1 (w34 副条件フェイルセーフ発火で context-reset skill 起動) / 指示 1 (w34 /context-reset) / v0.10.0 副条件フェイルセーフ「2 巡回連続」の初適用 / 週次利用上限 w34 = 77% (前回 75%→+2%) |
 | 2026-07-08 21:24 | 観測 4 / IDLE 2 (w59/w61 変化なし) / WAITING 1 (w24 worktree 選択継続) / RUNNING 1 (w34 reset step 2-3 完了で Flummoxing…) / 指示 2 (w34 /clear + 再開プロンプト) / w34 154.5k 解放 / 段階的 reset の 3 例目成功 |
+| 2026-07-08 21:24 (追記) | konuma チャット指摘反映: 21:04 w24 触らないの konuma レビュー欄を OK → NG に上書き + 反省点 4 件を decisions に記録 (retro 対象、発火条件 21 件で到達済み。次巡回で retro 書く) |
