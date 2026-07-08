@@ -1253,3 +1253,27 @@
 - **根拠**: 状態変化なし + konuma 領域 (w24) or 他人待ち (w59/w61)
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 21:14 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 21:24 — w34 context reset step 2-3 完了
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (context-reset skill 退避完了) → RUNNING (Flummoxing…)
+- **状況**: 前巡回 21:14 の副条件フェイルセーフ発火で送信した /context-reset の退避完了確認。退避先 `/Users/navi/.claude/context-resets/20260708-1955-navibot-834-forge-chat-mutation.md`。退避内容に konuma 判断保留の主要 context (draft §5-6 の (3)(5) 推奨内容、SSE schema SoT の Fact 訂正 = 「Forge PR #239 (merged) の types.ts」、関連リンク epic #802/#834/#838/#839/Forge PR #239/draft パス) が反映されている
+- **枝**: 巡回義務 (context 管理 reset step 2-3)
+- **判断**: /clear → 再開プロンプト送信 (context-reset skill 生成分をそのまま送信)
+- **送信指示**: (1) `/clear` (単一行 CR) → 🧠 16%→0% (154.5k 解放) (2) 「まず詳細ログと draft を読み、konuma 事後レビューの回答を待つ状態から再開する。」を送信 (単一行 CR)
+- **根拠**: (a) 退避完了確認済み (b) konuma 判断保留の主要 context が退避に十分反映されており復元可能 (c) draft は scratchpad にファイルとして保持されている (退避パス明記) (d) 段階的アプローチの 3 例目 (w59 20:04-05・w24 20:44-54 に続く)
+- **結果**: /clear 成功 (154.5k 解放)、再開プロンプト送信で RUNNING 化 (Flummoxing…)
+- **konuma レビュー**: OK (self-review 2026-07-08 21:24 by volante、根拠: 副条件フェイルセーフ発火後の段階的アプローチが機能、退避内容の Fact 確認で konuma レビュー機会を保持)
+
+## 2026-07-08 21:24 — w24/w59/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: w24 WAITING 継続 (worktree 選択) / w59 IDLE 変化なし / w61 IDLE 変化なし
+- **状況**: 前巡回 21:14 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 21:24 by volante、根拠: 前巡回判断と同じ)
