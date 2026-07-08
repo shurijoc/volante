@@ -66,3 +66,4 @@
 | 2026-07-08 17:58 | konuma 指示: w24 を volante 管理対象に組み込み・ゴールを「ma_navi org kaizen loop 立ち上げ」に変更 → goals.md w24 行を更新 (正本 = pitto issue-495 + PR #496)。優先度は konuma 追認待ちで据え置き |
 | 2026-07-08 18:03 | 判断代替 3 件 (konuma 指示「代替してみて」): Forge #238/#259 plan-ready 化は既に w61 実施済を確認 (gh)、navibot #802 コメントを volante 名義で投稿 (代替判断フッター付き) |
 | 2026-07-08 18:04 | ループ再開 (10m, cron cf572129, konuma 指示。自動停止ルール有効) |
+| 2026-07-08 18:11 | 観測 4 / WAITING 2→解消 (w24 選択肢1・w59 permission Yes 代答) / IDLE 2 (w34/w61) / 指示 3 (w24 代答・w59 代答・w34 Fact 訂正+SSE schema 代替判断) / 誤中継の訂正: 17:56 中継の「PR #239 event schema は Forge #238 plan で方針記述」は Fact 誤認 (PR #239 は既 merged) → w34 に訂正送信 / PR #496 merge 承認は代替対象外で konuma 領域 / w61 reset 見送り継続 |

@@ -569,3 +569,51 @@
 - **根拠**: konuma 明示委任 + 内部 GitHub issue コメント (社内 org 間の cross-repo) は判断木 枝 1 (a) の「社外向け PR/issue コメント」に該当しない = 外部連絡ではない。フッターで代替判断を明示して事後監査可能にした
 - **結果**: —
 - **konuma レビュー**: 未
+
+## 2026-07-08 18:11 — w24 verify 成果物の commit 判断 (代替)
+
+- **repo**: ma-navi/pitto
+- **状態**: WAITING (AskUserQuestion「verify で生成された funnel-report.html / funnel-history.jsonl をどう扱うか」選択肢 1/2/3)
+- **状況**: 選択肢 1 (追加 commit して push しない、推奨) は理由明記 = score 完全一致・意図的更新でない・CLAUDE.md も別途 analyze-funnel.ts 実行を規定
+- **枝**: 4 (低リスク: 内部・可逆、セッション自身の推奨案が根拠明確)
+- **判断**: Enter で選択肢 1 を確定
+- **送信指示**: `\r` のみ (デフォルト選択が選択肢 1 で ❯ 位置に確認済)
+- **根拠**: 推奨案の理由が正当 (score 完全一致 = report は意図的更新でない、push しないなら共有資産への影響なし)
+- **結果**: 「kaizen-loop verify 通過、gate neutral、全 finding 対応済み、worktree clean、CI 待ち」で idle 化。ブロッカー = konuma merge 承認待ちのみ。**PR #496 merge 承認は代替対象外に置いた** (追加的 scaffold で影響限定的だが merge = default branch 反映のため konuma 承認を残す。次回 konuma 巡回時判断)
+- **konuma レビュー**: 未
+
+## 2026-07-08 18:11 — w34 Fact 訂正 + SSE schema 出典代替判断
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (konuma 判断 4 件エスカレーション中)
+- **状況**: w34 が STATUS で konuma に判断を仰いだ 4 件のうち、(1) SSE schema 出典 = PR #239 で正か を Fact 照合で確定できる。ただし直前巡回 17:56 で私 (volante) が送った中継指示「PR #239 event schema は Forge #238 plan で方針記述」は誤中継 (Fact 誤認) — gh 確認で PR #239 は 2026-07-07 02:24 UTC に MERGED 済で SSE event schema は PR #239 で確定、Forge #238 plan コメントは tool allowlist の話
+- **枝**: 5 (Fact 訂正 = 内部定型) + 4 (代替判断、内部・可逆)
+- **判断**: 中継誤りを訂正し謝罪。(1) は PR #239 (merged) を SoT として確定。#834 の schema draft は mirror 型で着手可。(2)(3)(4) は設計判断で影響中規模のため konuma 領域に retain
+- **送信指示**: 全文 — Fact 訂正 (PR #239 merged 済/Forge #238 plan は allowlist で SSE ではない) + (1) 代替判断 + タスク (#834 schema draft mirror 型) + 境界 (実装しない/外部連絡しない/(2)(3)(4) は konuma 領域維持) を明記
+- **根拠**: PR #239 が merged 済 = 確定 event schema。中継元 w61 STATUS の記述と実態にズレがあり、中継時にそのまま転記した volante の落ち度。訂正を優先 (retro 対象: 中継時に Fact 照合していない)
+- **結果**: —
+- **konuma レビュー**: 未
+
+## 2026-07-08 18:11 — w59 permission prompt 代答 (read-only gh)
+
+- **repo**: ma-navi/ma_navi_forge (worker: ma_navi_forge-169 で #169 実装中)
+- **状態**: WAITING (permission prompt: general-purpose agent の `gh repo view` + `gh issue view 169` に対する Bash(gh repo:*) 確認)
+- **状況**: 選択肢 1 (Yes、今回のみ)、選択肢 2 (allow reading from ma_navi_forge-169 from this project)、選択肢 3 (No)
+- **枝**: 4 (低リスク: read-only gh 操作、副作用なし)
+- **判断**: 選択肢 1 (今回のみ Yes) を Enter で選択。選択肢 2 は permission policy 拡張 = konuma 領域
+- **送信指示**: `\r` (デフォルト ❯ 位置が選択肢 1)
+- **根拠**: 内容は gh repo view + gh issue view = read-only。今回のみ許可なら policy 変更なしで可逆
+- **結果**: 受理され worker が動作継続 (main + issue-169-impl + #220 + #258 の 4 worker 並列 RUNNING)
+- **konuma レビュー**: 未
+
+## 2026-07-08 18:11 — w61 触らない (前巡回同様)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE (STATUS 変化なし、konuma 判断待ち表示が残っているが実際は既に処置済み)
+- **状況**: 🧠18%・/clear ヒント表示継続。前巡回で代替判断済み (Forge #238/#259 plan-ready 化は既に w61 実施済、#802 コメント volante 投稿済) だが w61 の context には反映されていない
+- **枝**: 触らない
+- **判断**: 触らない (reset 見送り継続)。「処置状況更新」を通知して w61 の STATUS を更新させることも可能だが、w61 は次の動きがなく idle 継続のため通知価値は低い
+- **送信指示**: なし
+- **根拠**: 🧠18% 余裕あり + 動きなし = 通知しても idle 継続 + context 反映は konuma からの追加指示が来た時点で更新すればよい
+- **結果**: —
+- **konuma レビュー**: 未
