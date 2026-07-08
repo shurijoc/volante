@@ -494,3 +494,63 @@
 - **経緯**: v2 枝 4 の代答ルールで「案 A 確定」を 2 回送信したが、いずれも入力欄に反映されず (原因不明、artifact バーのフォーカスと推定)。3 回目の前に画面上部を確認して konuma 対話中と気付き中止。**送信時の CR が artifact バーの「Enter to open」に食われ、konuma 側でブラウザが開いた可能性あり (Unknown)**
 - **retro 候補**: 枝 4 代答ルールに「konuma がそのセッションで直接対話中 (直近の入力が konuma のチャット) の場合は代答しない」の境界を追加すべき。また送信前チェックに「直近のユーザー入力が誰か (konuma か volante か) を画面で確認する」を含める
 - **konuma レビュー**: 未
+
+## 2026-07-08 17:56 — w24 kaizen-loop 形式で回すか (konuma 入力中)
+
+- **repo**: ma-navi/pitto
+- **状態**: WAITING (AskUserQuestion 表示・konuma がテキスト入力中「kaizen loopで回せるようにして」)
+- **状況**: main worktree bypass / symlink / follow-up issue の 3 択に対し konuma が自由記述で「kaizen loopで回せるようにして」と入力中。まだ Enter で送信していない
+- **枝**: 触らない (konuma 直接対話中の代答は 07-08 12:45 の retro 課題どおり避ける)
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 画面下部の入力欄に konuma のテキストが残っており送信前段階。代答すると konuma 入力を破壊する
+- **結果**: —
+- **konuma レビュー**: 未
+
+## 2026-07-08 17:56 — w34 Forge API 連携相談 4 点の中継
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (w61 回答待ちで静止)
+- **状況**: navibot #834/#835/#836 起票済み + w61 に相談 4 点を送信済み。w61 側では相談 4 点すべて処置完了 (Forge #238 plan 追記・Forge #259 起票) しているが未回収
+- **枝**: 5 (cross-session の情報中継 = 内部定型)
+- **判断**: w61 の処置状況を中継し、Forge 側 plan-ready 待ちの間に navibot 側で進められる schema draft と gate 整理を差配
+- **送信指示**: 全文 — 「volante 巡回より w61 (Forge 側) の相談 4 点への処置状況を中継。目的: navibot 側 (#834/#835/#836) の schema 確定と gate 状況を整理し、konuma の Forge 側 plan-ready 判断待ちの間に navibot 側で進められる作業を明確化する。w61 回答: 1) Forge #238 plan コメント追記済み・07-14 週着手可 2) PR #239 event schema は Forge #238 plan で方針記述 3) contextHints push は新規 Forge #259 起票 (方式 c 設計+AC) 4) 1 ターン内複数 pending 集約は明示回答なし (Fact) / Forge #259 内で扱う想定 (Hypothesis)。Forge 側未処置 (konuma 判断待ち、navibot 側では触らない): Forge #238/#259 plan-ready 化・#802 返信主体。タスク: 今の時点で navibot 側 #834/#835/#836 で schema draft/gate 整理として進められるものを列挙。#834 は Forge #238 plan を反映した SSE event schema draft の下書き可、#835 は Forge #238 merge 後 gate、#836 は Forge #259 plan-ready 後 gate と明示。完了条件: STATUS で (1) #834 schema draft (2) #835/#836 gate 条件 (3) 今すぐ着手 vs 待機の切り分け を報告。境界: 実装・push しない/外部連絡しない/epic #802 コメント投稿は konuma 判断待ちなので触らない/Forge 側 issue/PR は read-only/推定は違ったら中断」
+- **根拠**: cross-session 中継 + navibot 側の遊休を埋める schema draft (低リスク・可逆)。Fact/Hypothesis 分離済み
+- **結果**: —
+- **konuma レビュー**: 未
+
+## 2026-07-08 17:56 — w59 #257 実装中 (ゴール未登録)
+
+- **repo**: ma-navi/ma_navi_forge (goals.md 上は pitto/payroll)
+- **状態**: RUNNING (`npm ci --prefer-offline --no-audit` 実行中、直前に env.test.ts を Write 完了)
+- **状況**: goals.md w59 行は「pitto/payroll」だが現在の cwd は ma_navi_forge。作業内容は #257 (DATABASE_URL scheme validation) で w61 goal (AI agent v1) の再発防止起票済み #257/#258 と一致
+- **枝**: 触らない (RUNNING は割り込まない)
+- **判断**: 触らない。ゴール登録は konuma 整理領域として最終報告で提示
+- **送信指示**: なし
+- **根拠**: RUNNING 中の割り込みは context 汚染。goals.md エントリの書き換え (payroll → ma_navi_forge #257) は同一 window で作業が変わったのか別 session なのか画面から断定できず、konuma 判断領域
+- **結果**: —
+- **konuma レビュー**: 未
+
+## 2026-07-08 17:56 — w61 context reset 見送り
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE (konuma 判断 3 件待ち)
+- **状況**: 🧠18%、footer に「new task? /clear to save 185.2k tokens」ヒント表示。SKILL.md 発火条件 (IDLE + 🧠50%+ OR /clear ヒント) を or 側で満たす。ただし konuma 判断 3 件 (Forge #238 plan-ready 化/Forge #259 plan-ready 化/#802 返信主体) を context 内に保持中
+- **枝**: 触らない (巡回義務ルール適用外の運用判断)
+- **判断**: reset 見送り
+- **送信指示**: なし
+- **根拠**: 🧠18% で余裕がある一方、konuma 判断待ち 3 件の詳細 context を再開プロンプトで完全復元できる保証がない。185.2k tokens 消費は現状許容。retro 候補: 「巡回義務の発火条件に konuma 判断保留の有無を追加する」
+- **結果**: —
+- **konuma レビュー**: 未
+
+## 2026-07-08 17:58 — w24 volante 管理対象組み込み (konuma 指示)
+
+- **repo**: ma-navi/pitto
+- **状態**: RUNNING (konuma が選択肢 2 = issue worktree に symlink を選択して送信済み、symlink 作成 → verify --run-e2e 実行中)
+- **状況**: 17:56 時点の観測後、konuma FB 追加: 「w24 もあなたが管理してください。要は ma_navi という新しい org/project が追加されたのでそれの kaizen loop を回すことがゴール」。goals.md 上の w24 は「Cosmos/jingu 経理 kaizen」でゴール定義が変わったので更新が必要
+- **枝**: 5 (goals.md 乖離解消 = 内部定型作業。konuma 指示なので事前確認不要)
+- **判断**: goals.md w24 行を「ma_navi org kaizen loop 立ち上げ (正本: pitto issue-495 + PR #496)」に更新。優先度列は「仮: 中 (konuma 追認待ち)」で据え置き (優先度は konuma 所有)。現時点で w24 は RUNNING なので触らない。次巡回以降は他セッション同様に判断木適用対象
+- **送信指示**: なし (w24 セッション自体には送信しない。goals.md のみ更新)
+- **根拠**: konuma 指示 = ゴール変更指示に等価。RUNNING セッションへの割り込みは判断木の全枝で禁止のため変わらず触らない。w24 の従来ゴール (Cosmos/jingu 経理 kaizen) は konuma 判断で新ゴールに置換されたと解釈
+- **結果**: —
+- **konuma レビュー**: 未
