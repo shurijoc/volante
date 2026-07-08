@@ -693,3 +693,27 @@
 - **根拠**: (a) SKILL.md 発火条件を or 側で満たす (b) konuma 判断 3 件は処置済で w61 の context 保持理由が減った (c) w61 は idle で次アクションなし = reset タイミングとして自然 (d) 手順を分割して次巡回で完了確認するのが安全
 - **結果**: —
 - **konuma レビュー**: 未
+
+## 2026-07-08 18:34 — w61 context reset step 2-3 完了
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE → RUNNING (step 3 送信後)
+- **状況**: 前巡回で送信した `/context-reset` の退避完了を確認 — 詳細ログパス `/Users/navi/.claude/context-resets/20260708-1530-forge-navibot-and-prod-incident.md` + 再開プロンプト + 「/clear か /compact を打って再開」ヒントが表示された。step 2 (/clear) と step 3 (再開プロンプト) を実施
+- **枝**: 巡回義務 (context 管理、reset 手順の続き)
+- **判断**: /clear → 再開プロンプト送信の順で完了。再開プロンプトは context-reset skill 生成分をそのまま送信 (補足情報の追加は「reset 直後の追加指示」に該当するため見送り、次巡回で追加通知の要否を判断)
+- **送信指示**: (1) `/clear` (単一行) → 🧠18%→0% (185.2k 解放) を確認 (2) 「まず worktree で git status を確認し、詳細ログを読んでから次の一手 (konuma 判断待ちの 3 件の状況確認) に着手する。」を送信
+- **根拠**: SKILL.md「退避完了確認 後に /clear」を遵守。再開プロンプトが「konuma 判断待ち 3 件の状況確認」を含んでおり、w61 が status 確認時に Forge #238/#259 plan-ready 化済 + navibot #802 コメント投稿済を発見できる想定
+- **結果**: /clear 成功 (185.2k 解放)、再開プロンプト送信で RUNNING 化 (「Nesting…」表示)
+- **konuma レビュー**: 未
+
+## 2026-07-08 18:34 — w24/w34/w59 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: w24 IDLE (ゴール達成継続) / w34 IDLE (konuma 判断 5 件待ち継続) / w59 RUNNING (完了報告中、7 PR merge 済 #271/#272 他)
+- **状況**: 前巡回 (18:24) から状態変化なし。w24 の follow-up 起票は konuma 領域維持、w34 の設計判断は konuma 領域維持、w59 は自律進行中
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 前巡回判断と同じ (w24 ゴール達成後の follow-up は konuma 領域 / w34 設計判断は konuma 領域 / w59 は konuma 直接委任下で RUNNING)
+- **結果**: —
+- **konuma レビュー**: 未
