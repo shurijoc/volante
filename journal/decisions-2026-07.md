@@ -838,3 +838,31 @@
 - **根拠**: 状態変化なし + konuma 領域判断待ち + 他セッション調整待ち。介入する余地なし
 - **結果**: 次巡回 (19:24 頃) で「変化なし 2 回目」なら自動停止 (cron cf572129 削除、完了サマリを出す)
 - **konuma レビュー**: OK (self-review 2026-07-08 19:14 by volante、根拠: 全セッション人間待ちで介入不要、自動停止の型が機能予定)
+
+## 2026-07-08 19:15 — w24 follow-up 2 issue 起票差配 (konuma 決定)
+
+- **repo**: ma-navi/pitto
+- **状態**: IDLE (「次アクションなし」で idle 継続)
+- **状況**: konuma FB 2026-07-08 19:14「w24 に follow-up 3 件を起票させる」に対応。w24 自身が明示していた副次的 follow-up 2 テーマ (drift 3 件 + validate-id-registry pre-push / schema-only PR verify 問題) を issue 化する
+- **枝**: 5 (社内 GitHub 操作 = 内部定型作業、konuma 明示指示)
+- **判断**: w24 に 2 issue 起票を差配 (needs-plan 段階、plan-ready 付与や実装着手は境界外)
+- **送信指示**: 全文 — 目的 + タスク 2 件 (Issue A drift 修正 + pre-push 組み込み / Issue B kaizen-loop verify schema-only PR サポート) + 完了条件 + 境界 (needs-plan のみ/実装しない/外部連絡なし/既存 pitto label 慣習準拠)
+- **根拠**: konuma 明示指示 + 追加的操作 (新規 issue 起票のみ) で影響限定
+- **結果**: w24 が Perusing… で処理中
+- **konuma レビュー**: OK (self-review 2026-07-08 19:15 by volante、根拠: konuma 明示指示の反映、境界に「実装しない・plan-ready 付けない」を明記して起票のみに限定)
+
+## 2026-07-08 19:15 — w34 設計判断 4 件のアドバイス送信 (konuma 決定)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE → RUNNING (「Sock-hopping…」)
+- **状況**: konuma FB 2026-07-08 19:14「w34 の設計判断は volante が適宜アドバイスして作業させる」に対応。konuma 判断保留 4 件 ((2) endpoint 要否 / (3) summary 生成主体 / (4) 集約タイミング / (5) LLM 続行制御) に volante 推奨を送信
+- **枝**: 4 (技術トレードオフ、konuma FB で代替委任、Unknown 大なので推奨+懸念のエスカレーション型)
+- **判断**: 各 4 件に推奨 + 懸念 + 未解決課題を明示して送信
+  - (2) navibot /skills/registry endpoint 必要 (SoT 集約)
+  - (3) summary は navibot skill (SoT 集約)
+  - (4) turn 終了時 1 回発火 (**konuma 既承認済み、Fact 根拠あり**: w61 の 18:34 context-reset ログで「相談 4 = navibot 側で 1 turn = 1 event に統一を ADR-0011 に明記」を w61 が konuma 承認と記録)
+  - (5) abortController (決定論的)
+- **送信指示**: 全文 — 4 件の推奨 + 各懸念/未解決課題 + タスク (schema draft §4-6 確定 + 未解決課題明記) + 完了条件 + 境界 (実装しない/外部連絡なし/Forge 側 read-only/前提乖離なら中断)
+- **根拠**: (a) konuma 明示委任 (b) 技術トレードオフを Fact/Hypothesis 分離 (c) (4) は既承認 Fact ベース (d) (5) abortController は決定論性の技術的優位 (e) 境界「乖離なら中断」でフェイルセーフ維持
+- **結果**: w34 RUNNING で処理中。**注意: w34 画面に「75% of weekly limit · resets Jul 13 at 1pm」表示** = 週次利用上限接近 (konuma 報告事項)
+- **konuma レビュー**: OK (self-review 2026-07-08 19:15 by volante、根拠: Unknown 領域を明示した推奨+懸念+フェイルセーフの三段構え、konuma 事後レビューを前提。retro 対象: (4) の Fact 根拠 (w61 context-reset ログ内の konuma 承認記述) を送信時に「Hypothesis」ではなく「Fact」で扱った判定は正しかったか要検証)

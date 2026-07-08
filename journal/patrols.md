@@ -75,3 +75,4 @@
 | 2026-07-08 18:54 | 観測 4 / IDLE 4 (w24/w34/w59 変化なし・w61 前巡回送信が User declined 扱いで未回収発覚) / 指示 1 (w61 に 3 件処置済み情報を IDLE モードで再送) / next-retro 候補: AskUserQuestion モード時の kitty-send Esc 挙動 (キャンセル扱いになる、事前の状態確認が必要) |
 | 2026-07-08 19:04 | 観測 4 / IDLE 4 (全セッション idle 待機) / 指示 0 / w61 前巡回再送を回収 + Fact 訂正報告 (「Forge #259 は plan-ready ではなく CLOSED」= w59 が 18:02 以降に実装完了・close した推定) / w59 との並行進行で古い情報中継リスク発覚 → retro 候補 |
 | 2026-07-08 19:14 | 観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 19:04 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。konuma FB「10m のまま OK」を受領 |
+| 2026-07-08 19:15 | konuma 決定 2 件を差配: w24 → follow-up 2 issue 起票 (drift 3 件 + validate-id-registry pre-push / kaizen-loop schema-only PR サポート、needs-plan)、w34 → 設計判断 4 件アドバイス送信 (2 endpoint 要 / 3 skill 生成 / 4 turn 終了時 1 event = konuma 既承認 / 5 abortController)。両セッション RUNNING 化。w34 週次利用上限 75% 表示 (konuma 報告事項) |
