@@ -1081,3 +1081,29 @@
 - **根拠**: 全 RUNNING または変化なし。w59 の Considering… は konuma FB に沿った Fact 収集フェーズで順調
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 20:15 by volante、根拠: 前巡回の konuma FB 中継が期待どおり w59 で Fact 収集フェーズを起動、順調)
+
+## 2026-07-08 20:24 — w59 multi-question 代答 (#263 note + #264 原価 の格納先)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: WAITING (multi-question AskUserQuestion form、#263 note の格納先 + #264 原価の格納先)
+- **状況**: konuma FB 中継 (WBS 以外 schema 流用) を受けた w59 が残 open issue の plan を横断調査し、9 件中 #262/#265/#266 は自律進行可、#263 (ディールノート) と #264 (手数料・原価) は流用不可 field ありで konuma 判断を仰いだ。両質問とも Recommended 案が konuma 方針に整合
+- **枝**: 4 (konuma 宛て質問への代答、セッション自身の推奨案が明示 + 内部・可逆 + 追加的)
+- **判断**: 両質問とも選択肢 1 (Recommended) を選択 + Submit
+  - #263 note → client_logs Text 列拡張 (ma_navi 側 1 列追加の小 migration、既存 deal 履歴と一元化、konuma 方針「schema 流用」範囲内)
+  - #264 原価 → commissions.commissionType の空き値に原価カテゴリ割当て (DB 変更ゼロ、konuma 方針に最も忠実)
+- **送信指示**: (1) CR で #263 選択肢 1 (2) CR で #264 選択肢 1 (3) CR で Review 画面「Submit answers」
+- **根拠**: (a) セッション自身の Recommended 判定が明示 (b) 両案とも konuma FB (WBS 以外 schema 流用) と整合 (c) #263 は小 migration だが列追加のみ = 追加的で影響限定、#264 は DB 変更ゼロ (d) 新 SKILL.md v0.10.0 の WAITING モード送信手順に従い Esc 不使用で ❯ 位置の CR のみで送信 (e) Multi-question 形式でも同手順が有効と実機で確認
+- **結果**: Submit 成功、w59 が RUNNING に遷移 (次フェーズ = plan 書き直し着手)
+- **konuma レビュー**: OK (self-review 2026-07-08 20:24 by volante、根拠: Recommended + konuma 方針整合の二重根拠 + 新 SKILL.md v0.10.0 WAITING モード送信手順の実機検証 = multi-question 形式でも CR のみで問題なし)
+
+## 2026-07-08 20:24 — w24/w34/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 20:15 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 20:24 by volante、根拠: 前巡回判断と同じ)
