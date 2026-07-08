@@ -440,3 +440,20 @@
 - **w34 (navibot)**: IDLE。/clear 直後 (🧠0%)、セッション評価ダイアログが表示中だが入力を妨げない。navibot 側 v1 作業は完了済み (01:05 時点)。差配なし
 - **w59 (payroll)**: RUNNING — konuma 依頼 (15 時打ち合わせ用の進捗 HTML) を処理中。触らない
 - **konuma レビュー**: 不要 (無操作)
+
+## 2026-07-08 12:41 — w61 AI agent v1 (18 回目・回収)
+
+- **repo**: ma-navi/ma_navi_forge / ma_navi_terraform
+- **状態**: IDLE (12:32 差配の完了報告)
+- **枝**: (回収のみ、追加指示なし)
+- **結果**: 4 件とも完了・境界遵守を確認 — ①PR #6057 が同一修正と確認 (新規 PR 不要。author が konuma 本人のため reviewer 設定は不可でスキップ、konuma self-review + merge 運用) ②env validation issue #257 起票 (priority high) ③ECS alarm issue #258 起票 (medium) ④未コミット変更は mockup/vite.config.ts の ngrok 設定で今回作業と無関係 → 触らず報告のみ (指示どおり)
+- **判断**: 残タスクは全て konuma ゲート (PR #6057 merge+apply / #257・#258 の plan-ready 付与 / vite.config.ts の処置) のため追加差配なし
+- **konuma レビュー**: 未
+
+## 2026-07-08 12:41 — w24 bookkeeping org 追加 (記録のみ)
+
+- **repo**: ma-navi/pitto (bookkeeping)
+- **状態**: WAITING — konuma が直接開始した新タスク (M&Aナビ org 追加) で、セッションが konuma 宛てに AskUserQuestion (org slug / client 構造 / 作成範囲 / 作業 flow の 4 点) を表示中
+- **枝**: 触らない (記録のみ)。質問は起票者 konuma の選好判断 (命名・データ構造) であり、volante の代答は konuma の判断権を奪う。konuma は直前までこのウィンドウを操作しており応答可能
+- **備考**: 登録ゴール (jingu 経理 kaizen) とは別の ad-hoc タスク。継続案件化するなら goals.md 追加を konuma に提案
+- **konuma レビュー**: 不要 (無操作)

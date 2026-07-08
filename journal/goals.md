@@ -9,7 +9,7 @@ window id は揮発的 (セッション再起動で変わる) なので session 
 | Cosmos/jingu 経理 kaizen (w24) | ma-navi/pitto | [#427](https://github.com/ma-navi/pitto/issues/427) + `pitto/.claude/goals/bk-cosmos.md` (tracer) | jingu effective 0.85+ へ (現状 0.82、証憑受領がトリガー。自力弾は枯渇済み) | 仮: 中 (外部待ち) | 2026-07-07 |
 | navibot×Forge 統合 (w34) | ma-navi/navibot | [epic #802](https://github.com/ma-navi/navibot/issues/802) | ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過 | 仮: 高 | 2026-07-07 |
 | payroll kaizen (w59) | ma-navi/pitto | [#365](https://github.com/ma-navi/pitto/issues/365) + `pitto/.claude/goals/payroll.md` (tracer, autonomy L2) | payroll 照合 kaizen の再開 (明日=07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化 | 仮: 中 | 2026-07-07 |
-| AI agent v1 (w61) | ma-navi/ma_navi_forge | [epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211) | v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220 + mysql:// 事故の再発防止 3 件 | 仮: 高 | 2026-07-07 |
+| AI agent v1 (w61) | ma-navi/ma_navi_forge | [epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211) | v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち) | 仮: 高 | 2026-07-07 |
 | memory 統治ループ (w69) | /Users/navi (home) | ~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md | 定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done | 仮: 低 | 2026-07-07 |
 
 - 優先度の初期値はすべて volante の仮置き。**konuma のレビュー・修正待ち**
