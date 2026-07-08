@@ -617,3 +617,31 @@
 - **根拠**: 🧠18% 余裕あり + 動きなし = 通知しても idle 継続 + context 反映は konuma からの追加指示が来た時点で更新すればよい
 - **結果**: —
 - **konuma レビュー**: 未
+
+## 2026-07-08 18:14 — konuma 決定: merge/approve も volante 判断範囲
+
+- **repo**: (判断木の適用範囲変更 = 全 repo 横断)
+- **状態**: —
+- **状況**: konuma FB「merge/approve もあなたが判断して。ログに残して」を受領。直前巡回で私 (volante) が「PR #496 merge 承認は代替対象外に置いた (konuma 領域)」と保守的に retain したことへの直接 FB
+- **枝**: メタ決定 (判断木実質拡張)
+- **判断**: konuma 決定を以下のとおり解釈・記録する
+  - PR merge / PR approve は volante 判断範囲に含める (枝 1 の「影響大の本番変更」から除外)
+  - ただし判定の芯は維持: 「追加的で既存動作への影響が限定的」なものは自律実行、「削除・変更で影響大」(URL 変更・destructive migration・force push・force merge 等) は依然 konuma 承認
+  - PR merge の実行は原則対象セッションに指示 (後片付け・履歴が自然に残る)。セッションが不在の場合は volante 直接 gh 実行も可
+  - 実行後は decisions ログに merge 判断根拠 (追加的か・CI 状態・レビュー状況・merge 方式) を明記
+- **送信指示**: なし (メタ決定のログのみ)
+- **根拠**: konuma 明示委任。SKILL.md 判断木本体の書き換えは「konuma 承認 + CHANGELOG」の重い手続きが必要のため、まずは decisions ログで運用開始 → 次回 retro で判断木への反映を提案
+- **結果**: —
+- **konuma レビュー**: 未 (retro 対象: SKILL.md 判断木 枝 1 の文言「影響大の本番変更」から PR merge/approve を除外する更新案を提示予定)
+
+## 2026-07-08 18:14 — w24 PR #496 merge 差配 (代替判断適用の初例)
+
+- **repo**: ma-navi/pitto
+- **状態**: IDLE (kaizen-loop verify 通過、CI 待ち → CI 全 pass 確認済)
+- **状況**: PR #496 (ma_navi org scaffold) の merge 判断。直前巡回で「代替対象外」に置いていたが konuma 決定「merge/approve も判断」で判断範囲に入った
+- **枝**: 4 → 5 (追加的で影響限定的 = 低リスク技術判断 + 社内 merge 実行 = 内部定型作業)
+- **判断**: merge 実行を w24 に差配
+- **送信指示**: 全文 — Fact (PR #496 mergeable/CLEAN/全 CI SUCCESS) + 判断根拠 (追加的 scaffold・影響限定) + タスク (gh pr merge, pitto 慣習に合わせる, --delete-branch, worktree 片付け, runtime.bak-* 掃除, issue #495 close) + 完了条件 + 境界 (他 repo 触らない/追加 PR 作らない/外部連絡なし/force push なし)
+- **根拠**: (a) PR 内容は新規 org 追加のみで既存 org・共通 code に影響なし (b) CI 全 pass (typecheck+test / Claude code review / markdownlint / TruffleHog / local links) (c) mergeStateStatus=CLEAN で conflict なし (d) reviewDecision="" で codeowner ブロッカーなし (e) konuma 決定により承認は volante 判断で可
+- **結果**: —
+- **konuma レビュー**: 未
