@@ -1193,3 +1193,39 @@
 - **根拠**: 状態変化なし
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 20:54 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 21:04 — w24 WAITING (worktree 選択、konuma 領域)
+
+- **repo**: ma-navi/pitto
+- **状態**: WAITING (AskUserQuestion「どの worktree に入って作業を再開する？」、選択肢 1-4 の worktree + 5. Type something)
+- **状況**: 前巡回 20:54 の reset 再開後、context-reset skill 生成の再開プロンプトに従って詳細ログ確認 → w24 のゴール (ma_navi org 立ち上げ) 完了状態を認識し、次に着手する worktree の選択を konuma に問い合わせ。選択肢: pitto-230-d (cosmos 小口現金) / pitto-373-self-improvable (cosmos 自己改善) / pitto-poc-accuracy / pitto-awaiting-subfunnel
+- **枝**: 4 → 触らない (konuma のプロジェクト優先度領域)
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: (a) 次ゴール指定は goals.md 優先度列 = konuma 専有 (コンセプト節 7) (b) 選択肢は既存 pitto プロジェクトの継続で、どれを進めるかは konuma のプロジェクト優先度判断 (c) volante の代替判断範囲外 (d) 過去 FB (2026-07-08 17:58) で「w24 のゴールは ma_navi org 立ち上げ」と明示指定した実例あり = 新ゴールも konuma 指定を待つ形が整合
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 21:04 by volante、根拠: konuma 専有領域の判定が正確、無駄な代替判断で越権しない)
+
+## 2026-07-08 21:04 — w34 reset 見送り (副条件該当)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (STATUS 変化なし、/clear ヒント新規表示 154.5k、🧠15%)
+- **状況**: SKILL.md v0.10.0 発火条件 (IDLE + /clear ヒント表示) を or 側で満たす。ただし副条件 (konuma 判断保留 + context 依存) 該当: (3) summary 生成主体 + (5) abortController graceful shutdown 順序 の draft §5-6 内容が context 内保持中、#834/#838/#839 の詳細も同様 = context 依存の konuma 判断保留あり
+- **枝**: 巡回義務 (副条件見送り)
+- **判断**: reset 見送り (1 回目、SKILL.md v0.10.0 副条件フェイルセーフ「2 巡回連続で発火条件維持なら副条件無視」まで様子見)
+- **送信指示**: なし
+- **根拠**: (a) draft §5-6 (3)(5) の内容は konuma レビュー後の M1 実装に直結、context 消失 → 復元困難 (b) w61 の 18:34 副作用 (context clear 後の情報不足による User declined) の学びから慎重運用
+- **結果**: 次巡回で発火条件維持なら副条件無視して発火予定
+- **konuma レビュー**: OK (self-review 2026-07-08 21:04 by volante、根拠: v0.10.0 副条件の正確な運用、konuma 判断保留を明示的に retain してから見送り判定)
+
+## 2026-07-08 21:04 — w59/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 20:54 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 21:04 by volante、根拠: 前巡回判断と同じ)
