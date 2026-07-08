@@ -1021,3 +1021,27 @@
 - **根拠**: konuma 明示承認 (「更新 ok」)。SKILL.md 変更手順に従い konuma 承認 + CHANGELOG 記録 + retro 承認欄更新まで完遂
 - **結果**: v0.10.0 として反映済み、次巡回から新しい判断木で運用開始
 - **konuma レビュー**: OK (self-review 2026-07-08 20:00 by volante、根拠: konuma 明示承認 + 全 7 変更点を retro 由来で対応付け + CHANGELOG に起源明記 + retro 承認欄更新でトレーサビリティ確保)
+
+## 2026-07-08 20:04 — w59 context reset step 1 (副条件フェイルセーフ発火)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE → RUNNING (Mulling…、context-reset skill 起動)
+- **状況**: 前巡回 19:54 で /clear ヒント (295.9k) 表示 + 副条件 (konuma 判断保留 + context 依存) 該当しないが「konuma 直接委任下 + goal skill active」の未規定リスクで見送り。今巡回 20:04 も同状態 = 2 巡回連続で発火条件維持。新 SKILL.md v0.10.0 の副条件フェイルセーフ「2 巡回連続なら副条件無視して発火」を適用
+- **枝**: 巡回義務 (context 管理、判断木の枝ではない別枠)
+- **判断**: reset step 1 (/context-reset) 実施。step 2-3 (/clear + 再開プロンプト) は次巡回で退避内容確認 + konuma 判断で是非を決める段階的アプローチ (konuma 直接委任下のリスクを分離)
+- **送信指示**: `/context-reset` (単一行 CR)
+- **根拠**: (a) SKILL.md v0.10.0 副条件フェイルセーフ発火 (b) 段階的アプローチで konuma 委任下の goal skill 影響を最小化 (c) 前巡回 w61 の Fact 訂正体験から reset 手順分割の実効性を確認済み
+- **結果**: w59 が Mulling… で context-reset skill 実行中。次巡回で退避完了確認
+- **konuma レビュー**: OK (self-review 2026-07-08 20:04 by volante、根拠: v0.10.0 副条件フェイルセーフの初適用、段階的アプローチでリスク分離、konuma 委任下の未規定リスクは次期 retro 材料として記録)
+
+## 2026-07-08 20:04 — w24/w34/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし (前巡回 19:54 と同状態)
+- **状況**: w24 完了・w34 konuma レビュー待ち + #839 SoT 方向確定待ち・w61 idle 待機
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし + konuma 領域判断待ち or 他人待ち
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 20:04 by volante、根拠: 前巡回判断と同じ)
