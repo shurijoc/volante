@@ -1352,3 +1352,27 @@
 - **根拠**: 状態変化なし + konuma 領域判断待ち
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 21:54 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 22:04 — w59 context reset step 2-3 完了
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE (context-reset skill 退避完了) → RUNNING (Swooping…)
+- **状況**: 前巡回 21:54 の step 1 完了、退避先 `/Users/navi/.claude/context-resets/20260708-2040-forge-schema-reuse-shift.md`。退避内容: Forge 差替え comments (#262-#266)・ma_navi 依存 #17250 URL・前セッション凍結 plan (scratchpad の merged_260〜269.md パス)・詳細判断ログすべて反映。副条件 (konuma 判断保留 = ma_navi #17250 pick up 待ち) の情報は退避内で URL 集約済み = context 依存なし
+- **枝**: 巡回義務 (context 管理 reset step 2-3)
+- **判断**: /clear → 再開プロンプト送信 (context-reset skill 生成分をそのまま送信)
+- **送信指示**: (1) `/clear` (単一行 CR) → 🧠 14%→0% (131.9k 解放) (2) 「まず詳細ログ (context-resets の md) を Read してから、gh issue list --state open --assignee @me で自分の pickup 候補を確認し、次に着手する issue を選ぶ。」を送信。1 回目の CR で入力欄に残り、追送で submit
+- **根拠**: (a) 退避完了確認済み (b) konuma 判断保留の情報 (ma_navi #17250) は退避に URL 集約されており復元可能 (c) 段階的アプローチ 4 例目完了 (w59 20:04-05・w24 20:44-54・w34 21:14-24 に続く)
+- **結果**: /clear 成功 (131.9k 解放)、再開プロンプト送信で RUNNING 化 (Swooping…)
+- **konuma レビュー**: OK (self-review 2026-07-08 22:04 by volante、根拠: v0.10.0 段階的アプローチ 4 例目完了、副条件判定が正確 = 「issue URL 集約なら context 依存なし」の運用パターン確立)
+
+## 2026-07-08 22:04 — w24/w34/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 21:54 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 22:04 by volante、根拠: 前巡回判断と同じ)
