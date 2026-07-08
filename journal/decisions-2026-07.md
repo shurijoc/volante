@@ -1131,3 +1131,15 @@
 - **根拠**: 状態変化なし
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 20:34 by volante、根拠: 前巡回判断と同じ)
+
+## 2026-07-08 20:35 — w59 に ma_navi 側 issue 起票を差配 (konuma FB)
+
+- **repo**: ma-navi/ma_navi (cross-repo 差配 = w59 は ma-navi/ma_navi_forge session)
+- **状態**: IDLE → RUNNING (Imagining…)
+- **状況**: 前巡回 20:34 で konuma 領域として retain した「#263 の ma_navi 側 PR 起票主体」に対し konuma FB「ma_navi については issue を作って shurijoc (konuma) assign にしておいて」到来。cross-repo issue 起票 + assignee 指定の明示指示
+- **枝**: 5 (社内 GitHub issue 操作、内部定型作業、konuma 明示指示、追加的で影響限定)
+- **判断**: w59 に ma_navi repo での issue 起票を差配。konuma assign 明示、AC + Related リンク明示、境界に「issue 起票のみ・実装しない・ma_navi の既存 table には触らない・schema 変更は konuma がやる想定」を明記
+- **送信指示**: 全文 — 目的 (#263 blocker 解消のため konuma バックログに載せる) + タスク (ma_navi issue 起票、title/本文/AC/assignee=shurijoc/Related リンク/label 慣習準拠) + 完了条件 (issue 番号 + URL + assignee 確認) + 境界 (起票のみ・実装しない・table 触らない・慣習外 label 作らない)
+- **根拠**: (a) konuma 明示指示 (b) cross-repo issue 起票 = 内部定型作業で追加的 (c) 前巡回で「cross-repo PR は konuma 判断領域」と retain したが「issue 起票 (実装ではない)」+「konuma assign 指定」で権限逸脱リスクを回避 (d) w59 の konuma 委任下 (外部連絡以外自律進行) の範囲内
+- **結果**: w59 が Imagining… で処理中
+- **konuma レビュー**: OK (self-review 2026-07-08 20:35 by volante、根拠: konuma FB を直接反映、境界を「起票のみ・実装しない」に絞って越権リスクを回避、cross-repo でも「起票」までは枝 5 の内部定型作業に含まれる)
