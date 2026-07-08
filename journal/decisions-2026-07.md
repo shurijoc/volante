@@ -734,3 +734,39 @@
 - **根拠**: konuma 明示委任 + 外部連絡除外の芯明記で監査の要諦を維持。retro の抽出結果と self-review 結果は基本的に一致するはず
 - **結果**: 本エントリ以降の decisions は self-review 記入で運用。直近 18 件 (14:50 retro 以降) を本巡回内で一括 self-review
 - **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: メタ決定の記録で内容は konuma FB そのまま、外部連絡除外の芯を明記して監査目的を保持)
+
+## 2026-07-08 18:49 — w61 「判断待ち 3 件」の内訳補完 (代替回答)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: WAITING (context clear で「判断待ち 3 件」の内訳が失われ konuma に AskUserQuestion で問い合わせ中。選択肢 1/2/3/4/5)
+- **状況**: 前巡回 (18:34) の /clear + 再開プロンプト送信後、context-reset skill 生成の再開プロンプトが「konuma 判断待ちの 3 件」と抽象言及のみで具体内訳を含んでいなかった → w61 が clear 直後に scratchpad/open PR/前セッションスナップショットを探しても復元不可 → konuma に内訳を尋ねる WAITING に至った
+- **枝**: 5 (cross-session 情報中継、社内 GitHub 情報の補完)
+- **判断**: 選択肢 4 (Type something) で 3 件の内訳と処置済状態を全部送信して代替回答
+- **送信指示**: 全文 — (1) Forge #238 plan-ready 化済 (2) Forge #259 plan-ready 化済 (3) navibot #802 コメント投稿済 (URL 明記) + 残タスクは全て人間待ち/外部調整 + 次アクション idle 待機 + 境界 (実装しない/#220 は w59 衝突回避/外部連絡なし/内訳乖離なら中断)
+- **根拠**: (a) 3 件はすべて 07-08 の decisions ログで処置済 (b) w61 の質問への回答は Fact ベースで社内情報の中継 = 枝 5 (c) 前巡回 18:34 の SKILL.md 準拠判断 (「reset 直後は追加指示を送らない」) の副作用を次巡回で補完するのは正当。ただし next-retro 候補: SKILL.md「reset の再開プロンプトに補足情報を含めるべきか」の検討
+- **結果**: 送信後 RUNNING 化 (🧠 8%、入力欄空)、Baking 表示
+- **konuma レビュー**: OK (self-review 2026-07-08 18:49 by volante、根拠: 自身の 18:34 判断の副作用補完 + Fact ベース中継 + 境界に「内訳乖離なら中断」を含めて誤情報リスクをフェイルセーフ化)
+
+## 2026-07-08 18:49 — w24/w34 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: w24 IDLE (ゴール達成継続) / w34 IDLE (konuma 判断 5 件待ち継続)
+- **状況**: 前巡回 (18:34) と同状態、動きなし
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし、konuma 領域の判断が回答されるまで待機
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 18:49 by volante、根拠: 前巡回判断と同じ + 状態変化なし)
+
+## 2026-07-08 18:49 — w59 /goal achieved で idle 化 (次 goal は konuma 領域)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE ("✔ Goal achieved (40m · 1 turn · 199.6k tokens)" 表示)
+- **状況**: 直近の /goal loop 完了。26 → 17 open (9 件 close/PR merge)。次アクション候補は STATUS で 3 件明示: (1) 残 feature 9 件の migration 方針 (2) #238 SOT 合意 (navibot 側待ち) (3) ma_navi_terraform#6061 merge 監視。いずれも konuma 判断/外部調整で Forge 側単独では動けない
+- **枝**: 触らない (次 goal 指定は konuma 領域 = w59 の /goal は konuma 直接委任下で運用されている)
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: (a) 次 goal 指定は konuma 委任範囲 (memory・issue 記載等) の外にあり volante が touch すると委任逸脱リスク (b) STATUS で挙がった 3 件はいずれも人間判断/外部調整 = volante が代替できない (c) reset 発火条件 (🧠29% + /clear ヒントなし) 未満
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 18:49 by volante、根拠: 委任範囲を尊重、goal 管理は konuma 直接領域、リセット閾値未満)
