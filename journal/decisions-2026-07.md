@@ -414,3 +414,29 @@
 - **状況**: 完了サマリの成果集計が全 repo 0 件 → 検証したところ、巡回記録の時刻 (「2026-07-08 00:03」等) が実時刻 (21:59 JST 等) と約 1〜2 時間ズレていた。volante が実時刻を date で確認せず経過から推定して記録していたのが原因。commit timestamp が正なので履歴の順序・事実関係は保全されている
 - **判断**: 集計はループ再開 commit (a6350f3, 21:59:51 JST) の実時刻で再実行して確定。過去行の書き換えはしない (commit 履歴と食い違うため)。**retro 候補: 「patrols/decisions の時刻は date コマンドの実測値を使う」を次回 retro の更新案に入れる**
 - **konuma レビュー**: 未
+
+## 2026-07-08 12:32 — w61 AI agent v1 (17 回目)
+
+- **repo**: ma-navi/ma_navi_forge / ma_navi_terraform
+- **状態**: WAITING (mysql:// 本番事故の復旧完了報告 + 再発防止 3 案 (a)(b)(c) の差配要求で停止)
+- **枝**: 5 (内部定型作業 — PR 準備 + issue 起票 2 件)。ゴール紐付け: epic #211 v1 統合の運用安定化 (仮:高)
+- **判断**: (a) terraform 1 行修正 PR (reviewer konuma、merge/apply 禁止) + (b) env.ts zod validation issue + (c) ECS 通知 issue の 3 件とも起票・準備まで差配。未コミット変更 (Stop hook 警告) の処置も完了条件に含めた。tracer goal (m1〜m4, autonomy L1) は確認済みだが本件はゴール外のインフラ課題で、PR/issue 起票は L1 でも許容範囲
+- **送信指示**: 全文 = scratchpad w61-instruction.txt (4 要素明示。推定: 既存 PR #6057 が (a) に該当 → 違ったら報告条項付き)
+- **根拠**: 3 件とも内部かつ可逆 (PR は merge しない・issue は起票のみ)。本番実反映 (merge/apply) は konuma レビューに分離済み。事故の再発リスク (terraform drift → 次 apply で再発) は放置コストが高い
+- **結果**: submit 成功確認 (処理開始)。PR/issue 番号は次巡回で回収
+- **konuma レビュー**: 未
+
+## 2026-07-08 12:32 — w77 本番DB権限追加 (初回)
+
+- **repo**: ma-navi/ma_navi (新規セッション、goals.md 未登録)
+- **状態**: WAITING — ただし konuma が直接対話中 (read_only ユーザーへの ma_navi_production GRANT の進め方 A/B/C を提示し konuma の回答待ち。入力欄に konuma の未送信テキスト「ma_navi_production」あり)
+- **枝**: 触らない (記録のみ)。本番 DB 権限変更 = 枝 1 相当の案件だが、konuma 本人がリアルタイムで判断・操作中であり volante の介入は入力破壊と判断重複のリスクしかない
+- **判断**: 指示を送らない。入力欄に未送信テキストがある間は送信自体が禁忌
+- **konuma レビュー**: 未
+
+## 2026-07-08 12:32 — w24 / w34 / w59 (記録のみ)
+
+- **w24 (pitto, jingu)**: IDLE。/clear 直後 (🧠0%)。ゴールは外部待ち (証憑受領) のまま。差配なし
+- **w34 (navibot)**: IDLE。/clear 直後 (🧠0%)、セッション評価ダイアログが表示中だが入力を妨げない。navibot 側 v1 作業は完了済み (01:05 時点)。差配なし
+- **w59 (payroll)**: RUNNING — konuma 依頼 (15 時打ち合わせ用の進捗 HTML) を処理中。触らない
+- **konuma レビュー**: 不要 (無操作)
