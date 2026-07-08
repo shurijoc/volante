@@ -645,3 +645,51 @@
 - **根拠**: (a) PR 内容は新規 org 追加のみで既存 org・共通 code に影響なし (b) CI 全 pass (typecheck+test / Claude code review / markdownlint / TruffleHog / local links) (c) mergeStateStatus=CLEAN で conflict なし (d) reviewDecision="" で codeowner ブロッカーなし (e) konuma 決定により承認は volante 判断で可
 - **結果**: —
 - **konuma レビュー**: 未
+
+## 2026-07-08 18:24 — w24 ゴール達成、follow-up 起票は konuma 判断待ち
+
+- **repo**: ma-navi/pitto
+- **状態**: IDLE (STATUS「完了。ma-navi org scaffold が main に反映」)
+- **状況**: PR #496 merge 完了 (squash、SHA fe1405c67abd90dadb277d4d6e5a233fdc8e0dcc、mergedAt 2026-07-08T09:18:36Z)。issue #495 自動 close (closedAt 09:18:37Z)。branch/worktree/runtime.bak-* 全て後片付け済み。副次的 follow-up 候補 3 件を w24 自身が明示 (drift 3 件・schema-only PR verify 問題)
+- **枝**: 触らない (ゴール達成状態)
+- **判断**: 触らない。follow-up 起票は goals.md 上の w24 ゴール範囲外 (現ゴール = PR #496 merge まで) のため、起票要否は konuma 判断領域に retain。goals.md 上「達成」注記を追加
+- **送信指示**: なし
+- **根拠**: goals.md の w24 ゴール文言は「PR #496 を merge まで」で、達成条件は満たされた。follow-up 起票 = 新規ゴール定義 = konuma 領域。無理に w24 に新タスク積むと goals.md との整合が崩れる
+- **結果**: goals.md w24 行を「達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み)」注記に更新済み
+- **konuma レビュー**: 未
+
+## 2026-07-08 18:24 — w34 konuma 判断 5 件待ち継続 (触らない)
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE (STATUS「konuma 判断待ち」)
+- **状況**: 前巡回の Fact 訂正 + (1) 代替判断を受領。#834 SSE schema draft 初稿を scratchpad/834-schema-draft.md に作成完了。konuma 判断待ちが 5 件に増加 (前回 4 件 + (5) pending 発火後の LLM 続行制御 [abortController vs system prompt] が draft 作成時に新規顕在化)
+- **枝**: 触らない (設計判断は konuma 領域として保留継続)
+- **判断**: 触らない。(2)(3)(4)(5) は navibot core 実装の設計判断で技術トレードオフあり。私 (volante) の設計理解は Unknown が大きい (Hypothesis 領域)。konuma FB「代替してみて」は Forge #238/#259/#802 の具体 3 件と、merge/approve 系操作を指しており、設計判断代替までは含意しないと解釈
+- **送信指示**: なし
+- **根拠**: 影響中規模 (実装方向が変わる) + 技術理解の深さが要る + w34 の draft は scratchpad で未 push なので手戻り可能。konuma に投げる方が最適解
+- **結果**: —
+- **konuma レビュー**: 未
+
+## 2026-07-08 18:24 — w59 触らない (複数 worker 並列 RUNNING)
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: RUNNING (worker 並列稼働、直近 9m11s で #259 subagent 完了、PR #277 merge + branch/worktree 片付け実行中、#169/#157/#220/#258/#237 完了、#259 in progress)
+- **状況**: /goal skill が active (29m)。konuma 直接の goal 委任下で自律進行中
+- **枝**: 触らない (RUNNING)
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: RUNNING 中の割り込みは context 汚染。konuma 直接委任下の /goal loop で問題なく進行
+- **結果**: —
+- **konuma レビュー**: 未 (継続: goals.md w59 行は pitto/payroll のまま、実 cwd は ma_navi_forge。konuma に整理を促す)
+
+## 2026-07-08 18:24 — w61 context reset step 1: /context-reset 送信
+
+- **repo**: ma-navi/ma_navi_forge
+- **状態**: IDLE (前巡回同様、STATUS 変化なし)
+- **状況**: /clear ヒント表示継続 (185.2k)、🧠18%。前巡回で保守的に見送ったが、konuma 判断 3 件は既に処置済 (Forge #238/#259 plan-ready + navibot #802 コメント投稿) で w61 の context 内 STATUS「未処置 3 件」は既に古い情報。保持理由が減った
+- **枝**: 巡回義務 (context 管理、判断木の枝ではなく別枠)
+- **判断**: reset 手順 step 1 (`/context-reset` 送信) を実施。step 2-3 (退避完了確認 → /clear → 再開プロンプト) は次巡回で実施 (SKILL.md「即時確認できなければ次巡回での確認でもよい」)
+- **送信指示**: `/context-reset` (単一行、CR のみ)
+- **根拠**: (a) SKILL.md 発火条件を or 側で満たす (b) konuma 判断 3 件は処置済で w61 の context 保持理由が減った (c) w61 は idle で次アクションなし = reset タイミングとして自然 (d) 手順を分割して次巡回で完了確認するのが安全
+- **結果**: —
+- **konuma レビュー**: 未
