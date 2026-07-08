@@ -505,7 +505,7 @@
 - **送信指示**: なし
 - **根拠**: 画面下部の入力欄に konuma のテキストが残っており送信前段階。代答すると konuma 入力を破壊する
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: konuma 対話中は代答しない (07-08 12:45 retro 反映) を遵守。触らない判断が正当)
 
 ## 2026-07-08 17:56 — w34 Forge API 連携相談 4 点の中継
 
@@ -517,7 +517,7 @@
 - **送信指示**: 全文 — 「volante 巡回より w61 (Forge 側) の相談 4 点への処置状況を中継。目的: navibot 側 (#834/#835/#836) の schema 確定と gate 状況を整理し、konuma の Forge 側 plan-ready 判断待ちの間に navibot 側で進められる作業を明確化する。w61 回答: 1) Forge #238 plan コメント追記済み・07-14 週着手可 2) PR #239 event schema は Forge #238 plan で方針記述 3) contextHints push は新規 Forge #259 起票 (方式 c 設計+AC) 4) 1 ターン内複数 pending 集約は明示回答なし (Fact) / Forge #259 内で扱う想定 (Hypothesis)。Forge 側未処置 (konuma 判断待ち、navibot 側では触らない): Forge #238/#259 plan-ready 化・#802 返信主体。タスク: 今の時点で navibot 側 #834/#835/#836 で schema draft/gate 整理として進められるものを列挙。#834 は Forge #238 plan を反映した SSE event schema draft の下書き可、#835 は Forge #238 merge 後 gate、#836 は Forge #259 plan-ready 後 gate と明示。完了条件: STATUS で (1) #834 schema draft (2) #835/#836 gate 条件 (3) 今すぐ着手 vs 待機の切り分け を報告。境界: 実装・push しない/外部連絡しない/epic #802 コメント投稿は konuma 判断待ちなので触らない/Forge 側 issue/PR は read-only/推定は違ったら中断」
 - **根拠**: cross-session 中継 + navibot 側の遊休を埋める schema draft (低リスク・可逆)。Fact/Hypothesis 分離済み
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: NG (self-review 2026-07-08 18:44 by volante、根拠: NG (retro-2026-07-08-1824 #1 で問題抽出済み: 中継元 STATUS を鵜呑みにし Fact 照合をせず PR #239 の merged 状態を誤中継。次巡回 18:11 で訂正済))
 
 ## 2026-07-08 17:56 — w59 #257 実装中 (ゴール未登録)
 
@@ -529,7 +529,7 @@
 - **送信指示**: なし
 - **根拠**: RUNNING 中の割り込みは context 汚染。goals.md エントリの書き換え (payroll → ma_navi_forge #257) は同一 window で作業が変わったのか別 session なのか画面から断定できず、konuma 判断領域
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: RUNNING 割り込み禁止を遵守。goals.md 整理は konuma 領域として明示 promt)
 
 ## 2026-07-08 17:56 — w61 context reset 見送り
 
@@ -541,7 +541,7 @@
 - **送信指示**: なし
 - **根拠**: 🧠18% で余裕がある一方、konuma 判断待ち 3 件の詳細 context を再開プロンプトで完全復元できる保証がない。185.2k tokens 消費は現状許容。retro 候補: 「巡回義務の発火条件に konuma 判断保留の有無を追加する」
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: NG (self-review 2026-07-08 18:44 by volante、根拠: NG (retro-2026-07-08-1824 #2 で問題抽出済み: 巡回義務の or 発火条件を or 側で満たすが見送り = 判断が揺れた。retro で副条件追加案を提示済))
 
 ## 2026-07-08 17:58 — w24 volante 管理対象組み込み (konuma 指示)
 
@@ -553,7 +553,7 @@
 - **送信指示**: なし (w24 セッション自体には送信しない。goals.md のみ更新)
 - **根拠**: konuma 指示 = ゴール変更指示に等価。RUNNING セッションへの割り込みは判断木の全枝で禁止のため変わらず触らない。w24 の従来ゴール (Cosmos/jingu 経理 kaizen) は konuma 判断で新ゴールに置換されたと解釈
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: konuma 明示指示、goals.md 更新は乖離チェック相当で事前確認不要。優先度は konuma 追認待ちに据え置き)
 
 ## 2026-07-08 18:02 — w61 保留 konuma 判断 3 件の代替 (konuma 指示)
 
@@ -568,7 +568,7 @@
 - **送信指示**: gh issue comment 802 -R ma-navi/navibot -F /tmp/comment-802.md (投稿 URL: https://github.com/ma-navi/navibot/issues/802#issuecomment-4913192111)
 - **根拠**: konuma 明示委任 + 内部 GitHub issue コメント (社内 org 間の cross-repo) は判断木 枝 1 (a) の「社外向け PR/issue コメント」に該当しない = 外部連絡ではない。フッターで代替判断を明示して事後監査可能にした
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: konuma 明示委任 + 社内 GitHub 操作 (label 確認と社内 org issue コメント)。#802 コメントに代替判断フッターを付けて事後監査可能に。外部連絡には該当しない (社内 org 間))
 
 ## 2026-07-08 18:11 — w24 verify 成果物の commit 判断 (代替)
 
@@ -580,7 +580,7 @@
 - **送信指示**: `\r` のみ (デフォルト選択が選択肢 1 で ❯ 位置に確認済)
 - **根拠**: 推奨案の理由が正当 (score 完全一致 = report は意図的更新でない、push しないなら共有資産への影響なし)
 - **結果**: 「kaizen-loop verify 通過、gate neutral、全 finding 対応済み、worktree clean、CI 待ち」で idle 化。ブロッカー = konuma merge 承認待ちのみ。**PR #496 merge 承認は代替対象外に置いた** (追加的 scaffold で影響限定的だが merge = default branch 反映のため konuma 承認を残す。次回 konuma 巡回時判断)
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: 推奨案の理由が正当 (score 完全一致・push しない = 共有資産への影響なし)、代答成功)
 
 ## 2026-07-08 18:11 — w34 Fact 訂正 + SSE schema 出典代替判断
 
@@ -592,7 +592,7 @@
 - **送信指示**: 全文 — Fact 訂正 (PR #239 merged 済/Forge #238 plan は allowlist で SSE ではない) + (1) 代替判断 + タスク (#834 schema draft mirror 型) + 境界 (実装しない/外部連絡しない/(2)(3)(4) は konuma 領域維持) を明記
 - **根拠**: PR #239 が merged 済 = 確定 event schema。中継元 w61 STATUS の記述と実態にズレがあり、中継時にそのまま転記した volante の落ち度。訂正を優先 (retro 対象: 中継時に Fact 照合していない)
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: 誤中継を Fact 照合で訂正 + 謝罪 + (1) 代替判断。(2)(3)(4) は konuma 領域として保留の判断も適切)
 
 ## 2026-07-08 18:11 — w59 permission prompt 代答 (read-only gh)
 
@@ -604,7 +604,7 @@
 - **送信指示**: `\r` (デフォルト ❯ 位置が選択肢 1)
 - **根拠**: 内容は gh repo view + gh issue view = read-only。今回のみ許可なら policy 変更なしで可逆
 - **結果**: 受理され worker が動作継続 (main + issue-169-impl + #220 + #258 の 4 worker 並列 RUNNING)
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: read-only gh (副作用なし)、今回のみ Yes で policy 変更なし。選択肢 2 (policy 拡張) は konuma 領域に残した判定が正しい)
 
 ## 2026-07-08 18:11 — w61 触らない (前巡回同様)
 
@@ -616,7 +616,7 @@
 - **送信指示**: なし
 - **根拠**: 🧠18% 余裕あり + 動きなし = 通知しても idle 継続 + context 反映は konuma からの追加指示が来た時点で更新すればよい
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: 🧠18% で余裕あり + konuma 判断 3 件を context に保持する運用判断。retro-2026-07-08-1824 #2 の一連の判断迷いには含むが単発では OK)
 
 ## 2026-07-08 18:14 — konuma 決定: merge/approve も volante 判断範囲
 
@@ -644,7 +644,7 @@
 - **送信指示**: 全文 — Fact (PR #496 mergeable/CLEAN/全 CI SUCCESS) + 判断根拠 (追加的 scaffold・影響限定) + タスク (gh pr merge, pitto 慣習に合わせる, --delete-branch, worktree 片付け, runtime.bak-* 掃除, issue #495 close) + 完了条件 + 境界 (他 repo 触らない/追加 PR 作らない/外部連絡なし/force push なし)
 - **根拠**: (a) PR 内容は新規 org 追加のみで既存 org・共通 code に影響なし (b) CI 全 pass (typecheck+test / Claude code review / markdownlint / TruffleHog / local links) (c) mergeStateStatus=CLEAN で conflict なし (d) reviewDecision="" で codeowner ブロッカーなし (e) konuma 決定により承認は volante 判断で可
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: Fact 全確認 (mergeable/CLEAN/CI 全 pass/reviewDecision 空)、判断根拠明示、4 要素の指示、境界に force push 禁止など明記。実行結果も成功)
 
 ## 2026-07-08 18:24 — w24 ゴール達成、follow-up 起票は konuma 判断待ち
 
@@ -656,7 +656,7 @@
 - **送信指示**: なし
 - **根拠**: goals.md の w24 ゴール文言は「PR #496 を merge まで」で、達成条件は満たされた。follow-up 起票 = 新規ゴール定義 = konuma 領域。無理に w24 に新タスク積むと goals.md との整合が崩れる
 - **結果**: goals.md w24 行を「達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み)」注記に更新済み
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: goals.md 上のゴール範囲を尊重、follow-up は konuma 領域維持。ゴール達成注記を追加)
 
 ## 2026-07-08 18:24 — w34 konuma 判断 5 件待ち継続 (触らない)
 
@@ -668,7 +668,7 @@
 - **送信指示**: なし
 - **根拠**: 影響中規模 (実装方向が変わる) + 技術理解の深さが要る + w34 の draft は scratchpad で未 push なので手戻り可能。konuma に投げる方が最適解
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: 設計判断は volante の technical understanding が Unknown 領域大、konuma 領域維持が適切)
 
 ## 2026-07-08 18:24 — w59 触らない (複数 worker 並列 RUNNING)
 
@@ -692,7 +692,7 @@
 - **送信指示**: `/context-reset` (単一行、CR のみ)
 - **根拠**: (a) SKILL.md 発火条件を or 側で満たす (b) konuma 判断 3 件は処置済で w61 の context 保持理由が減った (c) w61 は idle で次アクションなし = reset タイミングとして自然 (d) 手順を分割して次巡回で完了確認するのが安全
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: SKILL.md 発火条件到達 + konuma 判断 3 件が既に処置済で保持理由が減った = タイミング適切。手順分割は SKILL.md 準拠)
 
 ## 2026-07-08 18:34 — w61 context reset step 2-3 完了
 
@@ -704,7 +704,7 @@
 - **送信指示**: (1) `/clear` (単一行) → 🧠18%→0% (185.2k 解放) を確認 (2) 「まず worktree で git status を確認し、詳細ログを読んでから次の一手 (konuma 判断待ちの 3 件の状況確認) に着手する。」を送信
 - **根拠**: SKILL.md「退避完了確認 後に /clear」を遵守。再開プロンプトが「konuma 判断待ち 3 件の状況確認」を含んでおり、w61 が status 確認時に Forge #238/#259 plan-ready 化済 + navibot #802 コメント投稿済を発見できる想定
 - **結果**: /clear 成功 (185.2k 解放)、再開プロンプト送信で RUNNING 化 (「Nesting…」表示)
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: 退避完了確認 → /clear (185.2k 解放) → 再開プロンプト送信の順序 SKILL.md 準拠。補足情報の追加は「reset 直後の追加指示」に該当するため見送った判断も適切)
 
 ## 2026-07-08 18:34 — w24/w34/w59 触らない (前巡回同様)
 
@@ -716,4 +716,21 @@
 - **送信指示**: なし
 - **根拠**: 前巡回判断と同じ (w24 ゴール達成後の follow-up は konuma 領域 / w34 設計判断は konuma 領域 / w59 は konuma 直接委任下で RUNNING)
 - **結果**: —
-- **konuma レビュー**: 未
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: 前巡回判断と同じ + 状態変化なし。冗長性を許容して 1 エントリで統合したのは記録効率上妥当)
+
+## 2026-07-08 18:44 — konuma 決定: decisions ログを volante 自己レビュー化 (外部連絡類は NG)
+
+- **repo**: (判断木の適用範囲変更 = 全 repo 横断・メタ決定)
+- **状態**: —
+- **状況**: konuma FB「decisions ログを自己レビュー, ただし外部への連絡類は一切 NG」を受領。従来 decisions の konuma レビュー欄 (未 → OK/NG) は監査目的で konuma 領域にしていたが、konuma が明示委任
+- **枝**: メタ決定 (判断木実質拡張)
+- **判断**: 以下のとおり運用開始
+  - **範囲**: decisions ログの各エントリの `konuma レビュー` 欄を volante 自身が OK/NG + 根拠で埋める (社内・内部の判断のみ)
+  - **除外**: 外部連絡類 (Slack/メール/社外向け PR・issue コメント、外部 API 呼び出し) を含む判断は自己レビュー対象外。従来どおり「未」で残し konuma review 待ち
+  - **NG 基準**: retro-*.md で問題エントリとして抽出したものは NG (retro 対象を明示)。それ以外で判断木の枝適用ミス・Fact 誤認・境界不足・境界越えを検出したら NG
+  - **OK 基準**: 枝適用適切・Fact/Hypothesis 分離済・境界明示・結果が意図どおり
+  - **retro 承認は範囲外**: SKILL.md の判断木本体変更は依然コンセプト節 5 で konuma 承認必須 (今回の FB は decisions ログのみ)
+- **送信指示**: なし (メタ決定)
+- **根拠**: konuma 明示委任 + 外部連絡除外の芯明記で監査の要諦を維持。retro の抽出結果と self-review 結果は基本的に一致するはず
+- **結果**: 本エントリ以降の decisions は self-review 記入で運用。直近 18 件 (14:50 retro 以降) を本巡回内で一括 self-review
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: メタ決定の記録で内容は konuma FB そのまま、外部連絡除外の芯を明記して監査目的を保持)
