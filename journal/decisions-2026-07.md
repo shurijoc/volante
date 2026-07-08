@@ -1001,3 +1001,23 @@
 - **根拠**: (a) 発火条件到達 (b) 抽出した問題エントリ 2 件 (18:49 User declined / 19:04 #259 Fact 誤認) は判断木/送信手順に反映可能 (c) 良好な挙動 (w34 の Fact 独立検証) を記録して次期実装の参考にする
 - **結果**: retro-2026-07-08-1954.md 生成、konuma 承認待ち (SKILL.md 反映は承認後)
 - **konuma レビュー**: OK (self-review 2026-07-08 19:54 by volante、根拠: Act フェーズの正規手順履行、更新案は具体的 & 検証済み問題エントリと直結)
+
+## 2026-07-08 20:00 — SKILL.md 判断木更新反映 (v0.10.0)
+
+- **repo**: shurijoc/volante
+- **状態**: —
+- **状況**: konuma FB「更新 ok」(2026-07-08) を受けて retro 2 本 (retro-2026-07-08-1824 の 3 件 + retro-2026-07-08-1954 の 2 件) + 未反映 konuma 決定 2 件 (18:14 merge/approve, 18:44 self-review 化) を SKILL.md + CHANGELOG.md + plugin.json version に一括反映
+- **枝**: Act フェーズ (判断木変更、konuma 承認済み)
+- **判断**: SKILL.md 7 変更点を Edit で反映
+  1. コンセプト節 3: PR merge/approve 除外を明示
+  2. 枝 1 末尾: PR merge/approve を枝 4 側に振り分ける Fact 確認手順を追記
+  3. 枝 5: 「送信直前 identifier 再確認」追記
+  4. 巡回義務: 副条件 (見送り基準) 追加 + 2 巡回連続でのフェイルセーフ
+  5. 送信手順: 対象状態別分岐 (IDLE/WAITING/RUNNING/STUCK) 追加
+  6. 3. Check: `konuma レビュー` 欄の self-review 運用を明記 (外部連絡類は除外)
+  7. 4. Act: 抽出対象を self-review 運用に合わせて更新
+  CHANGELOG.md に v0.10.0 追加、plugin.json version を 0.9.0 → 0.10.0、retro 2 本の konuma 承認欄を「承認 (2026-07-08)」に更新
+- **送信指示**: なし (skill 本体の更新)
+- **根拠**: konuma 明示承認 (「更新 ok」)。SKILL.md 変更手順に従い konuma 承認 + CHANGELOG 記録 + retro 承認欄更新まで完遂
+- **結果**: v0.10.0 として反映済み、次巡回から新しい判断木で運用開始
+- **konuma レビュー**: OK (self-review 2026-07-08 20:00 by volante、根拠: konuma 明示承認 + 全 7 変更点を retro 由来で対応付け + CHANGELOG に起源明記 + retro 承認欄更新でトレーサビリティ確保)

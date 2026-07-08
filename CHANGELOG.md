@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.10.0] - 2026-07-08
+
+- 判断木 v2 のさらなる更新 (konuma 承認 2026-07-08「更新 ok」。retro 2 本を統合反映。
+  正本: `journal/retro-2026-07-08-1824.md` + `journal/retro-2026-07-08-1954.md`):
+  1. **枝 1 の基準に PR merge/approve 除外を明示** (konuma 決定 2026-07-08 18:14「merge/approve も
+     あなたが判断して」): PR merge / PR approve は原則枝 4 側で、追加的なら自律実行・影響大 (URL 変更・
+     destructive migration・force push 等) なら枝 1 で人間確認。実行前に CI 状態 / mergeStateStatus /
+     reviewDecision を Fact 確認、判断根拠を毎回 decisions ログに明記。コンセプト節 3 と枝 1 本文の両方に反映
+  2. **枝 5 に「送信直前 identifier 再確認」を追記** (retro-2026-07-08-1824 更新案 1 +
+     retro-2026-07-08-1954 更新案 5): 中継指示の identifier (issue/PR 番号・label・state 等) は送信直前に
+     gh 等で 1 段階再確認。並行進行中の状態急変を捕捉。検証できない場合は「中継元セッションの報告により
+     (未検証)」と明示。起源: 2026-07-08 17:56 の PR #239 誤中継 / 19:04 の Forge #259 状態誤認
+  3. **巡回義務の発火条件に副条件 (見送り基準) を追加** (retro-2026-07-08-1824 更新案 3): 発火条件を
+     満たしても、konuma 判断保留 + context 依存の場合は保留処置まで見送る。ただし 2 巡回連続で発火条件維持
+     なら副条件を無視 (無期限見送り回避のフェイルセーフ)。起源: 2026-07-08 17:56 の w61 見送り判断の揺れ
+  4. **送信手順 (kitty) に対象状態別分岐を追加** (retro-2026-07-08-1954 更新案 4):
+     WAITING (AskUserQuestion モード) では Esc が「User declined」扱いになる問題への対策。IDLE / WAITING /
+     RUNNING / STUCK の 4 状態それぞれの送信手順を明記。起源: 2026-07-08 18:49 の User declined 失敗
+  5. **Check セクションに `konuma レビュー` 欄の self-review 運用を明記** (konuma 決定 2026-07-08 18:44
+     「decisions ログを自己レビュー, ただし外部への連絡類は一切 NG」): volante 自身が OK/NG + 根拠で
+     埋める (社内・内部の判断のみ)。外部連絡類 (Slack/メール/社外向け PR・issue コメント、外部 API 呼び出し等)
+     を含む判断は self-review 対象外で「未」で残す。NG/OK 基準と記入フォーマットも明記
+  6. **Act の抽出対象を self-review 運用に合わせて更新**: 「self-review で NG が付いたエントリ」
+     「konuma がチャットで NG 指摘した内容」を対象に含める。konuma チャット指摘は次回巡回時に該当エントリの
+     `konuma レビュー` 欄に転記して self-review 結果を上書き
+- 判断木の枝の意味・優先順位 (コンセプト節 1-2, 4-7) は変更なし。コンセプト節 3 は枝 1 の PR merge/approve
+  除外に同期して 1 文追記
+- retro 2 本の「konuma 承認」節を「承認 (2026-07-08)」に更新済み
+
 ## [0.9.0] - 2026-07-08
 
 - 判断木 v2 (konuma 決定 2026-07-08 14:52、起点: konuma FB「なぜ俺の対応待ちとしたのか。改善したい」
