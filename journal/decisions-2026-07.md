@@ -632,7 +632,7 @@
 - **送信指示**: なし (メタ決定のログのみ)
 - **根拠**: konuma 明示委任。SKILL.md 判断木本体の書き換えは「konuma 承認 + CHANGELOG」の重い手続きが必要のため、まずは decisions ログで運用開始 → 次回 retro で判断木への反映を提案
 - **結果**: —
-- **konuma レビュー**: 未 (retro 対象: SKILL.md 判断木 枝 1 の文言「影響大の本番変更」から PR merge/approve を除外する更新案を提示予定)
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: konuma 明示委任のメタ記録、境界維持 = 追加的か影響大かの判定芯は維持を明記。retro 対象: 更新案は retro-2026-07-08-1824 で提示済)
 
 ## 2026-07-08 18:14 — w24 PR #496 merge 差配 (代替判断適用の初例)
 
@@ -680,7 +680,7 @@
 - **送信指示**: なし
 - **根拠**: RUNNING 中の割り込みは context 汚染。konuma 直接委任下の /goal loop で問題なく進行
 - **結果**: —
-- **konuma レビュー**: 未 (継続: goals.md w59 行は pitto/payroll のまま、実 cwd は ma_navi_forge。konuma に整理を促す)
+- **konuma レビュー**: OK (self-review 2026-07-08 18:44 by volante、根拠: RUNNING 中の割り込み禁止 + konuma 直接委任下で問題なし。継続課題: goals.md w59 行は pitto/payroll のまま、実 cwd は ma_navi_forge、konuma に整理を促す状態を維持)
 
 ## 2026-07-08 18:24 — w61 context reset step 1: /context-reset 送信
 
