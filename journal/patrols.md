@@ -88,3 +88,4 @@
 | 2026-07-08 20:34 | 観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 schema 流用版 plan-ready 化完了 5 件) / 指示 0 / w59 新規判断待ち: #263 ma_navi 側 PR (client_logs.content 追加) の起票主体 = cross-repo 越境で konuma 判断領域に retain / 自動停止カウント 0 (変化あり) |
 | 2026-07-08 20:35 | konuma FB「ma_navi は issue を作って shurijoc assign」到来 → w59 に ma_navi repo issue 起票を差配 (konuma assign、title/AC/Related リンク/境界明示)。cross-repo issue 起票の初例 |
 | 2026-07-08 20:44 | 観測 4 / IDLE 3 (w34/w61 変化なし・w59 完了報告) / RUNNING 1 (w24 context-reset skill 起動) / 指示 1 (w24 /context-reset = /clear ヒント 224.4k で発火、副条件該当なし) / w59 ma_navi#17250 起票完了 (assignee=shurijoc、label=needs-plan+refactor+priority: 03_medium、Related: Forge #263) |
+| 2026-07-08 20:54 | 観測 4 / IDLE 3 (w34/w59/w61 変化なし) / RUNNING 1 (w24 reset step 2-3 完了で Roosting…) / 指示 2 (w24 /clear + 再開プロンプト) / w24 224.4k 解放 / 段階的 reset の 2 例目成功 |
