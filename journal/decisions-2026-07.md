@@ -926,3 +926,30 @@
 - **根拠**: 状態変化なし + 完了状態 or 他人待ち
 - **結果**: —
 - **konuma レビュー**: OK (self-review 2026-07-08 19:34 by volante、根拠: 前巡回判断と同じ + 状態変化なし)
+
+## 2026-07-08 19:44 — w34 背中押し + (2) scope 判断アドバイス
+
+- **repo**: ma-navi/navibot
+- **状態**: IDLE → RUNNING (Sock-hopping…)
+- **状況**: 前巡回 19:34 の Fact 通知で draft §4/§7 の (4) を Fact 格上げ完了。konuma レビュー対象 4 件 → 3 件に縮小。w34 が「ADR-0011 追記 issue 起票 = Fact 確定を受けて w34 判断で進めてよい」と自認するも動かず idle
+- **枝**: 5 (内部定型作業、社内 GitHub issue 起票 + scope 判断アドバイス)
+- **判断**: 3 つの背中押しをまとめて送信
+  1. ADR-0011「1 turn = 1 event」明文化の別 issue 起票 (w34 自認と一致)
+  2. (2) /skills/registry endpoint scope 判断 = 別 issue 化推奨 (根拠: #835 と別テーマ、単一責務原則。懸念: gate 順序管理)
+  3. (3) draft §5 内容 (buildPendingSummary skill 側) + (5) draft §6 内容 (abortController graceful shutdown) は別 issue 化不要 = 内容で確定
+- **送信指示**: 全文 — Fact + volante アドバイス 4 点 + タスク (2 issue 起票 + (2) 別 issue 化確定) + 完了条件 + 境界 (M1 実装しない = konuma 判断領域維持、plan-ready なし、外部連絡なし、乖離なら中断)
+- **根拠**: (a) konuma FB「アドバイスして作業させる」の延長解釈、(b) w34 自認と一致する背中押し、(c) M1 実装は konuma 判断領域として明示的に retain (境界)、(d) 前提乖離チェックを境界に含めてフェイルセーフ維持
+- **結果**: w34 RUNNING で処理中
+- **konuma レビュー**: OK (self-review 2026-07-08 19:44 by volante、根拠: konuma FB 延長解釈 + 境界に「M1 実装しない」を明示的に含めて konuma 承認 gate を保持 + フェイルセーフ 2 段 (境界内・乖離時中断))
+
+## 2026-07-08 19:44 — w24/w59/w61 触らない (前巡回同様)
+
+- **repo**: 該当各 repo
+- **状態**: 全て IDLE、変化なし
+- **状況**: 前巡回 19:34 と同状態
+- **枝**: 触らない
+- **判断**: 触らない
+- **送信指示**: なし
+- **根拠**: 状態変化なし
+- **結果**: —
+- **konuma レビュー**: OK (self-review 2026-07-08 19:44 by volante、根拠: 前巡回判断と同じ)
