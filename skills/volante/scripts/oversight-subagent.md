@@ -48,7 +48,7 @@ main volante が今回の巡回で「枝 2 / 枝 4 低リスク / 枝 5」で自
 には access しない**。
 
 1. **対象セッション STATUS**: `kitty @ get-text --match id:<id> --extent screen | tail -60` の生テキスト
-2. **Spec**: `journal/specs/<session>.json` の全文 (Spec schema v1、`goal` + `acceptance_criteria`)
+2. **Spec**: `journal/specs/<session>.json` の全文 (Spec schema v1.1、`goal` + `acceptance_criteria` + `kpi_sheet_tab`)
 3. **直近 decisions**: `journal/decisions-YYYY-MM.jsonl` の直近 20 件 (`scripts/decisions-extract.py --last 20`)。
    最終エントリが今回 main が下した判断
 4. **tracer goal file** (対象 repo に存在する場合のみ): `<repo>/.claude/goals/*.md` の該当ファイル (read-only)

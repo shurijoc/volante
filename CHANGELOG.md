@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.15.7] - 2026-07-09
+
+- **Spec schema v1.1: `kpi_sheet_tab` を必須追加** (issue #23):
+  チーム共通の数値管理 (PJCI シート、`1WyEk-SLza9RjXfoYmoxn6zNwSKfeu4As7QIlUz0zj4U`) に epic (spec) を必ず
+  紐付ける。volante 側は数値を持たず `{gid, name}` の参照のみ保持 (Fact 主義: 数値の正本は Sheet 側 1 箇所)
+  - `templates/spec-template.json`: `required` に `kpi_sheet_tab` を追加 (`{gid, name}` 必須の nested object、
+    `additionalProperties: false` 維持)。`goal` + `acceptance_criteria` の 2 要素は不変
+  - `templates/spec-template.example.json` に例を追加
+  - dashboard: PM table (KPI 列) / Epics 詳細カード / epic タブ head の 3 箇所に「KPI: <タブ名>」リンクを追加。
+    `gid` から `https://docs.google.com/spreadsheets/d/<sheet-id>/edit?gid=<gid>#gid=<gid>` を生成。
+    `kpi_sheet_tab` 未設定の Spec は「KPI: 未紐付け」とグレー表示 (dashboard generate 自体は落とさない)
+  - **既存 Spec 2 件 (`pitto-kaizen.json` / `pitto-payroll.json`) は未移行、konuma 確認待ち**:
+    PJCI シートのタブ一覧・各 epic との対応が volante 側から enumerate できないため (issue #23 Unknown)、
+    勝手に gid を推測して埋めない。konuma からタブ一覧 (or 対応表) を貰い次第、後続 issue で移行する
+  - v0.16.0 revert (0.15.3) の教訓どおり、primary key (session/repo 識別方式) には手を入れない最小差分
+- 判断木・芯・Spec schema の `goal`/`acceptance_criteria` 部分は不変
+
 ## [0.15.6] - 2026-07-09
 
 - **dashboard: epic 別タブに開発者ビューを実装** (issue #21、親 #17):

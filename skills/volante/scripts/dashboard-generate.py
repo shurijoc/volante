@@ -353,6 +353,11 @@ TEMPLATE = """<!DOCTYPE html>
   .label-chip { display: inline-block; font-size: 10.5px; padding: 1px 6px; border-radius: 8px;
                 background: var(--surface); border: 1px solid var(--border); margin-right: 3px;
                 color: var(--text-mute); }
+  .kpi-link { font-family: var(--mono); font-size: 12px; }
+  .kpi-link a { color: var(--accent); text-decoration: none; }
+  .kpi-link a:hover { text-decoration: underline; }
+  .kpi-link.unset { color: var(--text-mute); font-style: italic; }
+  #pm-table td.kpi { font-family: var(--mono); font-size: 11.5px; }
 </style>
 </head>
 <body>
@@ -373,6 +378,7 @@ TEMPLATE = """<!DOCTYPE html>
             <tr>
               <th>Epic</th>
               <th>repo</th>
+              <th>KPI</th>
               <th>優先度</th>
               <th>status</th>
               <th>進捗</th>
@@ -413,6 +419,26 @@ TEMPLATE = """<!DOCTYPE html>
 <script id="volante-data" type="application/json">__DATA_JSON__</script>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
+
+  // ===== KPI sheet link (issue #23: epic は必ず PJCI シートのタブに紐付ける) =====
+  const KPI_SHEET_ID = '1WyEk-SLza9RjXfoYmoxn6zNwSKfeu4As7QIlUz0zj4U';
+  function kpiSheetUrl(gid) {
+    const g = encodeURIComponent(gid);
+    return 'https://docs.google.com/spreadsheets/d/' + KPI_SHEET_ID + '/edit?gid=' + g + '#gid=' + g;
+  }
+  function renderKpiLink(kpiTab) {
+    const el = document.createElement('span'); el.className = 'kpi-link';
+    if (!kpiTab || !kpiTab.gid || !kpiTab.name) {
+      el.classList.add('unset');
+      el.textContent = 'KPI: 未紐付け';
+      return el;
+    }
+    const a = document.createElement('a');
+    a.href = kpiSheetUrl(kpiTab.gid); a.target = '_blank'; a.rel = 'noopener';
+    a.textContent = 'KPI: ' + kpiTab.name;
+    el.appendChild(a);
+    return el;
+  }
 
   // ===== Tab framework =====
   const tabBtns = document.getElementById('tab-buttons');
@@ -456,6 +482,7 @@ TEMPLATE = """<!DOCTYPE html>
       repoWrap.appendChild(repoA);
       head.appendChild(repoWrap);
     }
+    head.appendChild(renderKpiLink(spec.kpi_sheet_tab));
     if (s.priority) {
       const pri = document.createElement('span'); pri.className = 'repo-link';
       pri.textContent = '優先度: ' + s.priority; head.appendChild(pri);
@@ -608,7 +635,7 @@ TEMPLATE = """<!DOCTYPE html>
   // ===== PM table =====
   const pmBody = document.querySelector('#pm-table tbody');
   if (data.specs.length === 0) {
-    pmBody.innerHTML = '<tr><td colspan="8" class="empty">Spec 未登録</td></tr>';
+    pmBody.innerHTML = '<tr><td colspan="9" class="empty">Spec 未登録</td></tr>';
   } else {
     for (const s of data.specs) {
       const m = s.metrics || {};
@@ -616,6 +643,7 @@ TEMPLATE = """<!DOCTYPE html>
       const tr = document.createElement('tr');
       const nameTd = document.createElement('td'); nameTd.className = 'epic-name'; nameTd.textContent = s.session; tr.appendChild(nameTd);
       const repoTd = document.createElement('td'); repoTd.className = 'repo'; repoTd.textContent = s.repo || '(未解決)'; tr.appendChild(repoTd);
+      const kpiTd = document.createElement('td'); kpiTd.className = 'kpi'; kpiTd.appendChild(renderKpiLink(s.spec.kpi_sheet_tab)); tr.appendChild(kpiTd);
       const prioTd = document.createElement('td'); prioTd.textContent = s.priority || '—'; tr.appendChild(prioTd);
       const statusTd = document.createElement('td');
       const badge = document.createElement('span'); badge.className = 'status-badge ' + (m.status || 'on-track');
@@ -665,6 +693,9 @@ TEMPLATE = """<!DOCTYPE html>
         head.appendChild(repoLabel);
       }
       el.appendChild(head);
+
+      // KPI (issue #23)
+      el.appendChild(renderKpiLink(s.spec.kpi_sheet_tab));
 
       // Goal
       const goal = document.createElement('div');

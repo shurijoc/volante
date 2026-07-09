@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/shurijoc/volante/schemas/spec-v1.json",
-  "title": "volante Session Spec v1",
-  "description": "セッション単位の Spec (v1)。Goal + acceptance_criteria の 2 要素のみ。session/repo の識別は filename convention (journal/specs/<session>.json) と goals.md index で担う。追加項目 (制約 / 非目標 / 前提と仮定 / 依存関係 / エスカレーション条件) は v0.14.0 以降で段階拡張予定。",
+  "title": "volante Session Spec v1.1",
+  "description": "セッション単位の Spec (v1.1)。session/repo の識別は filename convention (journal/specs/<session>.json) と goals.md index で担う。v1.1 (issue #23) で `kpi_sheet_tab` を必須追加: epic (spec) はチーム共通の PJCI シートのタブに必ず紐付ける (数値の正本は Sheet 側、volante は参照のみ保持)。追加項目 (制約 / 非目標 / 前提と仮定 / 依存関係 / エスカレーション条件) は今後も段階拡張予定。",
   "type": "object",
-  "required": ["goal", "acceptance_criteria"],
+  "required": ["goal", "acceptance_criteria", "kpi_sheet_tab"],
   "additionalProperties": false,
   "properties": {
     "goal": {
@@ -20,6 +20,24 @@
         "minLength": 1
       },
       "description": "客観的に判定可能な受け入れ基準の列挙。各項目は独立に検証可能な形で記述する。"
+    },
+    "kpi_sheet_tab": {
+      "type": "object",
+      "required": ["gid", "name"],
+      "additionalProperties": false,
+      "description": "PJCI シート (`1WyEk-SLza9RjXfoYmoxn6zNwSKfeu4As7QIlUz0zj4U`) 上の紐付けタブ。数値そのものは持たず参照のみ (Fact 主義: 正本は Sheet 側の 1 箇所)。",
+      "properties": {
+        "gid": {
+          "type": "string",
+          "minLength": 1,
+          "description": "PJCI シートの sheetId (タブ URL の `gid=...`)"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "タブ名 (人間可読・変更検知用)"
+        }
+      }
     }
   }
 }

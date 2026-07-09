@@ -69,7 +69,7 @@ description: >
 | 層 | 実体 | 扱い |
 |---|---|---|
 | 正本 (source of truth) | 各セッションの epic issue 本文 / tracer goal file (`<repo>/.claude/goals/*.md`) | autonomy・protected_paths・ゴール詳細はここが正。read-only (芯 6) |
-| Session Spec (差配起点、v0.13.0+) | `$VOLANTE_REPO/journal/specs/<session>.json` (Spec schema v1 = `templates/spec-template.json`) | セッションごとに Goal + acceptance_criteria を切り出した volante 側のワーキングコピー。差配指示の「目的」「完了条件」の導出元。正本と食い違えば Spec 側を更新 (4. の乖離チェック) |
+| Session Spec (差配起点、v0.13.0+) | `$VOLANTE_REPO/journal/specs/<session>.json` (Spec schema v1.1 = `templates/spec-template.json`) | セッションごとに Goal + acceptance_criteria + `kpi_sheet_tab` (PJCI シート紐付け、issue #23) を切り出した volante 側のワーキングコピー。差配指示の「目的」「完了条件」の導出元。正本と食い違えば Spec 側を更新 (4. の乖離チェック) |
 | goals.md index (index 降格、v0.13.0+) | `$VOLANTE_REPO/journal/goals.md` | session ↔ repo ↔ 正本 URL の対応表 + `優先度` (konuma 専有)。Spec 未整備 session のフォールバックとして「ゴール 1 行」列も残す |
 | volante 自身の記録 | `journal/decisions-YYYY-MM.md` / `journal/patrols.md` / `journal/retro-*.md` | volante が巡回ごとに書く運用 state。毎巡回ここから読み直す (context 非依存設計) |
 
@@ -260,7 +260,7 @@ konuma が別途指定する** (goals.md での opt-in 等、運用で決める)
   CLAUDE.md「effort max = 最大思考予算」節に準拠)
 - **入力** (main volante が Agent tool の prompt に添付、他 tool は使わせない):
   1. 対象セッションの STATUS (`kitty @ get-text --extent screen | tail -60` の生テキスト)
-  2. `journal/specs/<session>.json` の全文 (Spec schema v1)
+  2. `journal/specs/<session>.json` の全文 (Spec schema v1.1)
   3. `journal/decisions-YYYY-MM.jsonl` 直近 20 件 (`scripts/decisions-extract.py --last 20`)
   4. 対象 repo に tracer goal file があれば `<repo>/.claude/goals/*.md` (read-only、芯 6)
 - **出力**: JSON 1 件 (`scripts/oversight-subagent.md` に定義した `verifier` + `escalation` +
