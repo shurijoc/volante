@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shurijoc/volante/schemas/attachments-v1.json",
+  "title": "volante attachments v1 (session ↔ Epic Spec)",
+  "description": "session ↔ Spec の揮発マッピング。SKILL.md 7.1 準備節で巡回冒頭に自動再構築する (`scripts/attachments-rebuild.py`)。session (kitty window id) は再起動で変わるため、Spec 側には attach 情報を持たせず本ファイルに集約する。",
+  "type": "object",
+  "required": ["generated_at", "attachments"],
+  "additionalProperties": false,
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "attachments.json を生成した ISO-8601 timestamp。date コマンド実測値を使う (SKILL.md 3. ground_truth)"
+    },
+    "attachments": {
+      "type": "array",
+      "description": "attach 成功した (session, spec) ペアの列挙",
+      "items": {
+        "type": "object",
+        "required": ["spec", "window_id", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "spec": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Spec の basename (拡張子なし、例: 'ma-navi--pitto__issue-365-payroll')"
+          },
+          "window_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "kitty window id (例: 'w24')。再起動で変わるため永続的な識別子ではない"
+          },
+          "session_hint": {
+            "type": "string",
+            "description": "kitty @ ls の window title 等から抽出した参考名 (揮発、goals.md 過去エントリとの照合用)"
+          },
+          "cwd": {
+            "type": "string",
+            "description": "kitty foreground process の cwd。attach 推定の主根拠"
+          },
+          "branch": {
+            "type": "string",
+            "description": "cwd の git branch (取得できれば)。複数 epic 同一 repo の disambiguation に使う"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "推定信頼度: high = cwd path に repo 完全一致 + branch も特定、medium = repo 名部分一致、low = 推定不能で暫定"
+          },
+          "reason": {
+            "type": "string",
+            "description": "推定根拠 (short)。medium/low の場合は konuma review の材料"
+          }
+        }
+      }
+    },
+    "unattached_sessions": {
+      "type": "array",
+      "description": "attach できなかった Claude セッション (Spec 未登録 or 推定不能)。SKILL.md 4. checklist の goal 設定要求の対象",
+      "items": {
+        "type": "object",
+        "required": ["window_id", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "window_id": {"type": "string", "minLength": 1},
+          "cwd": {"type": "string"},
+          "reason": {"type": "string", "minLength": 1, "description": "attach できない理由 (例: 'Spec 未登録 (repo: ma-navi/xxx)', 'cwd 取得不能')"}
+        }
+      }
+    }
+  }
+}

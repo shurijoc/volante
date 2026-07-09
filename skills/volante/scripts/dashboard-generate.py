@@ -2,7 +2,8 @@
 """Generate a self-contained HTML dashboard from volante journal state.
 
 Reads:
-  - journal/specs/*.json         (Session Spec v1)
+  - journal/specs/*.json         (Epic Spec v2, keyed by repo × epic)
+  - journal/attachments.json     (session ↔ Epic Spec, volatile, v0.16.0+)
   - journal/decisions-<YYYY-MM>.jsonl (latest month, last N events)
   - journal/patrols.md            (last few rows)
   - journal/retro-*.md           (index only)
@@ -14,8 +15,7 @@ Design principle (CLAUDE.md 設計原則, SKILL.md 芯 9):
   DB / サーバー不要、HTML + JSON でローカル完結。The output is a single .html
   file with embedded JSON. Open with `open journal/dashboard.html` — no server.
 
-Status: v0.16.0-preview / MVP (issue #17 の第 1 段)。監督 AI 判定表示、
-retro の内容展開、UI 洗練は継続イテレーションで対応する。
+Status: v0.16.0 (issue #17 継続、Spec 主キーを repo × epic に移行)。
 """
 import argparse
 import json
@@ -34,16 +34,38 @@ def find_repo_root(start: Path) -> Path | None:
 
 
 def load_specs(specs_dir: Path) -> list[dict]:
+    """Load Epic Spec v2 files. Sort by (repo, epic.id) for stable grouping."""
     specs = []
     if not specs_dir.is_dir():
         return specs
     for path in sorted(specs_dir.glob("*.json")):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-            specs.append({"session": path.stem, "spec": data})
         except (OSError, json.JSONDecodeError) as e:
             print(f"warning: could not read {path}: {e}", file=sys.stderr)
+            continue
+        epic = data.get("epic") or {}
+        specs.append({
+            "basename": path.stem,
+            "repo": data.get("repo", ""),
+            "epic_id": epic.get("id", ""),
+            "epic_url": epic.get("url", ""),
+            "goal": data.get("goal", ""),
+            "acceptance_criteria": data.get("acceptance_criteria", []),
+        })
+    specs.sort(key=lambda s: (s["repo"], s["epic_id"]))
     return specs
+
+
+def load_attachments(journal: Path) -> dict:
+    path = journal / "attachments.json"
+    if not path.exists():
+        return {"generated_at": "", "attachments": [], "unattached_sessions": []}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"warning: could not read {path}: {e}", file=sys.stderr)
+        return {"generated_at": "", "attachments": [], "unattached_sessions": []}
 
 
 def load_recent_decisions(journal: Path, limit: int) -> list[dict]:
@@ -123,13 +145,41 @@ TEMPLATE = """<!DOCTYPE html>
             border-radius: 10px; padding: 16px 18px; }
   section > h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: .08em;
                  text-transform: uppercase; color: var(--text-mute); font-weight: 700; }
-  .spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  .repo-group { margin-bottom: 20px; }
+  .repo-group:last-child { margin-bottom: 0; }
+  .repo-group h3 { margin: 0 0 8px; font-family: var(--mono); font-size: 13px;
+                   color: var(--text); font-weight: 700; }
+  .epic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
                gap: 12px; }
-  .spec { border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--bg); }
-  .spec .name { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 4px; }
-  .spec .goal { margin-bottom: 8px; }
-  .spec ul { margin: 0; padding-left: 18px; font-size: 13px; }
-  .spec li { margin-bottom: 2px; }
+  .epic { border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--bg); }
+  .epic .epic-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+  .epic .epic-id { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 600; }
+  .epic .epic-id a { color: inherit; text-decoration: none; }
+  .epic .epic-id a:hover { text-decoration: underline; }
+  .epic .basename { font-family: var(--mono); font-size: 10px; color: var(--text-mute); }
+  .epic .goal { margin-bottom: 8px; font-size: 13px; }
+  .epic ul { margin: 0 0 8px; padding-left: 18px; font-size: 12.5px; }
+  .epic li { margin-bottom: 2px; }
+  .attach-list { display: flex; gap: 6px; flex-wrap: wrap; padding-top: 8px;
+                 border-top: 1px dashed var(--border); }
+  .attach-chip { display: inline-flex; gap: 4px; align-items: baseline;
+                 font-family: var(--mono); font-size: 11px; padding: 2px 8px;
+                 border-radius: 12px; border: 1px solid var(--border);
+                 background: var(--surface); }
+  .attach-chip.high { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+  .attach-chip.medium { border-color: var(--warn); background: var(--warn-bg); color: var(--warn); }
+  .attach-chip.low { border-color: var(--warn); background: var(--warn-bg); color: var(--warn);
+                     text-decoration: underline dotted; }
+  .attach-chip .wid { font-weight: 700; }
+  .attach-chip .hint { color: var(--text-mute); font-weight: 400; }
+  .attach-empty { font-size: 11px; color: var(--text-mute); padding-top: 8px;
+                  border-top: 1px dashed var(--border); font-style: italic; }
+  .unattached { border-left: 3px solid var(--warn); background: var(--warn-bg);
+                padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; }
+  .unattached .u-head { font-family: var(--mono); font-size: 12px; font-weight: 700;
+                        color: var(--warn); margin-bottom: 4px; }
+  .unattached .u-body { font-size: 12.5px; }
+  .attach-meta { font-family: var(--mono); font-size: 11px; color: var(--text-mute); }
   .timeline { display: flex; flex-direction: column; gap: 8px; }
   .event { border-left: 3px solid var(--border); padding: 4px 12px; font-size: 13px; }
   .event.branch-1 { border-color: var(--warn); background: var(--warn-bg); }
@@ -160,12 +210,17 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="wrap">
   <header>
     <h1>volante dashboard</h1>
-    <span class="meta">__REPO_PATH__ · generated __GENERATED_AT__ (issue #17 MVP)</span>
+    <span class="meta">__REPO_PATH__ · generated __GENERATED_AT__ · attachments __ATTACH_AT__ (issue #17、v0.16.0 = repo × epic 主キー)</span>
   </header>
 
+  <section id="unattached-section" style="display:none">
+    <h2>Attention: Spec 未登録の稼働セッション</h2>
+    <div id="unattached"></div>
+  </section>
+
   <section>
-    <h2>Sessions (Spec v1)</h2>
-    <div id="specs" class="spec-grid"></div>
+    <h2>Epics (Spec v2、repo × epic) — 各 epic の attached sessions つき</h2>
+    <div id="epics"></div>
   </section>
 
   <section>
@@ -188,29 +243,114 @@ TEMPLATE = """<!DOCTYPE html>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
 
-  const specsEl = document.getElementById('specs');
-  if (data.specs.length === 0) {
-    specsEl.innerHTML = '<div class="empty">Spec 未登録</div>';
+  // Build spec -> [attachments] index
+  const attachIdx = {};
+  for (const a of (data.attachments && data.attachments.attachments) || []) {
+    if (!attachIdx[a.spec]) attachIdx[a.spec] = [];
+    attachIdx[a.spec].push(a);
+  }
+
+  // Group specs by repo
+  const byRepo = {};
+  for (const s of data.specs) {
+    if (!byRepo[s.repo]) byRepo[s.repo] = [];
+    byRepo[s.repo].push(s);
+  }
+
+  const epicsEl = document.getElementById('epics');
+  const repos = Object.keys(byRepo).sort();
+  if (repos.length === 0) {
+    epicsEl.innerHTML = '<div class="empty">Spec 未登録</div>';
   } else {
-    for (const s of data.specs) {
-      const el = document.createElement('div');
-      el.className = 'spec';
-      const name = document.createElement('div');
-      name.className = 'name';
-      name.textContent = s.session;
-      el.appendChild(name);
-      const goal = document.createElement('div');
-      goal.className = 'goal';
-      goal.textContent = s.spec.goal || '';
-      el.appendChild(goal);
-      const ul = document.createElement('ul');
-      for (const c of (s.spec.acceptance_criteria || [])) {
-        const li = document.createElement('li');
-        li.textContent = c;
-        ul.appendChild(li);
+    for (const repo of repos) {
+      const group = document.createElement('div');
+      group.className = 'repo-group';
+      const h3 = document.createElement('h3');
+      h3.textContent = repo;
+      group.appendChild(h3);
+      const grid = document.createElement('div');
+      grid.className = 'epic-grid';
+      for (const s of byRepo[repo]) {
+        const card = document.createElement('div');
+        card.className = 'epic';
+        const head = document.createElement('div');
+        head.className = 'epic-head';
+        const eid = document.createElement('span');
+        eid.className = 'epic-id';
+        if (s.epic_url) {
+          const a = document.createElement('a');
+          a.href = s.epic_url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = s.epic_id;
+          eid.appendChild(a);
+        } else {
+          eid.textContent = s.epic_id;
+        }
+        head.appendChild(eid);
+        const bn = document.createElement('span');
+        bn.className = 'basename'; bn.textContent = s.basename;
+        head.appendChild(bn);
+        card.appendChild(head);
+        const goal = document.createElement('div');
+        goal.className = 'goal'; goal.textContent = s.goal || '';
+        card.appendChild(goal);
+        const ul = document.createElement('ul');
+        for (const c of s.acceptance_criteria || []) {
+          const li = document.createElement('li'); li.textContent = c; ul.appendChild(li);
+        }
+        card.appendChild(ul);
+        // Attached sessions
+        const atts = attachIdx[s.basename] || [];
+        if (atts.length === 0) {
+          const em = document.createElement('div');
+          em.className = 'attach-empty';
+          em.textContent = 'attached sessions なし (attachments.json 未再構築 or 未 attach)';
+          card.appendChild(em);
+        } else {
+          const list = document.createElement('div');
+          list.className = 'attach-list';
+          for (const a of atts) {
+            const chip = document.createElement('span');
+            chip.className = 'attach-chip ' + (a.confidence || 'low');
+            const wid = document.createElement('span'); wid.className = 'wid'; wid.textContent = a.window_id;
+            chip.appendChild(wid);
+            if (a.session_hint) {
+              const hint = document.createElement('span'); hint.className = 'hint'; hint.textContent = a.session_hint;
+              chip.appendChild(hint);
+            }
+            if (a.confidence && a.confidence !== 'high') {
+              const c = document.createElement('span'); c.className = 'hint'; c.textContent = '(' + a.confidence + ')';
+              chip.appendChild(c);
+            }
+            chip.title = (a.reason || '') + (a.branch ? ' · branch: ' + a.branch : '') + (a.cwd ? ' · cwd: ' + a.cwd : '');
+            list.appendChild(chip);
+          }
+          card.appendChild(list);
+        }
+        grid.appendChild(card);
       }
-      el.appendChild(ul);
-      specsEl.appendChild(el);
+      group.appendChild(grid);
+      epicsEl.appendChild(group);
+    }
+  }
+
+  // Unattached sessions
+  const unattached = (data.attachments && data.attachments.unattached_sessions) || [];
+  if (unattached.length > 0) {
+    document.getElementById('unattached-section').style.display = '';
+    const uEl = document.getElementById('unattached');
+    for (const u of unattached) {
+      const div = document.createElement('div');
+      div.className = 'unattached';
+      const h = document.createElement('div');
+      h.className = 'u-head'; h.textContent = 'Spec 設定要求: ' + (u.window_id || '?');
+      div.appendChild(h);
+      const b = document.createElement('div');
+      b.className = 'u-body';
+      const reason = document.createElement('div'); reason.textContent = u.reason || ''; b.appendChild(reason);
+      if (u.cwd) {
+        const meta = document.createElement('div'); meta.className = 'attach-meta'; meta.textContent = 'cwd: ' + u.cwd; b.appendChild(meta);
+      }
+      div.appendChild(b);
+      uEl.appendChild(div);
     }
   }
 
@@ -289,24 +429,35 @@ def main() -> None:
 
     journal = root / "journal"
     specs = load_specs(journal / "specs")
+    attachments = load_attachments(journal)
     decisions = load_recent_decisions(journal, args.decisions_limit)
     patrols = load_recent_patrols(journal, args.patrols_limit)
     retros = load_retro_index(journal)
 
-    payload = {"specs": specs, "decisions": decisions, "patrols": patrols, "retros": retros}
+    payload = {
+        "specs": specs,
+        "attachments": attachments,
+        "decisions": decisions,
+        "patrols": patrols,
+        "retros": retros,
+    }
     payload_json = json.dumps(payload, ensure_ascii=False)
     now_str = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    attach_at = attachments.get("generated_at", "(未生成)")
 
     html = (TEMPLATE
             .replace("__REPO_PATH__", escape(str(root)))
             .replace("__GENERATED_AT__", escape(now_str))
+            .replace("__ATTACH_AT__", escape(attach_at))
             .replace("__DECISIONS_LIMIT__", str(args.decisions_limit))
             .replace("__PATROLS_LIMIT__", str(args.patrols_limit))
             .replace("__DATA_JSON__", payload_json.replace("</", "<\\/")))
 
     out = args.out or (journal / "dashboard.html")
     out.write_text(html, encoding="utf-8")
-    print(f"wrote {out} ({len(html)} bytes, {len(specs)} specs, {len(decisions)} decisions)")
+    n_att = len(attachments.get("attachments") or [])
+    n_un = len(attachments.get("unattached_sessions") or [])
+    print(f"wrote {out} ({len(html)} bytes, {len(specs)} specs, {n_att} attachments, {n_un} unattached, {len(decisions)} decisions)")
 
 
 if __name__ == "__main__":

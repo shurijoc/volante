@@ -1,0 +1,15 @@
+{
+  "repo": "ma-navi/ma_navi_forge",
+  "epic": {
+    "id": "epic-211",
+    "url": "https://github.com/ma-navi/ma_navi_forge/issues/211"
+  },
+  "goal": "AI agent v1 の Forge/navibot 両側統合完了 (状態: 2026-07-08 結合テスト green、konuma 実機確認 + WAF #6058 判断 + #220 待ち。再発防止 #257/#258 起票済み、PR #6057 merge 待ち)",
+  "acceptance_criteria": [
+    "Forge 側と navibot 側の結合テストが green を維持している",
+    "konuma 実機確認が完了している",
+    "WAF #6058 の対応方針が konuma 判断済み",
+    "#220 (cross-user leakage) が pass している",
+    "再発防止 #257/#258 が実装済み or 計画済み、PR #6057 が merge されている"
+  ]
+}

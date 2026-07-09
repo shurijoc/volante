@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.16.0] - 2026-07-09 (BREAKING)
+
+- **Spec 主キーを session → (repo × epic) に変更** (issue #17 継続、konuma FB
+  「w34 など変更が入りやすいものに強く依存している、repository × epic を起点に話を進めたい」)。
+  session (kitty window id) は再起動で変わる揮発値であり、Spec の identity として不適切。
+  epic (repo × epic) 単位で Spec を管理し、session ↔ Spec の紐付けは揮発層 (attachments) に分離する
+- **Spec schema v1 → v2** (BREAKING):
+  - `templates/spec-template.json` を書き換え: 必須項目に `repo` (owner/name パターン) と
+    `epic` (object: `id` + optional `url`) を追加。`goal` / `acceptance_criteria` は v1 と同じ
+  - filename convention: `journal/specs/<repo-slug>__<epic-id>.json`
+    (`repo-slug` = `owner/name` の `/` を `--` に、区切りは `__`)
+  - 旧 `pitto-w<N>.json` (v1) は削除。5 spec を新規作成: `ma-navi--pitto__issue-495`、
+    `ma-navi--pitto__issue-365-payroll`、`ma-navi--navibot__epic-802`、
+    `ma-navi--ma_navi_forge__epic-211`、`home--memory-governance__audit-2026-07-14`
+- **Attachments 層 (揮発、v1)**:
+  - `templates/attachments-template.schema.json` を新設。session (kitty window) ↔ Epic Spec の
+    現在ペアを保持。`confidence` (high/medium/low) と `reason` 付き。unattached_sessions で
+    Spec 未登録の稼働セッションも捕捉
+  - `scripts/attachments-rebuild.py`: `kitty @ ls` + 各 window の cwd + git branch から
+    Spec の repo を突き合わせて `journal/attachments.json` を再構築。live 起動と
+    `--kitty-ls-json` オフライン起動の両方に対応。**巡回冒頭で自動起動する運用** (SKILL.md 7.1)
+  - 初期 `journal/attachments.json` は空 (次巡回で自動再構築)
+- **SKILL.md 更新**:
+  - 2. canonical_model: 正本 4 層 → 5 層 (Attachments 層を追加、Epic Spec / goals.md index の
+    位置付けを (repo × epic) 主キーに書き換え)
+  - 4. 差配とゴール紐付け: 「session → Spec 解決は attachments.json 経由」を明示。
+    `confidence: low` かつ `multiple candidates` の場合は差配を最小限にとどめ konuma review 待ち。
+    unattached_sessions は「Spec 設定要求」の対象
+  - 4. 乖離チェック節と監督 AI subagent 節: Spec path を `journal/specs/<repo>__<epic>.json` に更新
+  - 7.1 準備: 巡回冒頭で attachments-rebuild.py を実行、続けて specs/goals/attachments の 3 種を読む
+- **goals.md refactor**: 主キーを `session (直近 window)` → `repo × epic` に変更。session 列削除
+  (attachments.json 側で管理)、Spec file 参照列を追加。5 epic 行に再構成
+- **dashboard 更新**:
+  - Sessions grid → **Epics grid** (repo でグループ表示、各 epic カードに Spec goal +
+    acceptance_criteria)
+  - 各 epic カード下部に **Attached sessions** chip (confidence 別に色分け、hover で reason/branch/cwd)
+  - **Attention: Spec 未登録の稼働セッション** セクションを新設 (unattached_sessions を可視化)
+- v0.15.0 監督 AI subagent の input contract を v2 schema に追随 (docs のみ、動作範囲変更なし)
+- 判断木の枝 1〜5 の意味・優先順位・番号は不変、芯 1〜9 も不変
+- plugin.json version 0.15.2 → 0.16.0
+
 ## [0.15.2] - 2026-07-09
 
 - **dashboard: Recent patrols を表形式に変更** (issue #17 継続、konuma FB「読みづらい」):

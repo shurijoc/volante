@@ -1,0 +1,12 @@
+{
+  "repo": "ma-navi/navibot",
+  "epic": {
+    "id": "epic-802",
+    "url": "https://github.com/ma-navi/navibot/issues/802"
+  },
+  "goal": "ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過",
+  "acceptance_criteria": [
+    "ADR-0011 の a〜f 全項目が実装済みで統合層として稼働している",
+    "cross-user leakage ゲート (#220) が pass している"
+  ]
+}

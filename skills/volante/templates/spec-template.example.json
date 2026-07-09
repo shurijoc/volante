@@ -1,7 +1,12 @@
 {
-  "goal": "payroll 照合 kaizen の再開と、待機中のインフラ弾 #488/#464 消化",
+  "repo": "ma-navi/pitto",
+  "epic": {
+    "id": "issue-365-payroll",
+    "url": "https://github.com/ma-navi/pitto/issues/365"
+  },
+  "goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化",
   "acceptance_criteria": [
-    "打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている (該当 issue が in-progress に遷移)",
-    "#488 と #464 の対応 PR が draft 以上まで進んでいる"
+    "07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている (該当 issue が in-progress に遷移)",
+    "待機中に #488 と #464 の対応 PR が draft 以上まで進んでいる"
   ]
 }
