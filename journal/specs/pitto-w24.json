@@ -1,0 +1,8 @@
+{
+  "goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)",
+  "acceptance_criteria": [
+    "ma-navi/pitto の PR #496 が main に merge されている (fe1405c)",
+    "kaizen-loop の verify が全 check pass している",
+    "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"
+  ]
+}

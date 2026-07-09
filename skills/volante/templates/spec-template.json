@@ -1,38 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/shurijoc/volante/schemas/spec-v2.json",
-  "title": "volante Epic Spec v2",
-  "description": "Epic (repo × epic) 単位の Spec。filename convention: journal/specs/<repo-slug>__<epic-id>.json (repo-slug は owner/name の '/' を '--' に、区切り '__' で epic-id と分ける)。session 識別は journal/attachments.json (揮発、巡回で自動再構築) 側で管理する。v0.16.0 で v1 (session key、goal + acceptance_criteria の 2 要素) から破壊的変更。",
+  "$id": "https://github.com/shurijoc/volante/schemas/spec-v1.json",
+  "title": "volante Session Spec v1",
+  "description": "セッション単位の Spec (v1)。Goal + acceptance_criteria の 2 要素のみ。session/repo の識別は filename convention (journal/specs/<session>.json) と goals.md index で担う。追加項目 (制約 / 非目標 / 前提と仮定 / 依存関係 / エスカレーション条件) は v0.14.0 以降で段階拡張予定。",
   "type": "object",
-  "required": ["repo", "epic", "goal", "acceptance_criteria"],
+  "required": ["goal", "acceptance_criteria"],
   "additionalProperties": false,
   "properties": {
-    "repo": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$",
-      "description": "GitHub の 'owner/name' 形式 (例: 'ma-navi/pitto')。ローカル repo は 'home/<name>' 等の擬似形式で表現可"
-    },
-    "epic": {
-      "type": "object",
-      "required": ["id"],
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1,
-          "description": "epic 識別子 (例: 'issue-495', 'pr-496', 'epic-802', 'audit-2026-07-14')。GitHub issue/PR は 'issue-N' / 'pr-N' / 'epic-N' 形式、tracer goal file は goal file の basename を推奨"
-        },
-        "url": {
-          "type": "string",
-          "format": "uri",
-          "description": "epic の正本 URL (GitHub issue/PR URL 等)。ローカル file の場合は省略可"
-        }
-      }
-    },
     "goal": {
       "type": "string",
       "minLength": 1,
-      "description": "epic のゴール (1 文相当)"
+      "description": "セッションのゴール (1 文相当)。goals.md の「ゴール 1 行」列と対応。"
     },
     "acceptance_criteria": {
       "type": "array",
@@ -41,7 +19,7 @@
         "type": "string",
         "minLength": 1
       },
-      "description": "客観的に判定可能な受け入れ基準の列挙。各項目は独立に検証可能な形で記述する"
+      "description": "客観的に判定可能な受け入れ基準の列挙。各項目は独立に検証可能な形で記述する。"
     }
   }
 }
