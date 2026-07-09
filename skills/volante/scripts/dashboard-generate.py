@@ -63,11 +63,18 @@ def load_recent_decisions(journal: Path, limit: int) -> list[dict]:
     return events[-limit:] if limit > 0 else events
 
 
-def load_recent_patrols(journal: Path, limit: int) -> list[str]:
+def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
     path = journal / "patrols.md"
     if not path.exists():
         return []
-    rows = [l for l in path.read_text(encoding="utf-8").splitlines() if l.startswith("|") and "---" not in l]
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|") or "---" in line:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 2 or cells[0] in ("日時",):
+            continue
+        rows.append({"datetime": cells[0], "summary": " | ".join(cells[1:])})
     return rows[-limit:] if limit > 0 else rows
 
 
@@ -142,8 +149,9 @@ TEMPLATE = """<!DOCTYPE html>
                        vertical-align: top; }
   table th { font-weight: 600; color: var(--text-mute); font-size: 11px;
              text-transform: uppercase; letter-spacing: .05em; }
-  .patrol-row { font-family: var(--mono); font-size: 12px; padding: 4px 0;
-                border-bottom: 1px dashed var(--border); }
+  #patrols td.dt { font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+                   white-space: nowrap; width: 1%; }
+  #patrols td.summary { font-size: 12.5px; line-height: 1.5; }
   .empty { color: var(--text-mute); font-style: italic; }
   code { font-family: var(--mono); font-size: 12px; }
 </style>
@@ -167,7 +175,7 @@ TEMPLATE = """<!DOCTYPE html>
 
   <section>
     <h2>Recent patrols (直近 __PATROLS_LIMIT__ 行)</h2>
-    <div id="patrols"></div>
+    <table id="patrols"><thead><tr><th>日時</th><th>サマリ</th></tr></thead><tbody></tbody></table>
   </section>
 
   <section>
@@ -235,15 +243,15 @@ TEMPLATE = """<!DOCTYPE html>
     }
   }
 
-  const patEl = document.getElementById('patrols');
+  const patBody = document.querySelector('#patrols tbody');
   if (data.patrols.length === 0) {
-    patEl.innerHTML = '<div class="empty">patrols.md 空</div>';
+    patBody.innerHTML = '<tr><td colspan="2" class="empty">patrols.md 空</td></tr>';
   } else {
-    for (const row of data.patrols) {
-      const el = document.createElement('div');
-      el.className = 'patrol-row';
-      el.textContent = row;
-      patEl.appendChild(el);
+    for (const row of data.patrols.slice().reverse()) {
+      const tr = document.createElement('tr');
+      const dt = document.createElement('td'); dt.className = 'dt'; dt.textContent = row.datetime || ''; tr.appendChild(dt);
+      const sm = document.createElement('td'); sm.className = 'summary'; sm.textContent = row.summary || ''; tr.appendChild(sm);
+      patBody.appendChild(tr);
     }
   }
 

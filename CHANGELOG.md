@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.15.2] - 2026-07-09
+
+- **dashboard: Recent patrols を表形式に変更** (issue #17 継続、konuma FB「読みづらい」):
+  - `load_recent_patrols` を dict list (`{"datetime", "summary"}`) 返却に変更、`|` 区切りを parse
+  - 表示を `<table>` (日時 / サマリ 2 列) に切替。日時列は mono + `white-space: nowrap`、
+    サマリ列は 12.5px / line-height 1.5 で長文でも読みやすく
+  - 新しい行が上に来るよう `slice().reverse()` で最新順に描画
+
 ## [0.15.1] - 2026-07-09
 
 - **HTML + JSON 型ローカル UI の MVP 第 1 段** (issue #17 v1.0 epic の「着手」段階、konuma /goal 承認済み)。
