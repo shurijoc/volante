@@ -120,22 +120,49 @@ def resolve_repo_for_spec(spec_basename: str, goals_rows: list[dict]) -> str:
     return ""
 
 
-def fetch_open_issue_count(repo: str) -> dict:
-    """Fetch open issue count via gh api search. Returns {"count", "source", "error"}."""
-    if not repo or "/" not in repo:
-        return {"count": None, "source": "", "error": "invalid repo"}
+def _gh_search_count(query: str) -> dict:
+    """Run `gh api search/issues?q=<query>` and return {"count", "error"}."""
     try:
         out = subprocess.check_output(
-            ["gh", "api", f"search/issues?q=repo:{repo}+is:issue+is:open", "--jq", ".total_count"],
+            ["gh", "api", f"search/issues?q={query}", "--jq", ".total_count"],
             stderr=subprocess.PIPE, timeout=15,
         )
-        return {"count": int(out.decode("utf-8").strip()), "source": f"gh api search/issues repo:{repo}", "error": ""}
+        return {"count": int(out.decode("utf-8").strip()), "error": ""}
     except FileNotFoundError:
-        return {"count": None, "source": "", "error": "gh CLI not found"}
+        return {"count": None, "error": "gh CLI not found"}
     except subprocess.CalledProcessError as e:
-        return {"count": None, "source": "", "error": f"gh failed: {e.stderr.decode('utf-8', errors='ignore').strip()[:200]}"}
+        return {"count": None, "error": f"gh failed: {e.stderr.decode('utf-8', errors='ignore').strip()[:200]}"}
     except (subprocess.TimeoutExpired, ValueError) as e:
-        return {"count": None, "source": "", "error": f"{type(e).__name__}"}
+        return {"count": None, "error": f"{type(e).__name__}"}
+
+
+def fetch_open_issue_count(repo: str, epic_label: str = "") -> dict:
+    """Fetch issue progress via gh api search.
+
+    issue #22: if `epic_label` is given, scope the count to that label and
+    return open + closed counts (epic-level progress: X / (X+Y) closed).
+    If `epic_label` is absent, fall back to the pre-#22 behavior (repo-wide
+    open issue count) for backward compatibility with Specs that don't set
+    `epic_label` yet.
+    """
+    if not repo or "/" not in repo:
+        return {"count": None, "source": "", "error": "invalid repo"}
+    if epic_label:
+        open_r = _gh_search_count(f'repo:{repo}+label:"{epic_label}"+is:issue+is:open')
+        closed_r = _gh_search_count(f'repo:{repo}+label:"{epic_label}"+is:issue+is:closed')
+        err = open_r["error"] or closed_r["error"]
+        if err or open_r["count"] is None or closed_r["count"] is None:
+            return {"count": None, "open": None, "closed": None, "total": None,
+                     "label": epic_label, "source": "", "error": err or "unknown error"}
+        o, c = open_r["count"], closed_r["count"]
+        return {
+            "count": o, "open": o, "closed": c, "total": o + c, "label": epic_label,
+            "source": f'gh api search/issues repo:{repo}+label:"{epic_label}"', "error": "",
+        }
+    r = _gh_search_count(f"repo:{repo}+is:issue+is:open")
+    if r["count"] is None:
+        return {"count": None, "source": "", "error": r["error"]}
+    return {"count": r["count"], "source": f"gh api search/issues repo:{repo}", "error": ""}
 
 
 def fetch_open_prs(repo: str, limit: int = 20) -> dict:
@@ -196,6 +223,45 @@ def fetch_open_issues_list(repo: str, limit: int = 30) -> dict:
         return {"issues": [], "error": f"{type(e).__name__}"}
 
 
+PATROL_METRIC_PATTERNS = {
+    "observed": re.compile(r"観測\s*(\d+)"),
+    "idle": re.compile(r"IDLE\s*(\d+)"),
+    "running": re.compile(r"RUNNING\s*(\d+)"),
+    "waiting": re.compile(r"WAITING\s*(\d+)"),
+    "instructed": re.compile(r"指示\s*(\d+)"),
+}
+
+
+def parse_patrol_summary(summary: str) -> dict:
+    """Parse a patrols.md summary cell into 観測/IDLE/RUNNING/WAITING/指示 counts + memo.
+
+    issue #22: summary is a `観測 N / IDLE N / RUNNING N / ... / <free text>` line.
+    Split on "/", classify each token against the known metric patterns, and put
+    any unmatched token into memo. Fact 主義: if nothing matches (format changed
+    or one-off note), leave all counts blank and dump the whole line into memo
+    rather than guessing.
+    """
+    fields = {k: "" for k in PATROL_METRIC_PATTERNS}
+    memo_parts = []
+    matched_any = False
+    for token in (t.strip() for t in summary.split("/")):
+        if not token:
+            continue
+        matched = False
+        for key, pat in PATROL_METRIC_PATTERNS.items():
+            m = pat.match(token)
+            if m:
+                fields[key] = m.group(1)
+                matched = True
+                matched_any = True
+                break
+        if not matched:
+            memo_parts.append(token)
+    if not matched_any:
+        return {**fields, "memo": summary}
+    return {**fields, "memo": " / ".join(memo_parts)}
+
+
 def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
     path = journal / "patrols.md"
     if not path.exists():
@@ -207,7 +273,8 @@ def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if len(cells) < 2 or cells[0] in ("日時",):
             continue
-        rows.append({"datetime": cells[0], "summary": " | ".join(cells[1:])})
+        summary = " | ".join(cells[1:])
+        rows.append({"datetime": cells[0], "summary": summary, **parse_patrol_summary(summary)})
     return rows[-limit:] if limit > 0 else rows
 
 
@@ -358,6 +425,11 @@ TEMPLATE = """<!DOCTYPE html>
   .kpi-link a:hover { text-decoration: underline; }
   .kpi-link.unset { color: var(--text-mute); font-style: italic; }
   #pm-table td.kpi { font-family: var(--mono); font-size: 11.5px; }
+  a.epic-name-link { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--accent); }
+  a.epic-name-link:hover { text-decoration: none; border-bottom-style: solid; }
+  .retro-link { color: inherit; text-decoration: none; }
+  .retro-link:hover { text-decoration: underline; }
+  #patrols td.memo { font-size: 12.5px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -403,7 +475,7 @@ TEMPLATE = """<!DOCTYPE html>
 
       <section>
         <h2>Recent patrols (直近 __PATROLS_LIMIT__ 行)</h2>
-        <table id="patrols"><thead><tr><th>日時</th><th>サマリ</th></tr></thead><tbody></tbody></table>
+        <table id="patrols"><thead><tr><th>日時</th><th>観測</th><th>IDLE</th><th>RUNNING</th><th>WAITING</th><th>指示</th><th>メモ</th></tr></thead><tbody></tbody></table>
       </section>
 
       <section>
@@ -440,6 +512,46 @@ TEMPLATE = """<!DOCTYPE html>
     return el;
   }
 
+  // ===== Epic name → GitHub issues (label 絞り込み) link (issue #22) =====
+  function epicIssuesUrl(repo, epicLabel) {
+    return 'https://github.com/' + repo + '/issues?q=' + encodeURIComponent('is:issue label:' + epicLabel);
+  }
+  function renderEpicName(s, className) {
+    const epicLabel = (s.spec || {}).epic_label;
+    if (epicLabel && s.repo) {
+      const a = document.createElement('a');
+      a.className = (className + ' epic-name-link').trim();
+      a.href = epicIssuesUrl(s.repo, epicLabel);
+      a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = s.session;
+      return a;
+    }
+    const span = document.createElement('span');
+    span.className = className;
+    span.textContent = s.session;
+    return span;
+  }
+
+  // ===== Progress display: epic_label 付きなら "X / (X+Y) closed", 無ければ repo 全体 open 数 (fallback) =====
+  function progressInfo(p) {
+    p = p || {};
+    if (p.label && typeof p.closed === 'number' && typeof p.total === 'number') {
+      return {
+        text: p.closed + ' / ' + p.total + ' closed',
+        done: p.total > 0 && p.closed === p.total,
+        unknown: false,
+        title: 'label:' + p.label,
+      };
+    }
+    if (p.count === 0) {
+      return { text: '全 issue closed (0 open)', done: true, unknown: false, title: '' };
+    }
+    if (typeof p.count === 'number') {
+      return { text: p.count + ' open issues', done: false, unknown: false, title: '' };
+    }
+    return { text: '(進捗未定義)', done: false, unknown: true, title: p.error || '' };
+  }
+
   // ===== Tab framework =====
   const tabBtns = document.getElementById('tab-buttons');
   const tabEpicsContainer = document.getElementById('tab-epics-container');
@@ -473,7 +585,7 @@ TEMPLATE = """<!DOCTYPE html>
     // Head: name + repo link + status badge + goal
     const head = document.createElement('div');
     head.className = 'epic-tab-head';
-    const name = document.createElement('span'); name.className = 'name'; name.textContent = s.session; head.appendChild(name);
+    head.appendChild(renderEpicName(s, 'name'));
     if (s.repo) {
       const repoWrap = document.createElement('span'); repoWrap.className = 'repo-link';
       const repoA = document.createElement('a');
@@ -641,7 +753,7 @@ TEMPLATE = """<!DOCTYPE html>
       const m = s.metrics || {};
       const p = s.progress || {};
       const tr = document.createElement('tr');
-      const nameTd = document.createElement('td'); nameTd.className = 'epic-name'; nameTd.textContent = s.session; tr.appendChild(nameTd);
+      const nameTd = document.createElement('td'); nameTd.className = 'epic-name'; nameTd.appendChild(renderEpicName(s, '')); tr.appendChild(nameTd);
       const repoTd = document.createElement('td'); repoTd.className = 'repo'; repoTd.textContent = s.repo || '(未解決)'; tr.appendChild(repoTd);
       const kpiTd = document.createElement('td'); kpiTd.className = 'kpi'; kpiTd.appendChild(renderKpiLink(s.spec.kpi_sheet_tab)); tr.appendChild(kpiTd);
       const prioTd = document.createElement('td'); prioTd.textContent = s.priority || '—'; tr.appendChild(prioTd);
@@ -649,9 +761,10 @@ TEMPLATE = """<!DOCTYPE html>
       const badge = document.createElement('span'); badge.className = 'status-badge ' + (m.status || 'on-track');
       badge.textContent = m.status || 'on-track'; statusTd.appendChild(badge); tr.appendChild(statusTd);
       const progTd = document.createElement('td'); progTd.className = 'metric-num';
-      if (p.count === 0) { progTd.classList.add('ok'); progTd.textContent = '0'; }
-      else if (typeof p.count === 'number') { progTd.textContent = p.count; }
-      else { progTd.textContent = '—'; progTd.title = p.error || ''; }
+      const pinfo = progressInfo(p);
+      progTd.textContent = pinfo.text;
+      if (pinfo.done) progTd.classList.add('ok');
+      if (pinfo.title) progTd.title = pinfo.title;
       tr.appendChild(progTd);
       const tsTd = document.createElement('td'); tsTd.className = 'metric-ts';
       tsTd.textContent = m.latest_ts ? m.latest_ts.replace('T', ' ').slice(0, 16) : '—';
@@ -682,10 +795,7 @@ TEMPLATE = """<!DOCTYPE html>
       head.style.alignItems = 'baseline';
       head.style.gap = '8px';
       head.style.flexWrap = 'wrap';
-      const name = document.createElement('span');
-      name.className = 'name';
-      name.textContent = s.session;
-      head.appendChild(name);
+      head.appendChild(renderEpicName(s, 'name'));
       if (s.repo) {
         const repoLabel = document.createElement('span');
         repoLabel.className = 'repo-label';
@@ -712,17 +822,11 @@ TEMPLATE = """<!DOCTYPE html>
       prog.appendChild(progLabel);
       const progValue = document.createElement('span');
       progValue.className = 'value';
-      const pd = s.progress || {};
-      if (pd.count === 0) {
-        progValue.textContent = '全 issue closed (0 open)';
-        prog.classList.add('done');
-      } else if (typeof pd.count === 'number') {
-        progValue.textContent = pd.count + ' open issues';
-      } else {
-        prog.classList.add('unknown');
-        progValue.textContent = '(進捗未定義)';
-        if (pd.error) progValue.title = pd.error;
-      }
+      const pinfoCard = progressInfo(s.progress);
+      progValue.textContent = pinfoCard.text;
+      if (pinfoCard.done) prog.classList.add('done');
+      if (pinfoCard.unknown) prog.classList.add('unknown');
+      if (pinfoCard.title) progValue.title = pinfoCard.title;
       prog.appendChild(progValue);
       el.appendChild(prog);
 
@@ -755,13 +859,17 @@ TEMPLATE = """<!DOCTYPE html>
   }
 
   const patBody = document.querySelector('#patrols tbody');
+  const PATROL_METRIC_COLS = ['observed', 'idle', 'running', 'waiting', 'instructed'];
   if (data.patrols.length === 0) {
-    patBody.innerHTML = '<tr><td colspan="2" class="empty">patrols.md 空</td></tr>';
+    patBody.innerHTML = '<tr><td colspan="7" class="empty">patrols.md 空</td></tr>';
   } else {
     for (const row of data.patrols.slice().reverse()) {
       const tr = document.createElement('tr');
       const dt = document.createElement('td'); dt.className = 'dt'; dt.textContent = row.datetime || ''; tr.appendChild(dt);
-      const sm = document.createElement('td'); sm.className = 'summary'; sm.textContent = row.summary || ''; tr.appendChild(sm);
+      for (const key of PATROL_METRIC_COLS) {
+        const td = document.createElement('td'); td.className = 'metric-num'; td.textContent = row[key] || ''; tr.appendChild(td);
+      }
+      const memo = document.createElement('td'); memo.className = 'memo'; memo.textContent = row.memo || ''; tr.appendChild(memo);
       patBody.appendChild(tr);
     }
   }
@@ -774,7 +882,10 @@ TEMPLATE = """<!DOCTYPE html>
       const tr = document.createElement('tr');
       const d = document.createElement('td'); d.textContent = r.date || '?'; tr.appendChild(d);
       const f = document.createElement('td');
-      const code = document.createElement('code'); code.textContent = r.file; f.appendChild(code);
+      const code = document.createElement('code');
+      const a = document.createElement('a'); a.className = 'retro-link'; a.href = './' + r.file; a.textContent = r.file;
+      code.appendChild(a);
+      f.appendChild(code);
       tr.appendChild(f);
       retroBody.appendChild(tr);
     }
@@ -808,22 +919,28 @@ def main() -> None:
     goals_rows = parse_goals_md(journal)
 
     # Resolve repo + fetch progress per spec (v0.15.4+, cached at generate time per CLAUDE.md 設計原則)
-    # per-repo cache to avoid re-querying same repo (multi-Spec-per-repo case)
+    # per-repo cache to avoid re-querying same repo (multi-Spec-per-repo case).
+    # progress is cached per (repo, epic_label) since #22: two Specs on the same
+    # repo can carry different epic_label scoping, but PRs/issues stay repo-wide.
     repo_cache: dict[str, dict] = {}
+    progress_cache: dict[tuple[str, str], dict] = {}
     for spec in specs:
         basename = spec["session"]
         repo = resolve_repo_for_spec(basename, goals_rows)
         spec["repo"] = repo
+        epic_label = (spec.get("spec") or {}).get("epic_label", "") or ""
         if repo and not args.no_gh:
             if repo not in repo_cache:
                 repo_cache[repo] = {
-                    "progress": fetch_open_issue_count(repo),
                     "prs": fetch_open_prs(repo),
                     "issues": fetch_open_issues_list(repo),
                 }
-            spec["progress"] = repo_cache[repo]["progress"]
             spec["prs"] = repo_cache[repo]["prs"]
             spec["issues"] = repo_cache[repo]["issues"]
+            cache_key = (repo, epic_label)
+            if cache_key not in progress_cache:
+                progress_cache[cache_key] = fetch_open_issue_count(repo, epic_label)
+            spec["progress"] = progress_cache[cache_key]
         else:
             reason = "no repo resolved" if not repo else "gh skipped"
             spec["progress"] = {"count": None, "source": "", "error": reason}

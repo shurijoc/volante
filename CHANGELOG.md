@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.15.8] - 2026-07-10
+
+- **dashboard.html を進捗表示・リンク・patrols/retro の 4 点で強化** (issue #22):
+  - **進捗を `epic_label` ベースに切替可能化** (Spec schema v1.2):
+    `templates/spec-template.json` に `epic_label` (任意 string) を追加。
+    指定があれば `dashboard-generate.py` の `fetch_open_issue_count()` が
+    `gh api search/issues?q=repo:<repo>+label:"<epic_label>"+is:issue+is:{open|closed}` で
+    open/closed 両方を取り、dashboard は `X / (X+Y) closed` 形式で epic 単位の進捗を出す (100% で done 色)。
+    未指定なら repo 全体の open 総数を fallback (後方互換)。
+  - **epic 名を GitHub issues (label 絞り込み) リンクに** (PM table / Epics カード / epic タブ head の 3 箇所)。
+    リンク先: `https://github.com/<repo>/issues?q=is:issue+label:<epic_label>`。
+    `epic_label` 無しの spec はリンクにしない (text のまま)
+  - **Recent patrols を 7 列表形式に**: `日時 / 観測 / IDLE / RUNNING / WAITING / 指示 / メモ`。
+    `dashboard-generate.py` 側で patrols.md の summary を `/` split + 正規表現で分解 (`観測 N` 等)。
+    どの pattern にも match しない token はメモ列に集約。全パターン unmatch なら全文をメモ列に (Fact 主義: 勝手に埋めない)
+  - **Retro index の file 名を隣接 md への相対リンクに**: `<a href="./retro-YYYY-MM-DD.md">` で単純にブラウザで開ける
+- Spec schema は v1.2 に (v1.1 `kpi_sheet_tab` は不変、`epic_label` を任意追加のみ)
+- 判断木・芯には変更なし
+
 ## [0.15.7] - 2026-07-09
 
 - **Spec schema v1.1: `kpi_sheet_tab` を必須追加** (issue #23):

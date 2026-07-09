@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/shurijoc/volante/schemas/spec-v1.json",
-  "title": "volante Session Spec v1.1",
-  "description": "セッション単位の Spec (v1.1)。session/repo の識別は filename convention (journal/specs/<session>.json) と goals.md index で担う。v1.1 (issue #23) で `kpi_sheet_tab` を必須追加: epic (spec) はチーム共通の PJCI シートのタブに必ず紐付ける (数値の正本は Sheet 側、volante は参照のみ保持)。追加項目 (制約 / 非目標 / 前提と仮定 / 依存関係 / エスカレーション条件) は今後も段階拡張予定。",
+  "title": "volante Session Spec v1.2",
+  "description": "セッション単位の Spec (v1.2)。session/repo の識別は filename convention (journal/specs/<session>.json) と goals.md index で担う。v1.1 (issue #23) で `kpi_sheet_tab` を必須追加: epic (spec) はチーム共通の PJCI シートのタブに必ず紐付ける (数値の正本は Sheet 側、volante は参照のみ保持)。v1.2 (issue #22) で `epic_label` を任意追加: 対象 repo 側の epic label で進捗 (open/closed issue count) を絞り込めるようにする。未設定なら repo 全体の open issue 数を fallback として使う (後方互換)。追加項目 (制約 / 非目標 / 前提と仮定 / 依存関係 / エスカレーション条件) は今後も段階拡張予定。",
   "type": "object",
   "required": ["goal", "acceptance_criteria", "kpi_sheet_tab"],
   "additionalProperties": false,
@@ -38,6 +38,11 @@
           "description": "タブ名 (人間可読・変更検知用)"
         }
       }
+    },
+    "epic_label": {
+      "type": "string",
+      "minLength": 1,
+      "description": "対象 repo 側の epic label (例: 'epic:site-response-speed')。issue #22: 指定があれば dashboard の進捗算出をこの label の open/closed issue count ベースに切り替える (X / (X+Y) closed 表示、100% で done 色)。label そのものを repo 側へ付ける作業は volante のスコープ外 (対象 repo 側で別途運用)。未設定なら repo 全体の open issue 数を fallback として使う。"
     }
   }
 }
