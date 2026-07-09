@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.15.4] - 2026-07-09
+
+- **dashboard: Sessions grid を Epics カード化 + goal + 進捗明記** (issue #19、親 #17):
+  - section 見出し `Sessions (epic 主体、Spec v1)` → **`Epics`**
+  - 各カードに **repo ラベル** (goals.md からの fuzzy resolve) と **進捗** (open issue 数、gh api 経由) を追加
+  - **acceptance_criteria を `<details>` で折りたたみ**、デフォルト閉じ、summary クリックで展開
+- **goals.md 由来のデータ供給**:
+  - `parse_goals_md()`: v0.15.3 の 6 列 (`repo | 正本 | session | ゴール | 優先度 | 登録日`) を dict list に
+  - `resolve_repo_for_spec()`: Spec basename の prefix (最初の `-` まで) を goals.md の `owner/name` と
+    fuzzy match。同一 repo 複数行は set で重複排除、単一 repo のときのみ返す (曖昧マッチは空返却)
+  - `fetch_open_issue_count()`: `gh api search/issues?q=repo:owner/name+is:issue+is:open` の `total_count`。
+    generate 時に 1 度だけ呼び HTML に埋め込み (CLAUDE.md 設計原則、runtime fetch なし)
+  - `--no-gh` フラグでスキップ可能 (offline / rate limit 時)、エラー時は `(進捗未定義)` + tooltip でエラー表示
+- **進捗表示のスタイル**:
+  - 通常: mono の open 件数
+  - 全 issue closed (0 open): 緑背景の `全 issue closed (0 open)`
+  - 未定義: グレー `(進捗未定義)` + hover tooltip で原因 (no repo resolved / gh failed / gh skipped)
+- **将来的な per-epic filter は別 issue** (#19 コメントで検討)。現状は repo 単位の open 件数のため、同一 repo の
+  複数 Spec は同じ数字を表示する (例: pitto-kaizen / pitto-payroll は同じ open 件数)
+- 判断木・芯・Spec schema すべて不変
+
 ## [0.15.3] - 2026-07-09
 
 - **v0.16.0 の revert** (commit 111dc8e、konuma FB「過剰実装、意図と乖離」):

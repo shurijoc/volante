@@ -20,6 +20,7 @@ retro の内容展開、UI 洗練は継続イテレーションで対応する�
 import argparse
 import json
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from html import escape
@@ -61,6 +62,80 @@ def load_recent_decisions(journal: Path, limit: int) -> list[dict]:
         except json.JSONDecodeError as e:
             print(f"warning: parse error at {path}:{i}: {e}", file=sys.stderr)
     return events[-limit:] if limit > 0 else events
+
+
+def parse_goals_md(journal: Path) -> list[dict]:
+    """Parse journal/goals.md table rows into structured data.
+
+    v0.15.3 columns: | repo | 正本 | session (役割名) | ゴール | 優先度 | 登録日 |
+    """
+    path = journal / "goals.md"
+    if not path.exists():
+        return []
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|") or "---" in line:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 6:
+            continue
+        if cells[0] in ("repo",):
+            continue
+        rows.append({
+            "repo": cells[0],
+            "source": cells[1],
+            "session_role": cells[2],
+            "goal": cells[3],
+            "priority": cells[4],
+            "registered": cells[5],
+        })
+    return rows
+
+
+def resolve_repo_for_spec(spec_basename: str, goals_rows: list[dict]) -> str:
+    """Fuzzy match a Spec basename to a repo via goals.md.
+
+    Convention: Spec basename starts with a short repo hint (e.g., 'pitto-kaizen'
+    → hint 'pitto' matches repo 'ma-navi/pitto'). If ambiguous or unmatched,
+    return empty string.
+    """
+    if "-" not in spec_basename:
+        hint = spec_basename
+    else:
+        hint = spec_basename.split("-", 1)[0]
+    if not hint:
+        return ""
+    matches = set()
+    for row in goals_rows:
+        repo = row.get("repo", "")
+        if "/" not in repo:
+            if hint in repo:
+                matches.add(repo)
+            continue
+        owner, name = repo.split("/", 1)
+        if hint == owner or hint == name or name.startswith(hint + "-") or name.startswith(hint + "_"):
+            matches.add(repo)
+    if len(matches) == 1:
+        return next(iter(matches))
+    return ""
+
+
+def fetch_open_issue_count(repo: str) -> dict:
+    """Fetch open issue count via gh api search. Returns {"count", "source", "error"}."""
+    if not repo or "/" not in repo:
+        return {"count": None, "source": "", "error": "invalid repo"}
+    try:
+        out = subprocess.check_output(
+            ["gh", "api", f"search/issues?q=repo:{repo}+is:issue+is:open", "--jq", ".total_count"],
+            stderr=subprocess.PIPE, timeout=15,
+        )
+        return {"count": int(out.decode("utf-8").strip()), "source": f"gh api search/issues repo:{repo}", "error": ""}
+    except FileNotFoundError:
+        return {"count": None, "source": "", "error": "gh CLI not found"}
+    except subprocess.CalledProcessError as e:
+        return {"count": None, "source": "", "error": f"gh failed: {e.stderr.decode('utf-8', errors='ignore').strip()[:200]}"}
+    except (subprocess.TimeoutExpired, ValueError) as e:
+        return {"count": None, "source": "", "error": f"{type(e).__name__}"}
 
 
 def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
@@ -123,13 +198,30 @@ TEMPLATE = """<!DOCTYPE html>
             border-radius: 10px; padding: 16px 18px; }
   section > h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: .08em;
                  text-transform: uppercase; color: var(--text-mute); font-weight: 700; }
-  .spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  .epic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
                gap: 12px; }
-  .spec { border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--bg); }
-  .spec .name { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 4px; }
-  .spec .goal { margin-bottom: 8px; }
-  .spec ul { margin: 0; padding-left: 18px; font-size: 13px; }
-  .spec li { margin-bottom: 2px; }
+  .epic-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--bg);
+               display: flex; flex-direction: column; gap: 8px; }
+  .epic-card .name { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+  .epic-card .repo-label { font-family: var(--mono); font-size: 11px; color: var(--text-mute); }
+  .epic-card .goal { font-size: 13.5px; line-height: 1.5; }
+  .epic-card .progress { display: flex; align-items: baseline; gap: 8px; font-size: 12.5px;
+                         padding: 6px 10px; border-radius: 6px; background: var(--surface);
+                         border: 1px solid var(--border); }
+  .epic-card .progress .label { color: var(--text-mute); text-transform: uppercase;
+                                letter-spacing: .05em; font-size: 10.5px; font-weight: 700; }
+  .epic-card .progress .value { font-family: var(--mono); font-weight: 600; }
+  .epic-card .progress.done { background: var(--ok-bg); border-color: var(--ok); }
+  .epic-card .progress.done .value { color: var(--ok); }
+  .epic-card .progress.unknown { color: var(--text-mute); }
+  .epic-card details { margin-top: 4px; font-size: 13px; }
+  .epic-card details > summary { cursor: pointer; color: var(--text-mute); font-size: 12px;
+                                 list-style: none; padding: 4px 0; }
+  .epic-card details > summary::marker, .epic-card details > summary::-webkit-details-marker { display: none; }
+  .epic-card details > summary::before { content: "▸ "; display: inline-block; transition: transform .1s; }
+  .epic-card details[open] > summary::before { content: "▾ "; }
+  .epic-card details ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
+  .epic-card details li { margin-bottom: 2px; }
   .timeline { display: flex; flex-direction: column; gap: 8px; }
   .event { border-left: 3px solid var(--border); padding: 4px 12px; font-size: 13px; }
   .event.branch-1 { border-color: var(--warn); background: var(--warn-bg); }
@@ -164,8 +256,8 @@ TEMPLATE = """<!DOCTYPE html>
   </header>
 
   <section>
-    <h2>Sessions (epic 主体、Spec v1)</h2>
-    <div id="specs" class="spec-grid"></div>
+    <h2>Epics</h2>
+    <div id="specs" class="epic-grid"></div>
   </section>
 
   <section>
@@ -194,22 +286,72 @@ TEMPLATE = """<!DOCTYPE html>
   } else {
     for (const s of data.specs) {
       const el = document.createElement('div');
-      el.className = 'spec';
-      const name = document.createElement('div');
+      el.className = 'epic-card';
+
+      // Header row: name + repo label
+      const head = document.createElement('div');
+      head.style.display = 'flex';
+      head.style.alignItems = 'baseline';
+      head.style.gap = '8px';
+      head.style.flexWrap = 'wrap';
+      const name = document.createElement('span');
       name.className = 'name';
       name.textContent = s.session;
-      el.appendChild(name);
+      head.appendChild(name);
+      if (s.repo) {
+        const repoLabel = document.createElement('span');
+        repoLabel.className = 'repo-label';
+        repoLabel.textContent = s.repo;
+        head.appendChild(repoLabel);
+      }
+      el.appendChild(head);
+
+      // Goal
       const goal = document.createElement('div');
       goal.className = 'goal';
       goal.textContent = s.spec.goal || '';
       el.appendChild(goal);
-      const ul = document.createElement('ul');
-      for (const c of (s.spec.acceptance_criteria || [])) {
-        const li = document.createElement('li');
-        li.textContent = c;
-        ul.appendChild(li);
+
+      // Progress
+      const prog = document.createElement('div');
+      prog.className = 'progress';
+      const progLabel = document.createElement('span');
+      progLabel.className = 'label';
+      progLabel.textContent = '進捗';
+      prog.appendChild(progLabel);
+      const progValue = document.createElement('span');
+      progValue.className = 'value';
+      const pd = s.progress || {};
+      if (pd.count === 0) {
+        progValue.textContent = '全 issue closed (0 open)';
+        prog.classList.add('done');
+      } else if (typeof pd.count === 'number') {
+        progValue.textContent = pd.count + ' open issues';
+      } else {
+        prog.classList.add('unknown');
+        progValue.textContent = '(進捗未定義)';
+        if (pd.error) progValue.title = pd.error;
       }
-      el.appendChild(ul);
+      prog.appendChild(progValue);
+      el.appendChild(prog);
+
+      // acceptance_criteria (collapsible)
+      const criteria = s.spec.acceptance_criteria || [];
+      if (criteria.length > 0) {
+        const det = document.createElement('details');
+        const sum = document.createElement('summary');
+        sum.textContent = 'acceptance_criteria (' + criteria.length + ')';
+        det.appendChild(sum);
+        const ul = document.createElement('ul');
+        for (const c of criteria) {
+          const li = document.createElement('li');
+          li.textContent = c;
+          ul.appendChild(li);
+        }
+        det.appendChild(ul);
+        el.appendChild(det);
+      }
+
       specsEl.appendChild(el);
     }
   }
@@ -281,6 +423,7 @@ def main() -> None:
     ap.add_argument("--decisions-limit", type=int, default=20)
     ap.add_argument("--patrols-limit", type=int, default=10)
     ap.add_argument("--now", type=str, help="fixed ISO-8601 timestamp for reproducible output (default: now)")
+    ap.add_argument("--no-gh", action="store_true", help="skip gh queries (progress will show '進捗未定義')")
     args = ap.parse_args()
 
     root = args.repo_root or find_repo_root(Path.cwd())
@@ -292,8 +435,20 @@ def main() -> None:
     decisions = load_recent_decisions(journal, args.decisions_limit)
     patrols = load_recent_patrols(journal, args.patrols_limit)
     retros = load_retro_index(journal)
+    goals_rows = parse_goals_md(journal)
 
-    payload = {"specs": specs, "decisions": decisions, "patrols": patrols, "retros": retros}
+    # Resolve repo + fetch progress per spec (v0.15.4+, cached at generate time per CLAUDE.md 設計原則)
+    for spec in specs:
+        basename = spec["session"]
+        repo = resolve_repo_for_spec(basename, goals_rows)
+        spec["repo"] = repo
+        if repo and not args.no_gh:
+            progress = fetch_open_issue_count(repo)
+            spec["progress"] = progress
+        else:
+            spec["progress"] = {"count": None, "source": "", "error": "no repo resolved" if not repo else "gh skipped"}
+
+    payload = {"specs": specs, "decisions": decisions, "patrols": patrols, "retros": retros, "goals": goals_rows}
     payload_json = json.dumps(payload, ensure_ascii=False)
     now_str = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 

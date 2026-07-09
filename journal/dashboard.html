@@ -31,13 +31,30 @@
             border-radius: 10px; padding: 16px 18px; }
   section > h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: .08em;
                  text-transform: uppercase; color: var(--text-mute); font-weight: 700; }
-  .spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  .epic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
                gap: 12px; }
-  .spec { border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--bg); }
-  .spec .name { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 4px; }
-  .spec .goal { margin-bottom: 8px; }
-  .spec ul { margin: 0; padding-left: 18px; font-size: 13px; }
-  .spec li { margin-bottom: 2px; }
+  .epic-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--bg);
+               display: flex; flex-direction: column; gap: 8px; }
+  .epic-card .name { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+  .epic-card .repo-label { font-family: var(--mono); font-size: 11px; color: var(--text-mute); }
+  .epic-card .goal { font-size: 13.5px; line-height: 1.5; }
+  .epic-card .progress { display: flex; align-items: baseline; gap: 8px; font-size: 12.5px;
+                         padding: 6px 10px; border-radius: 6px; background: var(--surface);
+                         border: 1px solid var(--border); }
+  .epic-card .progress .label { color: var(--text-mute); text-transform: uppercase;
+                                letter-spacing: .05em; font-size: 10.5px; font-weight: 700; }
+  .epic-card .progress .value { font-family: var(--mono); font-weight: 600; }
+  .epic-card .progress.done { background: var(--ok-bg); border-color: var(--ok); }
+  .epic-card .progress.done .value { color: var(--ok); }
+  .epic-card .progress.unknown { color: var(--text-mute); }
+  .epic-card details { margin-top: 4px; font-size: 13px; }
+  .epic-card details > summary { cursor: pointer; color: var(--text-mute); font-size: 12px;
+                                 list-style: none; padding: 4px 0; }
+  .epic-card details > summary::marker, .epic-card details > summary::-webkit-details-marker { display: none; }
+  .epic-card details > summary::before { content: "▸ "; display: inline-block; transition: transform .1s; }
+  .epic-card details[open] > summary::before { content: "▾ "; }
+  .epic-card details ul { margin: 4px 0 0; padding-left: 18px; font-size: 13px; }
+  .epic-card details li { margin-bottom: 2px; }
   .timeline { display: flex; flex-direction: column; gap: 8px; }
   .event { border-left: 3px solid var(--border); padding: 4px 12px; font-size: 13px; }
   .event.branch-1 { border-color: var(--warn); background: var(--warn-bg); }
@@ -68,12 +85,12 @@
 <div class="wrap">
   <header>
     <h1>volante dashboard</h1>
-    <span class="meta">. · generated 2026-07-09 v0.15.3 (issue #17 MVP)</span>
+    <span class="meta">. · generated 2026-07-09 v0.15.4 (issue #17 MVP)</span>
   </header>
 
   <section>
-    <h2>Sessions (epic 主体、Spec v1)</h2>
-    <div id="specs" class="spec-grid"></div>
+    <h2>Epics</h2>
+    <div id="specs" class="epic-grid"></div>
   </section>
 
   <section>
@@ -92,7 +109,7 @@
   </section>
 </div>
 
-<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-kaizen", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}}, {"session": "pitto-payroll", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}}], "decisions": [], "patrols": [{"datetime": "2026-07-08 21:34", "summary": "観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち)"}, {"datetime": "2026-07-08 21:44", "summary": "観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0"}, {"datetime": "2026-07-08 21:54", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目"}, {"datetime": "2026-07-08 22:04", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了"}, {"datetime": "2026-07-08 22:14", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例"}, {"datetime": "2026-07-08 22:24", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用)"}, {"datetime": "2026-07-08 22:34", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要"}, {"datetime": "2026-07-08 22:44", "summary": "観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続"}, {"datetime": "2026-07-08 22:54", "summary": "観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止"}, {"datetime": "2026-07-08 23:04", "summary": "観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回)"}], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}]}</script>
+<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-kaizen", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}}, {"session": "pitto-payroll", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}}], "decisions": [], "patrols": [{"datetime": "2026-07-08 21:34", "summary": "観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち)"}, {"datetime": "2026-07-08 21:44", "summary": "観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0"}, {"datetime": "2026-07-08 21:54", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目"}, {"datetime": "2026-07-08 22:04", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了"}, {"datetime": "2026-07-08 22:14", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例"}, {"datetime": "2026-07-08 22:24", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用)"}, {"datetime": "2026-07-08 22:34", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要"}, {"datetime": "2026-07-08 22:44", "summary": "観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続"}, {"datetime": "2026-07-08 22:54", "summary": "観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止"}, {"datetime": "2026-07-08 23:04", "summary": "観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回)"}], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}], "goals": [{"repo": "ma-navi/pitto", "source": "issue-495 (M&A ナビ org 追加) + PR #496 (self-check)", "session_role": "ma_navi org kaizen loop 立ち上げ", "goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで **達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み、後片付け完了)**。follow-up 3 件は konuma 判断待ち (drift 3 件・schema-only PR verify 問題)", "priority": "仮: 中 (達成済み)", "registered": "2026-07-08"}, {"repo": "ma-navi/pitto", "source": "[#365](https://github.com/ma-navi/pitto/issues/365) + `pitto/.claude/goals/payroll.md` (tracer, autonomy L2)", "session_role": "payroll kaizen", "goal": "payroll 照合 kaizen の再開 (明日=07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "priority": "仮: 中", "registered": "2026-07-07"}, {"repo": "ma-navi/navibot", "source": "[epic #802](https://github.com/ma-navi/navibot/issues/802)", "session_role": "navibot×Forge 統合", "goal": "ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "ma-navi/ma_navi_forge", "source": "[epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211)", "session_role": "AI agent v1", "goal": "v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち)", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "/Users/navi (home)", "source": "~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md", "session_role": "memory 統治ループ", "goal": "定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done", "priority": "仮: 低", "registered": "2026-07-07"}]}</script>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
 
@@ -102,22 +119,72 @@
   } else {
     for (const s of data.specs) {
       const el = document.createElement('div');
-      el.className = 'spec';
-      const name = document.createElement('div');
+      el.className = 'epic-card';
+
+      // Header row: name + repo label
+      const head = document.createElement('div');
+      head.style.display = 'flex';
+      head.style.alignItems = 'baseline';
+      head.style.gap = '8px';
+      head.style.flexWrap = 'wrap';
+      const name = document.createElement('span');
       name.className = 'name';
       name.textContent = s.session;
-      el.appendChild(name);
+      head.appendChild(name);
+      if (s.repo) {
+        const repoLabel = document.createElement('span');
+        repoLabel.className = 'repo-label';
+        repoLabel.textContent = s.repo;
+        head.appendChild(repoLabel);
+      }
+      el.appendChild(head);
+
+      // Goal
       const goal = document.createElement('div');
       goal.className = 'goal';
       goal.textContent = s.spec.goal || '';
       el.appendChild(goal);
-      const ul = document.createElement('ul');
-      for (const c of (s.spec.acceptance_criteria || [])) {
-        const li = document.createElement('li');
-        li.textContent = c;
-        ul.appendChild(li);
+
+      // Progress
+      const prog = document.createElement('div');
+      prog.className = 'progress';
+      const progLabel = document.createElement('span');
+      progLabel.className = 'label';
+      progLabel.textContent = '進捗';
+      prog.appendChild(progLabel);
+      const progValue = document.createElement('span');
+      progValue.className = 'value';
+      const pd = s.progress || {};
+      if (pd.count === 0) {
+        progValue.textContent = '全 issue closed (0 open)';
+        prog.classList.add('done');
+      } else if (typeof pd.count === 'number') {
+        progValue.textContent = pd.count + ' open issues';
+      } else {
+        prog.classList.add('unknown');
+        progValue.textContent = '(進捗未定義)';
+        if (pd.error) progValue.title = pd.error;
       }
-      el.appendChild(ul);
+      prog.appendChild(progValue);
+      el.appendChild(prog);
+
+      // acceptance_criteria (collapsible)
+      const criteria = s.spec.acceptance_criteria || [];
+      if (criteria.length > 0) {
+        const det = document.createElement('details');
+        const sum = document.createElement('summary');
+        sum.textContent = 'acceptance_criteria (' + criteria.length + ')';
+        det.appendChild(sum);
+        const ul = document.createElement('ul');
+        for (const c of criteria) {
+          const li = document.createElement('li');
+          li.textContent = c;
+          ul.appendChild(li);
+        }
+        det.appendChild(ul);
+        el.appendChild(det);
+      }
+
       specsEl.appendChild(el);
     }
   }
