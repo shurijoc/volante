@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.15.5] - 2026-07-09
+
+- **dashboard: tab 構造化 + 全体タブ (PM 視点 Epics テーブル)** (issue #20、親 #17):
+  - 全体を tab に分割 (**全体** + **epic 別 × Spec 数**)。1 タブ目「全体」に既存 4 section (Epics 詳細カード /
+    Recent decisions / Recent patrols / Retro index) を格納し、新規に **PM 視点 Epics テーブル**を先頭に配置
+  - Epic 別タブは placeholder 表示 (「#21 で epic 別の開発者ビューを実装予定」)
+  - tab 制御は vanilla JS (`document.querySelectorAll` + `classList.toggle`)、外部 library 依存なし
+    (CLAUDE.md 設計原則遵守)
+- **PM 視点テーブルの列** (8 列):
+  1. Epic (Spec basename)
+  2. repo (goals.md fuzzy resolve)
+  3. 優先度 (goals.md `優先度` 列)
+  4. status (色分け badge: `done` / `on-track` / `at-risk` / `stalled`)
+  5. 進捗 (Issue #19 の open issue 数)
+  6. 直近更新 (該当 Spec に紐づく decisions の最新 timestamp)
+  7. ブロッカー数 (`konuma_review: 未` or NG の件数、警告色)
+  8. 承認待ち数 (枝 1/3 かつ `konuma_review` が OK でない件数、警告色)
+- **status 判定 rule** (初期案、konuma 実運用フィードバックで調整前提):
+  - **done**: `spec.goal` に「達成」「完了」「done」いずれか含む
+  - **stalled**: 該当 Spec に紐づく decisions が 0 件 or 直近更新から 24h 超経過
+  - **at-risk**: 24h 以内の decisions あり かつ ブロッカー数 > 0 or 承認待ち数 > 0
+  - **on-track**: 上記いずれでもない
+- **decisions ↔ Spec の紐付け**: `decisions.jsonl` の `target_session` に Spec basename が含まれるか
+  (`in` 判定)。v0.14.0 の JSONL が populate されるまではデータなしなので、多くの Spec は `stalled` に落ちる
+  (仕様、実運用で JSONL 併記が回れば解消)
+- **load_recent_decisions のリファクタ**: `limit=0` で全件返す挙動を活かし、`all_decisions` を 1 度 load して
+  PM metrics 計算と表示用 (`--decisions-limit` 件) の両方に使い回す
+- 判断木・芯・Spec schema すべて不変
+
 ## [0.15.4] - 2026-07-09
 
 - **dashboard: Sessions grid を Epics カード化 + goal + 進捗明記** (issue #19、親 #17):

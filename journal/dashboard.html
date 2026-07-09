@@ -79,39 +79,156 @@
   #patrols td.summary { font-size: 12.5px; line-height: 1.5; }
   .empty { color: var(--text-mute); font-style: italic; }
   code { font-family: var(--mono); font-size: 12px; }
+  .tabs { margin-top: 8px; }
+  .tab-buttons { display: flex; gap: 2px; border-bottom: 1px solid var(--border);
+                 margin-bottom: 20px; overflow-x: auto; }
+  .tab-btn { padding: 8px 14px; background: none; border: none; cursor: pointer;
+             color: var(--text-mute); font-size: 13px; font-family: var(--sans);
+             border-bottom: 2px solid transparent; white-space: nowrap; transition: color .1s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  #pm-table { font-size: 13px; }
+  #pm-table td, #pm-table th { padding: 8px 10px; }
+  #pm-table td.epic-name { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  #pm-table td.repo { font-family: var(--mono); font-size: 11.5px; color: var(--text-mute); }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 10px;
+                  font-family: var(--mono); font-size: 11px; font-weight: 700;
+                  text-transform: uppercase; letter-spacing: .05em; }
+  .status-badge.done { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+  .status-badge.on-track { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+  .status-badge.at-risk { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); }
+  .status-badge.stalled { background: var(--surface-2, var(--surface)); color: var(--text-mute); border: 1px solid var(--border); }
+  #pm-table td.metric-num { font-family: var(--mono); text-align: right; }
+  #pm-table td.metric-num.warn { color: var(--warn); font-weight: 700; }
+  #pm-table td.metric-num.ok { color: var(--ok); }
+  #pm-table td.metric-ts { font-family: var(--mono); font-size: 11.5px; color: var(--text-mute);
+                           white-space: nowrap; }
+  .placeholder { padding: 32px; text-align: center; color: var(--text-mute); font-style: italic; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>volante dashboard</h1>
-    <span class="meta">. · generated 2026-07-09 v0.15.4 (issue #17 MVP)</span>
+    <span class="meta">. · generated 2026-07-09 v0.15.5 (issue #17 MVP)</span>
   </header>
 
-  <section>
-    <h2>Epics</h2>
-    <div id="specs" class="epic-grid"></div>
-  </section>
+  <div class="tabs">
+    <div id="tab-buttons" class="tab-buttons"></div>
 
-  <section>
-    <h2>Recent decisions (JSONL、直近 20 件)</h2>
-    <div id="decisions" class="timeline"></div>
-  </section>
+    <div id="tab-all" class="tab-pane active">
+      <section>
+        <h2>Epics overview (PM view)</h2>
+        <table id="pm-table">
+          <thead>
+            <tr>
+              <th>Epic</th>
+              <th>repo</th>
+              <th>優先度</th>
+              <th>status</th>
+              <th>進捗</th>
+              <th>直近更新</th>
+              <th>ブロッカー</th>
+              <th>承認待ち</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
 
-  <section>
-    <h2>Recent patrols (直近 10 行)</h2>
-    <table id="patrols"><thead><tr><th>日時</th><th>サマリ</th></tr></thead><tbody></tbody></table>
-  </section>
+      <section>
+        <h2>Epics (詳細カード)</h2>
+        <div id="specs" class="epic-grid"></div>
+      </section>
 
-  <section>
-    <h2>Retro index</h2>
-    <table id="retros"><thead><tr><th>date</th><th>file</th></tr></thead><tbody></tbody></table>
-  </section>
+      <section>
+        <h2>Recent decisions (JSONL、直近 20 件)</h2>
+        <div id="decisions" class="timeline"></div>
+      </section>
+
+      <section>
+        <h2>Recent patrols (直近 10 行)</h2>
+        <table id="patrols"><thead><tr><th>日時</th><th>サマリ</th></tr></thead><tbody></tbody></table>
+      </section>
+
+      <section>
+        <h2>Retro index</h2>
+        <table id="retros"><thead><tr><th>date</th><th>file</th></tr></thead><tbody></tbody></table>
+      </section>
+    </div>
+
+    <div id="tab-epics-container"></div>
+  </div>
 </div>
 
-<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-kaizen", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}}, {"session": "pitto-payroll", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}}], "decisions": [], "patrols": [{"datetime": "2026-07-08 21:34", "summary": "観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち)"}, {"datetime": "2026-07-08 21:44", "summary": "観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0"}, {"datetime": "2026-07-08 21:54", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目"}, {"datetime": "2026-07-08 22:04", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了"}, {"datetime": "2026-07-08 22:14", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例"}, {"datetime": "2026-07-08 22:24", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用)"}, {"datetime": "2026-07-08 22:34", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要"}, {"datetime": "2026-07-08 22:44", "summary": "観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続"}, {"datetime": "2026-07-08 22:54", "summary": "観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止"}, {"datetime": "2026-07-08 23:04", "summary": "観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回)"}], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}], "goals": [{"repo": "ma-navi/pitto", "source": "issue-495 (M&A ナビ org 追加) + PR #496 (self-check)", "session_role": "ma_navi org kaizen loop 立ち上げ", "goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで **達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み、後片付け完了)**。follow-up 3 件は konuma 判断待ち (drift 3 件・schema-only PR verify 問題)", "priority": "仮: 中 (達成済み)", "registered": "2026-07-08"}, {"repo": "ma-navi/pitto", "source": "[#365](https://github.com/ma-navi/pitto/issues/365) + `pitto/.claude/goals/payroll.md` (tracer, autonomy L2)", "session_role": "payroll kaizen", "goal": "payroll 照合 kaizen の再開 (明日=07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "priority": "仮: 中", "registered": "2026-07-07"}, {"repo": "ma-navi/navibot", "source": "[epic #802](https://github.com/ma-navi/navibot/issues/802)", "session_role": "navibot×Forge 統合", "goal": "ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "ma-navi/ma_navi_forge", "source": "[epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211)", "session_role": "AI agent v1", "goal": "v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち)", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "/Users/navi (home)", "source": "~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md", "session_role": "memory 統治ループ", "goal": "定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done", "priority": "仮: 低", "registered": "2026-07-07"}]}</script>
+<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-kaizen", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}, "priority": "仮: 中 (達成済み)", "metrics": {"status": "done", "latest_ts": "", "blockers": 0, "approval_pending": 0, "decisions_count": 0}}, {"session": "pitto-payroll", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}, "priority": "仮: 中 (達成済み)", "metrics": {"status": "stalled", "latest_ts": "", "blockers": 0, "approval_pending": 0, "decisions_count": 0}}], "decisions": [], "patrols": [{"datetime": "2026-07-08 21:34", "summary": "観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち)"}, {"datetime": "2026-07-08 21:44", "summary": "観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0"}, {"datetime": "2026-07-08 21:54", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目"}, {"datetime": "2026-07-08 22:04", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了"}, {"datetime": "2026-07-08 22:14", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例"}, {"datetime": "2026-07-08 22:24", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用)"}, {"datetime": "2026-07-08 22:34", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要"}, {"datetime": "2026-07-08 22:44", "summary": "観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続"}, {"datetime": "2026-07-08 22:54", "summary": "観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止"}, {"datetime": "2026-07-08 23:04", "summary": "観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回)"}], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}], "goals": [{"repo": "ma-navi/pitto", "source": "issue-495 (M&A ナビ org 追加) + PR #496 (self-check)", "session_role": "ma_navi org kaizen loop 立ち上げ", "goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで **達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み、後片付け完了)**。follow-up 3 件は konuma 判断待ち (drift 3 件・schema-only PR verify 問題)", "priority": "仮: 中 (達成済み)", "registered": "2026-07-08"}, {"repo": "ma-navi/pitto", "source": "[#365](https://github.com/ma-navi/pitto/issues/365) + `pitto/.claude/goals/payroll.md` (tracer, autonomy L2)", "session_role": "payroll kaizen", "goal": "payroll 照合 kaizen の再開 (明日=07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "priority": "仮: 中", "registered": "2026-07-07"}, {"repo": "ma-navi/navibot", "source": "[epic #802](https://github.com/ma-navi/navibot/issues/802)", "session_role": "navibot×Forge 統合", "goal": "ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "ma-navi/ma_navi_forge", "source": "[epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211)", "session_role": "AI agent v1", "goal": "v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち)", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "/Users/navi (home)", "source": "~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md", "session_role": "memory 統治ループ", "goal": "定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done", "priority": "仮: 低", "registered": "2026-07-07"}]}</script>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
+
+  // ===== Tab framework =====
+  const tabBtns = document.getElementById('tab-buttons');
+  const tabEpicsContainer = document.getElementById('tab-epics-container');
+  const allTabs = [{id: 'tab-all', label: '全体'}];
+  for (const s of data.specs) allTabs.push({id: 'tab-' + s.session, label: s.session, spec: s});
+  function activateTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === id));
+  }
+  for (const t of allTabs) {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (t.id === 'tab-all' ? ' active' : '');
+    btn.dataset.tab = t.id;
+    btn.textContent = t.label;
+    btn.addEventListener('click', () => activateTab(t.id));
+    tabBtns.appendChild(btn);
+    if (t.id !== 'tab-all') {
+      const pane = document.createElement('div');
+      pane.id = t.id;
+      pane.className = 'tab-pane';
+      const ph = document.createElement('div');
+      ph.className = 'placeholder';
+      ph.textContent = '(#21 で epic 別の開発者ビューを実装予定 — Goal + acceptance_criteria check list / 開いてる PR + CI / 開いてる issue / 直近 decisions / 監督 AI 判定履歴 等)';
+      pane.appendChild(ph);
+      tabEpicsContainer.appendChild(pane);
+    }
+  }
+
+  // ===== PM table =====
+  const pmBody = document.querySelector('#pm-table tbody');
+  if (data.specs.length === 0) {
+    pmBody.innerHTML = '<tr><td colspan="8" class="empty">Spec 未登録</td></tr>';
+  } else {
+    for (const s of data.specs) {
+      const m = s.metrics || {};
+      const p = s.progress || {};
+      const tr = document.createElement('tr');
+      const nameTd = document.createElement('td'); nameTd.className = 'epic-name'; nameTd.textContent = s.session; tr.appendChild(nameTd);
+      const repoTd = document.createElement('td'); repoTd.className = 'repo'; repoTd.textContent = s.repo || '(未解決)'; tr.appendChild(repoTd);
+      const prioTd = document.createElement('td'); prioTd.textContent = s.priority || '—'; tr.appendChild(prioTd);
+      const statusTd = document.createElement('td');
+      const badge = document.createElement('span'); badge.className = 'status-badge ' + (m.status || 'on-track');
+      badge.textContent = m.status || 'on-track'; statusTd.appendChild(badge); tr.appendChild(statusTd);
+      const progTd = document.createElement('td'); progTd.className = 'metric-num';
+      if (p.count === 0) { progTd.classList.add('ok'); progTd.textContent = '0'; }
+      else if (typeof p.count === 'number') { progTd.textContent = p.count; }
+      else { progTd.textContent = '—'; progTd.title = p.error || ''; }
+      tr.appendChild(progTd);
+      const tsTd = document.createElement('td'); tsTd.className = 'metric-ts';
+      tsTd.textContent = m.latest_ts ? m.latest_ts.replace('T', ' ').slice(0, 16) : '—';
+      tr.appendChild(tsTd);
+      const blkTd = document.createElement('td'); blkTd.className = 'metric-num';
+      if (m.blockers > 0) blkTd.classList.add('warn');
+      blkTd.textContent = m.blockers || 0;
+      tr.appendChild(blkTd);
+      const aprTd = document.createElement('td'); aprTd.className = 'metric-num';
+      if (m.approval_pending > 0) aprTd.classList.add('warn');
+      aprTd.textContent = m.approval_pending || 0;
+      tr.appendChild(aprTd);
+      pmBody.appendChild(tr);
+    }
+  }
 
   const specsEl = document.getElementById('specs');
   if (data.specs.length === 0) {

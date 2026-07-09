@@ -246,6 +246,33 @@ TEMPLATE = """<!DOCTYPE html>
   #patrols td.summary { font-size: 12.5px; line-height: 1.5; }
   .empty { color: var(--text-mute); font-style: italic; }
   code { font-family: var(--mono); font-size: 12px; }
+  .tabs { margin-top: 8px; }
+  .tab-buttons { display: flex; gap: 2px; border-bottom: 1px solid var(--border);
+                 margin-bottom: 20px; overflow-x: auto; }
+  .tab-btn { padding: 8px 14px; background: none; border: none; cursor: pointer;
+             color: var(--text-mute); font-size: 13px; font-family: var(--sans);
+             border-bottom: 2px solid transparent; white-space: nowrap; transition: color .1s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  #pm-table { font-size: 13px; }
+  #pm-table td, #pm-table th { padding: 8px 10px; }
+  #pm-table td.epic-name { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+  #pm-table td.repo { font-family: var(--mono); font-size: 11.5px; color: var(--text-mute); }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 10px;
+                  font-family: var(--mono); font-size: 11px; font-weight: 700;
+                  text-transform: uppercase; letter-spacing: .05em; }
+  .status-badge.done { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+  .status-badge.on-track { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+  .status-badge.at-risk { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); }
+  .status-badge.stalled { background: var(--surface-2, var(--surface)); color: var(--text-mute); border: 1px solid var(--border); }
+  #pm-table td.metric-num { font-family: var(--mono); text-align: right; }
+  #pm-table td.metric-num.warn { color: var(--warn); font-weight: 700; }
+  #pm-table td.metric-num.ok { color: var(--ok); }
+  #pm-table td.metric-ts { font-family: var(--mono); font-size: 11.5px; color: var(--text-mute);
+                           white-space: nowrap; }
+  .placeholder { padding: 32px; text-align: center; color: var(--text-mute); font-style: italic; }
 </style>
 </head>
 <body>
@@ -255,30 +282,120 @@ TEMPLATE = """<!DOCTYPE html>
     <span class="meta">__REPO_PATH__ · generated __GENERATED_AT__ (issue #17 MVP)</span>
   </header>
 
-  <section>
-    <h2>Epics</h2>
-    <div id="specs" class="epic-grid"></div>
-  </section>
+  <div class="tabs">
+    <div id="tab-buttons" class="tab-buttons"></div>
 
-  <section>
-    <h2>Recent decisions (JSONL、直近 __DECISIONS_LIMIT__ 件)</h2>
-    <div id="decisions" class="timeline"></div>
-  </section>
+    <div id="tab-all" class="tab-pane active">
+      <section>
+        <h2>Epics overview (PM view)</h2>
+        <table id="pm-table">
+          <thead>
+            <tr>
+              <th>Epic</th>
+              <th>repo</th>
+              <th>優先度</th>
+              <th>status</th>
+              <th>進捗</th>
+              <th>直近更新</th>
+              <th>ブロッカー</th>
+              <th>承認待ち</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
 
-  <section>
-    <h2>Recent patrols (直近 __PATROLS_LIMIT__ 行)</h2>
-    <table id="patrols"><thead><tr><th>日時</th><th>サマリ</th></tr></thead><tbody></tbody></table>
-  </section>
+      <section>
+        <h2>Epics (詳細カード)</h2>
+        <div id="specs" class="epic-grid"></div>
+      </section>
 
-  <section>
-    <h2>Retro index</h2>
-    <table id="retros"><thead><tr><th>date</th><th>file</th></tr></thead><tbody></tbody></table>
-  </section>
+      <section>
+        <h2>Recent decisions (JSONL、直近 __DECISIONS_LIMIT__ 件)</h2>
+        <div id="decisions" class="timeline"></div>
+      </section>
+
+      <section>
+        <h2>Recent patrols (直近 __PATROLS_LIMIT__ 行)</h2>
+        <table id="patrols"><thead><tr><th>日時</th><th>サマリ</th></tr></thead><tbody></tbody></table>
+      </section>
+
+      <section>
+        <h2>Retro index</h2>
+        <table id="retros"><thead><tr><th>date</th><th>file</th></tr></thead><tbody></tbody></table>
+      </section>
+    </div>
+
+    <div id="tab-epics-container"></div>
+  </div>
 </div>
 
 <script id="volante-data" type="application/json">__DATA_JSON__</script>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
+
+  // ===== Tab framework =====
+  const tabBtns = document.getElementById('tab-buttons');
+  const tabEpicsContainer = document.getElementById('tab-epics-container');
+  const allTabs = [{id: 'tab-all', label: '全体'}];
+  for (const s of data.specs) allTabs.push({id: 'tab-' + s.session, label: s.session, spec: s});
+  function activateTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === id));
+  }
+  for (const t of allTabs) {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (t.id === 'tab-all' ? ' active' : '');
+    btn.dataset.tab = t.id;
+    btn.textContent = t.label;
+    btn.addEventListener('click', () => activateTab(t.id));
+    tabBtns.appendChild(btn);
+    if (t.id !== 'tab-all') {
+      const pane = document.createElement('div');
+      pane.id = t.id;
+      pane.className = 'tab-pane';
+      const ph = document.createElement('div');
+      ph.className = 'placeholder';
+      ph.textContent = '(#21 で epic 別の開発者ビューを実装予定 — Goal + acceptance_criteria check list / 開いてる PR + CI / 開いてる issue / 直近 decisions / 監督 AI 判定履歴 等)';
+      pane.appendChild(ph);
+      tabEpicsContainer.appendChild(pane);
+    }
+  }
+
+  // ===== PM table =====
+  const pmBody = document.querySelector('#pm-table tbody');
+  if (data.specs.length === 0) {
+    pmBody.innerHTML = '<tr><td colspan="8" class="empty">Spec 未登録</td></tr>';
+  } else {
+    for (const s of data.specs) {
+      const m = s.metrics || {};
+      const p = s.progress || {};
+      const tr = document.createElement('tr');
+      const nameTd = document.createElement('td'); nameTd.className = 'epic-name'; nameTd.textContent = s.session; tr.appendChild(nameTd);
+      const repoTd = document.createElement('td'); repoTd.className = 'repo'; repoTd.textContent = s.repo || '(未解決)'; tr.appendChild(repoTd);
+      const prioTd = document.createElement('td'); prioTd.textContent = s.priority || '—'; tr.appendChild(prioTd);
+      const statusTd = document.createElement('td');
+      const badge = document.createElement('span'); badge.className = 'status-badge ' + (m.status || 'on-track');
+      badge.textContent = m.status || 'on-track'; statusTd.appendChild(badge); tr.appendChild(statusTd);
+      const progTd = document.createElement('td'); progTd.className = 'metric-num';
+      if (p.count === 0) { progTd.classList.add('ok'); progTd.textContent = '0'; }
+      else if (typeof p.count === 'number') { progTd.textContent = p.count; }
+      else { progTd.textContent = '—'; progTd.title = p.error || ''; }
+      tr.appendChild(progTd);
+      const tsTd = document.createElement('td'); tsTd.className = 'metric-ts';
+      tsTd.textContent = m.latest_ts ? m.latest_ts.replace('T', ' ').slice(0, 16) : '—';
+      tr.appendChild(tsTd);
+      const blkTd = document.createElement('td'); blkTd.className = 'metric-num';
+      if (m.blockers > 0) blkTd.classList.add('warn');
+      blkTd.textContent = m.blockers || 0;
+      tr.appendChild(blkTd);
+      const aprTd = document.createElement('td'); aprTd.className = 'metric-num';
+      if (m.approval_pending > 0) aprTd.classList.add('warn');
+      aprTd.textContent = m.approval_pending || 0;
+      tr.appendChild(aprTd);
+      pmBody.appendChild(tr);
+    }
+  }
 
   const specsEl = document.getElementById('specs');
   if (data.specs.length === 0) {
@@ -432,7 +549,8 @@ def main() -> None:
 
     journal = root / "journal"
     specs = load_specs(journal / "specs")
-    decisions = load_recent_decisions(journal, args.decisions_limit)
+    all_decisions = load_recent_decisions(journal, 0)
+    decisions = all_decisions[-args.decisions_limit:] if args.decisions_limit > 0 else all_decisions
     patrols = load_recent_patrols(journal, args.patrols_limit)
     retros = load_retro_index(journal)
     goals_rows = parse_goals_md(journal)
@@ -447,6 +565,52 @@ def main() -> None:
             spec["progress"] = progress
         else:
             spec["progress"] = {"count": None, "source": "", "error": "no repo resolved" if not repo else "gh skipped"}
+        # Attach 優先度 from goals.md (first matching row by repo)
+        priority = ""
+        for row in goals_rows:
+            if row.get("repo") == repo:
+                priority = row.get("priority", "")
+                break
+        spec["priority"] = priority
+
+    # Compute PM-view metrics per spec (v0.15.5+, issue #20)
+    now_dt = datetime.now(timezone.utc)
+    for spec in specs:
+        basename = spec["session"]
+        goal_text = (spec.get("spec") or {}).get("goal", "")
+        matches = [ev for ev in all_decisions if basename and basename in (ev.get("target_session") or "")]
+        latest_ts = ""
+        for ev in matches:
+            ts = ev.get("timestamp") or ""
+            if ts > latest_ts:
+                latest_ts = ts
+        blockers = sum(1 for ev in matches if (ev.get("konuma_review") or "").startswith(("未", "NG")))
+        approval_pending = sum(1 for ev in matches
+                                if str(ev.get("branch") or "") in ("1", "3")
+                                and not (ev.get("konuma_review") or "").startswith("OK"))
+        # status rule
+        status = "on-track"
+        if any(kw in goal_text for kw in ("達成", "完了", "done")):
+            status = "done"
+        elif not latest_ts:
+            status = "stalled"
+        else:
+            try:
+                latest_dt = datetime.fromisoformat(latest_ts.replace("Z", "+00:00"))
+                delta_hours = (now_dt - latest_dt).total_seconds() / 3600
+                if delta_hours > 24:
+                    status = "stalled"
+                elif blockers > 0 or approval_pending > 0:
+                    status = "at-risk"
+            except ValueError:
+                pass
+        spec["metrics"] = {
+            "status": status,
+            "latest_ts": latest_ts,
+            "blockers": blockers,
+            "approval_pending": approval_pending,
+            "decisions_count": len(matches),
+        }
 
     payload = {"specs": specs, "decisions": decisions, "patrols": patrols, "retros": retros, "goals": goals_rows}
     payload_json = json.dumps(payload, ensure_ascii=False)
