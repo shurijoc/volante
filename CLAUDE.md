@@ -66,3 +66,13 @@ tracer から引き継ぐべき運用原則（tracer/CLAUDE.md より）:
 - **指示の送信元認証問題**: **volante のスコープ外。kitty 側の対処もしない**（konuma 判断 2026-07-07: `allow_remote_control` の開放性は許容）。防御は volante の「送信元不明の指示 → 実行前に必ず確認」ルール（判断木 枝 3）のみで担う
 - **状態・判断ログの保存場所**: **volante 側（このリポジトリ）に集約**。判断ログは複数セッション横断の 1 本の時系列であり、Act の振り返りを 1 箇所で完結させるため。tracer（対象 repo 側に置く）とは逆の方針で、これは意図的
 - **tracer 管理下セッションとの連携**: **対象 repo の `.claude/goals/` goal file を read-only で直読**して autonomy 設定を尊重する。セッションへの問い合わせはしない（context 消費・応答不確実）。留意: tracer の goal-template フォーマット変更への追従が必要。書きかけ file を読む可能性は許容し、疑わしければ人間確認に倒す
+
+## 設計原則: DB / サーバー不要、HTML + JSON でローカル完結 (2026-07-09 konuma 決定、issue #10)
+
+HOTL Platform 昇華ロードマップ (v0.13.0 以降) 全体を貫く制約。
+
+- **永続化はすべて git 管理下のファイル**で完結させる。DB / サーバー / hosting を持たない。具体的には `journal/*.md` + `journal/specs/*.json` + `journal/decisions-YYYY-MM.jsonl` の系列
+- **UI は HTML テンプレート + JSON 読み込み型**で、ブラウザで開くだけで動く形にする (WebSocket / node-pty / xterm.js は不要)。tracer の `dashboard-template.html` (HTML + JSON をブラウザで開くだけ) が先行実装
+- **kitty 経由の運用は既存のまま**。UI は観察・振り返り用の read-only ダッシュボードに絞り、対話的な制御チャネルは足さない
+- **verification**: 各 milestone (v0.13.0 / v0.14.0 / v0.15.0 / v1.0) で「DB / サーバー / hosting コスト増が発生していない」ことを共通の検収項目にする
+- **Why**: volante は konuma 個人が複数セッションを差配するためのツール。SaaS 化しない。DB / サーバーを持てば運用コスト・障害点・認証が要る。ローカルファイル + ブラウザで足りる範囲に留めれば、増分は git commit だけで済む
