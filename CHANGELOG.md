@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.15.3] - 2026-07-09
+
+- **v0.16.0 の revert** (commit 111dc8e、konuma FB「過剰実装、意図と乖離」):
+  Spec schema v2 化・attachments 揮発層・SKILL.md 大改修・dashboard 刷新の BREAKING を全 revert し、
+  konuma の実意「w34 表記を epic 起点にしたい」の最小変更のみを再実装
+- **`journal/goals.md` の列順入替** (repo × 正本 が主キー):
+  - 現: `| session (直近 window) | repo | 正本 | ゴール 1 行 | 優先度 | 登録日 |`
+  - 新: `| repo | 正本 | session (役割名) | ゴール 1 行 | 優先度 | 登録日 |`
+  - session 列から `(w24)` `(w34)` 等 window id suffix を除去 (役割名だけ残す)
+  - 冒頭説明を「repo × 正本 主キー、window id は goals.md に載せず決定/巡回ログのみで使う」に更新
+- **Spec ファイル rename** (揮発 window id → 安定 role 名):
+  - 具体 rename 2 件は journal/ (runtime state) 側で実施済み
+  - Spec schema v1 (`goal` + `acceptance_criteria` の 2 要素) 自体は不変
+- **skill 側 (`skills/volante/`) の完全 genericize** (konuma FB「pitto/payroll などこの skill が知る必要のないものが散見される」):
+  - SKILL.md 4. 監督 AI subagent 節: 「試験運用は pitto 対象のみ (w24 / w59)」→
+    「試験運用対象は konuma が別途指定する」
+  - SKILL.md の起源注釈から具体 window id / project 名 (w24/w34/w59/pitto) を除去し
+    日付 + 抽象説明に置換 (why は保持):
+    - 枝 1 `--admin` 起源: 「2026-07-08 22:34 w59 PR #284 --admin merge」→
+      「2026-07-08 の PR merge 時に branch protection bypass が発生した実事例」
+    - 枝 4 次アクション代答起源: 「2026-07-08 21:04 w24 触らない判断... 22:14 w59 #137 代答」→
+      「2026-07-08 の触らない判断で 30 分停滞した実事例の再発防止 / 同日、konuma 宛て質問への次アクション
+      代答で 30 分以内に全完了した実運用実証」
+    - 枝 1 2h 停滞起源: 「2026-07-08 w24 の 2h 停滞」→「2026-07-08 の 2h 停滞事例」
+    - 7.2 回収漏れ起源: 「2026-07-07 w34 の回収漏れ未遂」→「2026-07-07 の回収漏れ未遂事例」
+  - `scripts/oversight-subagent.md`: frontmatter description と本文の pitto 参照を除去
+  - `templates/spec-template.example.json`: payroll 例 → generic placeholder
+  - `templates/decision-event.example.json`: pitto/payroll/w59 → `<window-id>` `<owner/repo>` placeholder
+  - `templates/decision-event.schema.json`: description 中の w59 例 → `<window-id>` placeholder
+- **dashboard 見出しの最小調整**: `Sessions (Spec v1)` → `Sessions (epic 主体、Spec v1)`
+  (renaming で自然に spec basename が role 名 = pitto-kaizen / pitto-payroll になり、window id が消える)
+- **意図的にやっていないこと**:
+  - Spec schema v2 化 (v1 = session-keyed のまま)
+  - attachments-rebuild.py / attachments.json (revert 済み)
+  - SKILL.md の芯・判断木・7.1 準備・監督 AI 入力 contract の大改修
+  - 過去 decisions/patrols の w24/w34/w59/w61/w69 表記の遡及書換え
+- 判断木の枝 1〜5 の意味・優先順位・番号は不変、芯 1〜9 も不変
+
 ## [0.15.2] - 2026-07-09
 
 - **dashboard: Recent patrols を表形式に変更** (issue #17 継続、konuma FB「読みづらい」):

@@ -10,7 +10,7 @@
     "decision_id": {
       "type": "string",
       "minLength": 1,
-      "description": "エントリの一意 id。慣例: YYYY-MM-DD-HHMM-<window id> (例: 2026-07-09-2214-w59)"
+      "description": "エントリの一意 id。慣例: YYYY-MM-DD-HHMM-<window-id>"
     },
     "timestamp": {
       "type": "string",
@@ -20,7 +20,7 @@
     "target_session": {
       "type": "string",
       "minLength": 1,
-      "description": "kitty window id + session 名 (例: 'w59 payroll kaizen')"
+      "description": "kitty window id + session 役割名 (例: '<window-id> <session-role>')"
     },
     "branch": {
       "type": "string",

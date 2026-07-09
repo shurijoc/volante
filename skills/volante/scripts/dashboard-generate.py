@@ -164,7 +164,7 @@ TEMPLATE = """<!DOCTYPE html>
   </header>
 
   <section>
-    <h2>Sessions (Spec v1)</h2>
+    <h2>Sessions (epic 主体、Spec v1)</h2>
     <div id="specs" class="spec-grid"></div>
   </section>
 
