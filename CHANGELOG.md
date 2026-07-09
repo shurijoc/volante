@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.15.0] - 2026-07-09
+
+- **監督 AI subagent v1 (試験運用、pitto 対象のみ)** (issue #16、親 #10 の v0.15.0):
+  - `scripts/oversight-subagent.md` を新設。frontmatter (`name: volante-oversight`, `model: opus`) +
+    role / input contract / output contract / 禁止事項 / 判定手順。**opus + effort max、フレッシュ文脈**
+    (global CLAUDE.md「effort max」節に準拠、親セッション側で `/effort max` に上げて起動する運用)
+  - **判定範囲は 2 機能のみ** (質問応答代行は v0.16.0 以降):
+    1. **Verifier**: STATUS ↔ Spec の `acceptance_criteria` 乖離チェック (乖離チェック 系統 2 の独立判定)
+    2. **エスカレーション判定**: main の枝 2/4/5 自律判断が枝 1 相当でないかの二次チェック
+  - **入力**: STATUS + Spec + decisions JSONL 直近 20 件 + tracer goal file (read-only、対象 repo 依存)
+  - **出力**: JSON 1 件 (verifier / escalation / confidence / notes)。main が decisions JSONL に
+    `branch: "監督 AI 判定"` として 1 event 追加
+  - **禁止事項** (subagent 側で明示): kitty send-text、ファイル書き換え、Agent / WebSearch / WebFetch、
+    機密の記載、Hypothesis の Fact 化。順守できないときは `unknown` / `unclear` で返す
+  - **試験運用中は main が最終判断者**。食い違ったら decisions に記録し次サイクルの retro (7.6) で扱う
+- SKILL.md 4. checklist の末尾に「監督 AI subagent」節を追加 (判断木 枝 1-5 の意味・優先順位・番号は不変)
+
 ## [0.14.0] - 2026-07-09
 
 - **decisions ログ JSONL 併記化 + 抽出スクリプト** (issue #15、親 #10 の v0.14.0):
