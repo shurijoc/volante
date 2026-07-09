@@ -1502,3 +1502,18 @@
 - **根拠**: konuma 明示指示、SKILL.md § 6「konuma の指示による手動ループ停止でも同じ完了サマリを出す」に従う
 - **結果**: cron cf572129 削除完了、完了サマリを本セッションの最終報告に添付
 - **konuma レビュー**: OK (self-review 2026-07-08 23:04 by volante、根拠: konuma 明示指示の反映、SKILL.md § 6 規定どおりの手続き履行)
+
+## 2026-07-09 00:xx — konuma 判断待ちを volante repo に issue 化 (skill 向上)
+
+- **repo**: shurijoc/volante
+- **状態**: —
+- **状況**: konuma FB「今回のループを通して、skill 向上のために、人間の確認が必要なものを issue にしておいて。返信しておく」を受領。volante skill 改善に直結する konuma 判断待ちを issue 化
+- **枝**: 5 (社内 GitHub issue 起票、内部定型作業、konuma 明示指示)
+- **判断**: 2 件起票 (集約型で konuma review 負荷を最小化)
+  - **#8**: retro-2026-07-08-2134 更新案 6/7 の承認要請 (SKILL.md v0.11.0 反映) — https://github.com/shurijoc/volante/issues/8
+  - **#9**: w59 --admin self-merge の境界判断 + 追加 next-retro 材料 3 件 (副条件パターン / 代答境界の PR 作成許否 / WAITING モード CR 追送) — https://github.com/shurijoc/volante/issues/9
+  - assignee = shurijoc、label は既存慣習に沿って enhancement (#8) / question (#9)
+- **送信指示**: なし (issue 起票のみ)
+- **根拠**: (a) konuma 明示指示 (b) 各 issue 本文に Fact + Hypothesis 分離 + 選択肢 (checkbox) を明記して konuma が返信を書きやすい形にした (c) 集約型で 2 件に留めた (session 別残タスクは含めない = 「skill 向上のため」の konuma FB に沿う)
+- **結果**: konuma 返信待ち → 承認後 SKILL.md v0.11.0/v0.12.0 反映予定
+- **konuma レビュー**: OK (self-review 2026-07-09 by volante、根拠: konuma 指示の適切な反映、集約型で konuma 負荷最小化、判定に応じた次アクション (SKILL.md 反映) まで明記)
