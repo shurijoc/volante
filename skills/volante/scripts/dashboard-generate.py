@@ -138,6 +138,64 @@ def fetch_open_issue_count(repo: str) -> dict:
         return {"count": None, "source": "", "error": f"{type(e).__name__}"}
 
 
+def fetch_open_prs(repo: str, limit: int = 20) -> dict:
+    """Fetch open PRs (list) via gh pr list. Returns {"prs": [...], "error": str}."""
+    if not repo or "/" not in repo:
+        return {"prs": [], "error": "invalid repo"}
+    try:
+        out = subprocess.check_output(
+            ["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", str(limit),
+             "--json", "number,title,mergeStateStatus,statusCheckRollup,reviewDecision,url,isDraft,headRefName"],
+            stderr=subprocess.PIPE, timeout=20,
+        )
+        prs = json.loads(out.decode("utf-8"))
+        # Simplify statusCheckRollup to a single status
+        for pr in prs:
+            checks = pr.get("statusCheckRollup") or []
+            if not checks:
+                pr["ciSummary"] = ""
+                continue
+            fail = sum(1 for c in checks if (c.get("conclusion") == "FAILURE" or c.get("status") == "FAILURE"))
+            pending = sum(1 for c in checks if c.get("status") in ("IN_PROGRESS", "QUEUED", "PENDING"))
+            success = sum(1 for c in checks if c.get("conclusion") in ("SUCCESS", "NEUTRAL", "SKIPPED"))
+            total = len(checks)
+            if fail:
+                pr["ciSummary"] = f"❌ {fail}/{total} fail"
+            elif pending:
+                pr["ciSummary"] = f"⏳ {pending}/{total} pending"
+            elif success == total:
+                pr["ciSummary"] = f"✓ {total} pass"
+            else:
+                pr["ciSummary"] = f"{success}/{total} ok"
+            del pr["statusCheckRollup"]
+        return {"prs": prs, "error": ""}
+    except FileNotFoundError:
+        return {"prs": [], "error": "gh CLI not found"}
+    except subprocess.CalledProcessError as e:
+        return {"prs": [], "error": f"gh failed: {e.stderr.decode('utf-8', errors='ignore').strip()[:200]}"}
+    except (subprocess.TimeoutExpired, ValueError, json.JSONDecodeError) as e:
+        return {"prs": [], "error": f"{type(e).__name__}"}
+
+
+def fetch_open_issues_list(repo: str, limit: int = 30) -> dict:
+    """Fetch open issue list via gh issue list."""
+    if not repo or "/" not in repo:
+        return {"issues": [], "error": "invalid repo"}
+    try:
+        out = subprocess.check_output(
+            ["gh", "issue", "list", "--repo", repo, "--state", "open", "--limit", str(limit),
+             "--json", "number,title,url,labels,updatedAt"],
+            stderr=subprocess.PIPE, timeout=20,
+        )
+        return {"issues": json.loads(out.decode("utf-8")), "error": ""}
+    except FileNotFoundError:
+        return {"issues": [], "error": "gh CLI not found"}
+    except subprocess.CalledProcessError as e:
+        return {"issues": [], "error": f"gh failed: {e.stderr.decode('utf-8', errors='ignore').strip()[:200]}"}
+    except (subprocess.TimeoutExpired, ValueError, json.JSONDecodeError) as e:
+        return {"issues": [], "error": f"{type(e).__name__}"}
+
+
 def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
     path = journal / "patrols.md"
     if not path.exists():
@@ -273,6 +331,28 @@ TEMPLATE = """<!DOCTYPE html>
   #pm-table td.metric-ts { font-family: var(--mono); font-size: 11.5px; color: var(--text-mute);
                            white-space: nowrap; }
   .placeholder { padding: 32px; text-align: center; color: var(--text-mute); font-style: italic; }
+  .epic-tab-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+                   padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .epic-tab-head .name { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--accent); }
+  .epic-tab-head .repo-link { font-family: var(--mono); font-size: 13px; color: var(--text-mute); }
+  .epic-tab-head .repo-link a { color: inherit; text-decoration: none; }
+  .epic-tab-head .repo-link a:hover { text-decoration: underline; }
+  .epic-tab-head .goal-txt { flex-basis: 100%; font-size: 14px; margin-top: 4px; }
+  .criteria-list { padding-left: 22px; margin: 6px 0 0; font-size: 13px; }
+  .criteria-list li { margin-bottom: 4px; }
+  .criteria-list li::marker { color: var(--text-mute); }
+  .pr-row a, .issue-row a { color: var(--accent); text-decoration: none; font-family: var(--mono); }
+  .pr-row a:hover, .issue-row a:hover { text-decoration: underline; }
+  .pr-row .title, .issue-row .title { font-size: 13px; }
+  .pr-row .ci { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
+  .pr-row .num, .issue-row .num { font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+                                  white-space: nowrap; width: 1%; }
+  .pr-row .draft-tag { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 3px;
+                       background: var(--surface); border: 1px solid var(--border); color: var(--text-mute);
+                       margin-right: 4px; }
+  .label-chip { display: inline-block; font-size: 10.5px; padding: 1px 6px; border-radius: 8px;
+                background: var(--surface); border: 1px solid var(--border); margin-right: 3px;
+                color: var(--text-mute); }
 </style>
 </head>
 <body>
@@ -354,12 +434,175 @@ TEMPLATE = """<!DOCTYPE html>
       const pane = document.createElement('div');
       pane.id = t.id;
       pane.className = 'tab-pane';
-      const ph = document.createElement('div');
-      ph.className = 'placeholder';
-      ph.textContent = '(#21 で epic 別の開発者ビューを実装予定 — Goal + acceptance_criteria check list / 開いてる PR + CI / 開いてる issue / 直近 decisions / 監督 AI 判定履歴 等)';
-      pane.appendChild(ph);
+      renderEpicTab(pane, t.spec, data);
       tabEpicsContainer.appendChild(pane);
     }
+  }
+
+  // ===== Per-epic tab renderer (#21) =====
+  function renderEpicTab(pane, s, data) {
+    const spec = s.spec || {};
+    const m = s.metrics || {};
+
+    // Head: name + repo link + status badge + goal
+    const head = document.createElement('div');
+    head.className = 'epic-tab-head';
+    const name = document.createElement('span'); name.className = 'name'; name.textContent = s.session; head.appendChild(name);
+    if (s.repo) {
+      const repoWrap = document.createElement('span'); repoWrap.className = 'repo-link';
+      const repoA = document.createElement('a');
+      repoA.href = 'https://github.com/' + s.repo; repoA.target = '_blank'; repoA.rel = 'noopener';
+      repoA.textContent = s.repo;
+      repoWrap.appendChild(repoA);
+      head.appendChild(repoWrap);
+    }
+    if (s.priority) {
+      const pri = document.createElement('span'); pri.className = 'repo-link';
+      pri.textContent = '優先度: ' + s.priority; head.appendChild(pri);
+    }
+    const badge = document.createElement('span');
+    badge.className = 'status-badge ' + (m.status || 'on-track');
+    badge.textContent = m.status || 'on-track';
+    head.appendChild(badge);
+    if (spec.goal) {
+      const g = document.createElement('div'); g.className = 'goal-txt'; g.textContent = spec.goal;
+      head.appendChild(g);
+    }
+    pane.appendChild(head);
+
+    // acceptance_criteria (open by default in epic tab)
+    if (spec.acceptance_criteria && spec.acceptance_criteria.length > 0) {
+      const sec = document.createElement('section');
+      const h = document.createElement('h2'); h.textContent = 'acceptance_criteria (' + spec.acceptance_criteria.length + ')'; sec.appendChild(h);
+      const ul = document.createElement('ul'); ul.className = 'criteria-list';
+      for (const c of spec.acceptance_criteria) {
+        const li = document.createElement('li'); li.textContent = c; ul.appendChild(li);
+      }
+      sec.appendChild(ul);
+      pane.appendChild(sec);
+    }
+
+    // Open PRs
+    const prSec = document.createElement('section');
+    const prH = document.createElement('h2'); prH.textContent = '開いてる PR' + (s.repo ? ' (' + s.repo + ')' : ''); prSec.appendChild(prH);
+    const prd = s.prs || {};
+    if (prd.error) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = prd.error; prSec.appendChild(em);
+    } else if (!prd.prs || prd.prs.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(open PR なし)'; prSec.appendChild(em);
+    } else {
+      const tbl = document.createElement('table');
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>#</th><th>title</th><th>CI</th><th>review</th><th>merge</th></tr>';
+      tbl.appendChild(thead);
+      const tb = document.createElement('tbody');
+      for (const pr of prd.prs) {
+        const tr = document.createElement('tr'); tr.className = 'pr-row';
+        const num = document.createElement('td'); num.className = 'num';
+        const a = document.createElement('a'); a.href = pr.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '#' + pr.number;
+        num.appendChild(a);
+        tr.appendChild(num);
+        const title = document.createElement('td'); title.className = 'title';
+        if (pr.isDraft) {
+          const dt = document.createElement('span'); dt.className = 'draft-tag'; dt.textContent = 'draft';
+          title.appendChild(dt);
+        }
+        title.appendChild(document.createTextNode(pr.title || ''));
+        tr.appendChild(title);
+        const ci = document.createElement('td'); ci.className = 'ci'; ci.textContent = pr.ciSummary || ''; tr.appendChild(ci);
+        const rev = document.createElement('td'); rev.className = 'ci'; rev.textContent = pr.reviewDecision || ''; tr.appendChild(rev);
+        const mrg = document.createElement('td'); mrg.className = 'ci'; mrg.textContent = pr.mergeStateStatus || ''; tr.appendChild(mrg);
+        tb.appendChild(tr);
+      }
+      tbl.appendChild(tb);
+      prSec.appendChild(tbl);
+    }
+    pane.appendChild(prSec);
+
+    // Open Issues
+    const isSec = document.createElement('section');
+    const isH = document.createElement('h2'); isH.textContent = '開いてる issue' + (s.repo ? ' (' + s.repo + ')' : ''); isSec.appendChild(isH);
+    const isd = s.issues || {};
+    if (isd.error) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = isd.error; isSec.appendChild(em);
+    } else if (!isd.issues || isd.issues.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(open issue なし)'; isSec.appendChild(em);
+    } else {
+      const tbl = document.createElement('table');
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>#</th><th>title</th><th>labels</th><th>updated</th></tr>';
+      tbl.appendChild(thead);
+      const tb = document.createElement('tbody');
+      for (const iss of isd.issues) {
+        const tr = document.createElement('tr'); tr.className = 'issue-row';
+        const num = document.createElement('td'); num.className = 'num';
+        const a = document.createElement('a'); a.href = iss.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '#' + iss.number;
+        num.appendChild(a); tr.appendChild(num);
+        const title = document.createElement('td'); title.className = 'title'; title.textContent = iss.title || ''; tr.appendChild(title);
+        const lbl = document.createElement('td');
+        for (const l of iss.labels || []) {
+          const chip = document.createElement('span'); chip.className = 'label-chip'; chip.textContent = l.name || l; lbl.appendChild(chip);
+        }
+        tr.appendChild(lbl);
+        const upd = document.createElement('td'); upd.className = 'metric-ts';
+        upd.textContent = (iss.updatedAt || '').replace('T', ' ').slice(0, 16); tr.appendChild(upd);
+        tb.appendChild(tr);
+      }
+      tbl.appendChild(tb);
+      isSec.appendChild(tbl);
+    }
+    pane.appendChild(isSec);
+
+    // Filtered decisions (this epic only)
+    const decSec = document.createElement('section');
+    const decH = document.createElement('h2'); decH.textContent = '直近 decisions (' + s.session + ' 関連)'; decSec.appendChild(decH);
+    const relevant = (data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session));
+    if (relevant.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(該当なし)'; decSec.appendChild(em);
+    } else {
+      const tl = document.createElement('div'); tl.className = 'timeline';
+      for (const ev of relevant.slice().reverse()) {
+        tl.appendChild(renderEvent(ev));
+      }
+      decSec.appendChild(tl);
+    }
+    pane.appendChild(decSec);
+
+    // Oversight (v0.15.0) history for this epic
+    const ovSec = document.createElement('section');
+    const ovH = document.createElement('h2'); ovH.textContent = '監督 AI 判定履歴 (' + s.session + ' 関連)'; ovSec.appendChild(ovH);
+    const ovs = (data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session)
+                                                    && String(ev.branch || '').includes('監督 AI'));
+    if (ovs.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty';
+      em.textContent = '(監督 AI 判定なし。試験運用対象未指定 or 未起動)'; ovSec.appendChild(em);
+    } else {
+      const tl = document.createElement('div'); tl.className = 'timeline';
+      for (const ev of ovs.slice().reverse()) tl.appendChild(renderEvent(ev));
+      ovSec.appendChild(tl);
+    }
+    pane.appendChild(ovSec);
+  }
+
+  // Shared event renderer (used by main timeline and per-epic timeline)
+  function renderEvent(ev) {
+    const el = document.createElement('div');
+    const branch = String(ev.branch || '');
+    const branchClass = branch === '1' ? 'branch-1' : (branch.includes('監督 AI') ? 'branch-oversight' : '');
+    el.className = 'event ' + branchClass;
+    const head = document.createElement('div'); head.className = 'head';
+    const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || ''; head.appendChild(ts);
+    const br = document.createElement('span'); br.className = 'branch'; br.textContent = '枝 ' + branch; head.appendChild(br);
+    const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || ''; head.appendChild(tgt);
+    el.appendChild(head);
+    const dec = document.createElement('div'); dec.className = 'decision'; dec.textContent = ev.decision || ''; el.appendChild(dec);
+    if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
+    if (ev.self_review) {
+      const rv = document.createElement('div');
+      const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
+      rv.className = 'review ' + cls; rv.textContent = ev.self_review; el.appendChild(rv);
+    }
+    return el;
   }
 
   // ===== PM table =====
@@ -477,29 +720,7 @@ TEMPLATE = """<!DOCTYPE html>
   if (data.decisions.length === 0) {
     decEl.innerHTML = '<div class="empty">decisions-YYYY-MM.jsonl 未生成 or 空 (v0.14.0 以降で新規エントリ併記化)</div>';
   } else {
-    for (const ev of data.decisions.slice().reverse()) {
-      const el = document.createElement('div');
-      const branch = String(ev.branch || '');
-      const branchClass = branch === '1' ? 'branch-1' : (branch.includes('監督 AI') ? 'branch-oversight' : '');
-      el.className = 'event ' + branchClass;
-      const head = document.createElement('div');
-      head.className = 'head';
-      const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || '';
-      const br = document.createElement('span'); br.className = 'branch'; br.textContent = '枝 ' + branch;
-      const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || '';
-      head.appendChild(ts); head.appendChild(br); head.appendChild(tgt);
-      el.appendChild(head);
-      const dec = document.createElement('div'); dec.className = 'decision'; dec.textContent = ev.decision || ''; el.appendChild(dec);
-      if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
-      if (ev.self_review) {
-        const rv = document.createElement('div');
-        const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
-        rv.className = 'review ' + cls;
-        rv.textContent = ev.self_review;
-        el.appendChild(rv);
-      }
-      decEl.appendChild(el);
-    }
+    for (const ev of data.decisions.slice().reverse()) decEl.appendChild(renderEvent(ev));
   }
 
   const patBody = document.querySelector('#patrols tbody');
@@ -556,15 +777,27 @@ def main() -> None:
     goals_rows = parse_goals_md(journal)
 
     # Resolve repo + fetch progress per spec (v0.15.4+, cached at generate time per CLAUDE.md 設計原則)
+    # per-repo cache to avoid re-querying same repo (multi-Spec-per-repo case)
+    repo_cache: dict[str, dict] = {}
     for spec in specs:
         basename = spec["session"]
         repo = resolve_repo_for_spec(basename, goals_rows)
         spec["repo"] = repo
         if repo and not args.no_gh:
-            progress = fetch_open_issue_count(repo)
-            spec["progress"] = progress
+            if repo not in repo_cache:
+                repo_cache[repo] = {
+                    "progress": fetch_open_issue_count(repo),
+                    "prs": fetch_open_prs(repo),
+                    "issues": fetch_open_issues_list(repo),
+                }
+            spec["progress"] = repo_cache[repo]["progress"]
+            spec["prs"] = repo_cache[repo]["prs"]
+            spec["issues"] = repo_cache[repo]["issues"]
         else:
-            spec["progress"] = {"count": None, "source": "", "error": "no repo resolved" if not repo else "gh skipped"}
+            reason = "no repo resolved" if not repo else "gh skipped"
+            spec["progress"] = {"count": None, "source": "", "error": reason}
+            spec["prs"] = {"prs": [], "error": reason}
+            spec["issues"] = {"issues": [], "error": reason}
         # Attach 優先度 from goals.md (first matching row by repo)
         priority = ""
         for row in goals_rows:

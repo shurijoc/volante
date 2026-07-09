@@ -106,13 +106,35 @@
   #pm-table td.metric-ts { font-family: var(--mono); font-size: 11.5px; color: var(--text-mute);
                            white-space: nowrap; }
   .placeholder { padding: 32px; text-align: center; color: var(--text-mute); font-style: italic; }
+  .epic-tab-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+                   padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .epic-tab-head .name { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--accent); }
+  .epic-tab-head .repo-link { font-family: var(--mono); font-size: 13px; color: var(--text-mute); }
+  .epic-tab-head .repo-link a { color: inherit; text-decoration: none; }
+  .epic-tab-head .repo-link a:hover { text-decoration: underline; }
+  .epic-tab-head .goal-txt { flex-basis: 100%; font-size: 14px; margin-top: 4px; }
+  .criteria-list { padding-left: 22px; margin: 6px 0 0; font-size: 13px; }
+  .criteria-list li { margin-bottom: 4px; }
+  .criteria-list li::marker { color: var(--text-mute); }
+  .pr-row a, .issue-row a { color: var(--accent); text-decoration: none; font-family: var(--mono); }
+  .pr-row a:hover, .issue-row a:hover { text-decoration: underline; }
+  .pr-row .title, .issue-row .title { font-size: 13px; }
+  .pr-row .ci { font-family: var(--mono); font-size: 11.5px; white-space: nowrap; }
+  .pr-row .num, .issue-row .num { font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+                                  white-space: nowrap; width: 1%; }
+  .pr-row .draft-tag { display: inline-block; font-size: 10px; padding: 1px 5px; border-radius: 3px;
+                       background: var(--surface); border: 1px solid var(--border); color: var(--text-mute);
+                       margin-right: 4px; }
+  .label-chip { display: inline-block; font-size: 10.5px; padding: 1px 6px; border-radius: 8px;
+                background: var(--surface); border: 1px solid var(--border); margin-right: 3px;
+                color: var(--text-mute); }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>volante dashboard</h1>
-    <span class="meta">. · generated 2026-07-09 v0.15.5 (issue #17 MVP)</span>
+    <span class="meta">. · generated 2026-07-09 v0.15.6 (issue #17 MVP)</span>
   </header>
 
   <div class="tabs">
@@ -163,7 +185,7 @@
   </div>
 </div>
 
-<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-kaizen", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}, "priority": "仮: 中 (達成済み)", "metrics": {"status": "done", "latest_ts": "", "blockers": 0, "approval_pending": 0, "decisions_count": 0}}, {"session": "pitto-payroll", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}, "priority": "仮: 中 (達成済み)", "metrics": {"status": "stalled", "latest_ts": "", "blockers": 0, "approval_pending": 0, "decisions_count": 0}}], "decisions": [], "patrols": [{"datetime": "2026-07-08 21:34", "summary": "観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち)"}, {"datetime": "2026-07-08 21:44", "summary": "観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0"}, {"datetime": "2026-07-08 21:54", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目"}, {"datetime": "2026-07-08 22:04", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了"}, {"datetime": "2026-07-08 22:14", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例"}, {"datetime": "2026-07-08 22:24", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用)"}, {"datetime": "2026-07-08 22:34", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要"}, {"datetime": "2026-07-08 22:44", "summary": "観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続"}, {"datetime": "2026-07-08 22:54", "summary": "観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止"}, {"datetime": "2026-07-08 23:04", "summary": "観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回)"}], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}], "goals": [{"repo": "ma-navi/pitto", "source": "issue-495 (M&A ナビ org 追加) + PR #496 (self-check)", "session_role": "ma_navi org kaizen loop 立ち上げ", "goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで **達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み、後片付け完了)**。follow-up 3 件は konuma 判断待ち (drift 3 件・schema-only PR verify 問題)", "priority": "仮: 中 (達成済み)", "registered": "2026-07-08"}, {"repo": "ma-navi/pitto", "source": "[#365](https://github.com/ma-navi/pitto/issues/365) + `pitto/.claude/goals/payroll.md` (tracer, autonomy L2)", "session_role": "payroll kaizen", "goal": "payroll 照合 kaizen の再開 (明日=07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "priority": "仮: 中", "registered": "2026-07-07"}, {"repo": "ma-navi/navibot", "source": "[epic #802](https://github.com/ma-navi/navibot/issues/802)", "session_role": "navibot×Forge 統合", "goal": "ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "ma-navi/ma_navi_forge", "source": "[epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211)", "session_role": "AI agent v1", "goal": "v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち)", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "/Users/navi (home)", "source": "~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md", "session_role": "memory 統治ループ", "goal": "定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done", "priority": "仮: 低", "registered": "2026-07-07"}]}</script>
+<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-kaizen", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}, "prs": {"prs": [{"headRefName": "feat/aggregate-bank-pdf-split", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 408, "reviewDecision": "", "title": "feat(poc): #393 総合振込 debit 分割 — bank_transfer_detail PDF parser + reconciler 改善", "url": "https://github.com/ma-navi/pitto/pull/408", "ciSummary": "✓ 3 pass"}, {"headRefName": "fix/372-seed-note-misclass", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 375, "reviewDecision": "", "title": "fix(poc): cosmos seed 未着手 7 行の triage 誤分類を解消", "url": "https://github.com/ma-navi/pitto/pull/375", "ciSummary": "✓ 3 pass"}, {"headRefName": "dependabot/npm_and_yarn/development-dependencies-3bc154b33b", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 368, "reviewDecision": "", "title": "chore(deps-dev): bump @types/node from 25.9.4 to 26.1.0 in the development-dependencies group across 1 directory", "url": "https://github.com/ma-navi/pitto/pull/368", "ciSummary": "❌ 1/3 fail"}, {"headRefName": "dependabot/npm_and_yarn/production-dependencies-1fdd88ad7e", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 367, "reviewDecision": "", "title": "chore(deps): bump the production-dependencies group across 1 directory with 2 updates", "url": "https://github.com/ma-navi/pitto/pull/367", "ciSummary": "❌ 1/3 fail"}, {"headRefName": "dependabot/github_actions/actions/checkout-7", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 366, "reviewDecision": "", "title": "chore(deps): bump actions/checkout from 4 to 7", "url": "https://github.com/ma-navi/pitto/pull/366", "ciSummary": "✓ 5 pass"}], "error": ""}, "issues": {"issues": [{"labels": [{"id": "LA_kwDOSrgxD88AAAACndrMBA", "name": "backlog", "description": "将来着手・現在は射程外", "color": "c2e0c6"}, {"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 498, "title": "chore(infra): schema-only / 骨格-only PR で kaizen-loop verify が worktree runtime 不足で回せない件", "updatedAt": "2026-07-08T10:23:34Z", "url": "https://github.com/ma-navi/pitto/issues/498"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClXGDVg", "name": "architecture-audit", "description": "2026-05-31 全体アーキテクチャ監査で起票", "color": "5319e7"}, {"id": "LA_kwDOSrgxD88AAAACndrMBA", "name": "backlog", "description": "将来着手・現在は射程外", "color": "c2e0c6"}, {"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 497, "title": "chore(architecture): orgs/_id-registry.json drift 3 件修正 + validate-id-registry.ts pre-push 組み込み", "updatedAt": "2026-07-08T10:23:13Z", "url": "https://github.com/ma-navi/pitto/issues/497"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 489, "title": "[運用] issue close 忘れ 週次監査レポート (毎週月曜 09:07 JST 自動コメント)", "updatedAt": "2026-07-07T05:19:57Z", "url": "https://github.com/ma-navi/pitto/issues/489"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACndrMBA", "name": "backlog", "description": "将来着手・現在は射程外", "color": "c2e0c6"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}, {"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 488, "title": "[payroll] gate 強化 follow-up: baseline 受理の耐久記録 / input-master fingerprint / 法定控除 gate 昇格判断", "updatedAt": "2026-07-07T09:36:56Z", "url": "https://github.com/ma-navi/pitto/issues/488"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACp9wXjA", "name": "goal:bk-cosmos", "description": "", "color": "1d76db"}], "number": 452, "title": "[cosmos] 軽減税率混在の受領証を税率別行へ分割する汎用 feature (pochi/receipt パイプライン)", "updatedAt": "2026-07-03T08:06:35Z", "url": "https://github.com/ma-navi/pitto/issues/452"}, {"labels": [], "number": 441, "title": "chore(poc): cosmos 売上返還・小粒4種の source/parser 調査 — approved_exclusion 残 約30件の解消方針決め", "updatedAt": "2026-07-03T07:42:25Z", "url": "https://github.com/ma-navi/pitto/issues/441"}, {"labels": [], "number": 439, "title": "feat(poc): cosmos 岐阜信用金庫 通帳 parser 実装 — approved_exclusion 最大29件解消（証憑受領確認が先行）", "updatedAt": "2026-07-03T05:34:59Z", "url": "https://github.com/ma-navi/pitto/issues/439"}, {"labels": [], "number": 437, "title": "feat(poc): cosmos 経理報告（買掛/仕入明細）parser 実装 — approved_exclusion 最大62件解消", "updatedAt": "2026-07-03T06:23:14Z", "url": "https://github.com/ma-navi/pitto/issues/437"}, {"labels": [], "number": 435, "title": "cosmos 2026-02: B-3 買掛金 取り崩し4件 (Slice #2 of #370, 優先度低)", "updatedAt": "2026-07-03T05:03:30Z", "url": "https://github.com/ma-navi/pitto/issues/435"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}], "number": 427, "title": "[jingu] 神宮先生 確認・依頼事項トラッカー (パスワード解除 / 1月分総合振込内訳 / UFJ普通預金明細 / でんさい決済明細)", "updatedAt": "2026-07-07T11:04:59Z", "url": "https://github.com/ma-navi/pitto/issues/427"}, {"labels": [], "number": 424, "title": "[cosmos] 月次売上 相殺手数料仕訳の generator 追加 (+12 entries, +3.8% NSM)", "updatedAt": "2026-07-03T07:52:48Z", "url": "https://github.com/ma-navi/pitto/issues/424"}, {"labels": [], "number": 421, "title": "[cosmos] 楽天カード月跨ぎ対応: split_per_charge_and_settle (#388 follow-up)", "updatedAt": "2026-07-03T07:53:16Z", "url": "https://github.com/ma-navi/pitto/issues/421"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}], "number": 398, "title": "[jingu] 融資返済/利息: unmatched truth ~10 lines (長期借入金/支払利息/普通預金)", "updatedAt": "2026-07-03T03:49:20Z", "url": "https://github.com/ma-navi/pitto/issues/398"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}, {"id": "LA_kwDOSrgxD88AAAACojpMjw", "name": "proj:cosmos", "description": "cosmos プロジェクト", "color": "0e8a16"}, {"id": "LA_kwDOSrgxD88AAAACojpMxg", "name": "side", "description": "PDM未承認のサイド開発", "color": "c5def5"}], "number": 371, "title": "cosmos triage dashboard を tracer 計測サイクルで自動更新する", "updatedAt": "2026-06-23T07:20:46Z", "url": "https://github.com/ma-navi/pitto/issues/371"}, {"labels": [], "number": 370, "title": "cosmos 2026-02: B-3 買掛金 23件 通用ベース照合試行 (self-improvable)", "updatedAt": "2026-07-03T04:50:29Z", "url": "https://github.com/ma-navi/pitto/issues/370"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 365, "title": "[payroll][blocked] 外部依頼トラッカー (賃金台帳・住民税通知・事業所所在地・foodtech 翌月 truth)", "updatedAt": "2026-07-08T07:07:51Z", "url": "https://github.com/ma-navi/pitto/issues/365"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 364, "title": "[payroll] nissei 所定 7.5h 投入 + 月給者 self-improvable 分 master 完成", "updatedAt": "2026-07-07T08:31:31Z", "url": "https://github.com/ma-navi/pitto/issues/364"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 363, "title": "[payroll] tm_giken multi-office 15部署対応 (本社+東京支店)", "updatedAt": "2026-06-19T06:01:20Z", "url": "https://github.com/ma-navi/pitto/issues/363"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 362, "title": "[payroll] tm_giken 役員2名 SMR・甲乙・使用人兼務確定", "updatedAt": "2026-07-07T08:39:10Z", "url": "https://github.com/ma-navi/pitto/issues/362"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 361, "title": "[payroll][blocked] tm_giken 固定残業時間 master 取込 (賃金台帳依存)", "updatedAt": "2026-06-19T06:01:07Z", "url": "https://github.com/ma-navi/pitto/issues/361"}, {"labels": [], "number": 357, "title": "harness follow-up: score 劣化を CI で hard block (合成 fixture) + P2 整理 (Refs #345)", "updatedAt": "2026-06-18T13:39:43Z", "url": "https://github.com/ma-navi/pitto/issues/357"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAAClXGDVg", "name": "architecture-audit", "description": "2026-05-31 全体アーキテクチャ監査で起票", "color": "5319e7"}], "number": 345, "title": "agent harness 棚卸し: prompt依存→Sensor機械強制のギャップ対応 (P0 score gate / branch protection / PII commit block)", "updatedAt": "2026-06-18T13:39:51Z", "url": "https://github.com/ma-navi/pitto/issues/345"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 336, "title": "[goal:nsm][cosmos] P4-3 3ヶ月評価集計 (analyze-funnel-multi 新規開発)", "updatedAt": "2026-07-03T05:11:27Z", "url": "https://github.com/ma-navi/pitto/issues/336"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 331, "title": "[goal:nsm][cosmos] P4-2 2026-01 / 2026-03 dataset 有効化 (source 配置 + 3ヶ月 e2e 集計)", "updatedAt": "2026-07-07T05:30:53Z", "url": "https://github.com/ma-navi/pitto/issues/331"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 317, "title": "[payroll] 給与計算ドメイン 実装トラッキング (ADR-022)", "updatedAt": "2026-07-06T04:59:28Z", "url": "https://github.com/ma-navi/pitto/issues/317"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 316, "title": "[payroll][blocked] nissei 月給22名の従業員マスタ完成", "updatedAt": "2026-06-19T06:01:40Z", "url": "https://github.com/ma-navi/pitto/issues/316"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 315, "title": "[payroll] 実NSM改善: 標準報酬月額(SMR)等級の精密化", "updatedAt": "2026-06-19T05:07:26Z", "url": "https://github.com/ma-navi/pitto/issues/315"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 305, "title": "[cosmos] 森先生 6/18 問い合わせ一括トラッカー (Q-13/16/17/18/19/20)", "updatedAt": "2026-07-03T07:52:50Z", "url": "https://github.com/ma-navi/pitto/issues/305"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 304, "title": "[goal:nsm][cosmos] 工事売上 parser 実装 (月次売上 xlsx 受領分の in-scope 化)", "updatedAt": "2026-06-15T06:37:35Z", "url": "https://github.com/ma-navi/pitto/issues/304"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 299, "title": "[goal:nsm][cosmos] P2-13 pochi 過剰生成 phantom + 残誤分類の整理 (#283 後継)", "updatedAt": "2026-07-03T08:05:13Z", "url": "https://github.com/ma-navi/pitto/issues/299"}], "error": ""}, "priority": "仮: 中 (達成済み)", "metrics": {"status": "done", "latest_ts": "", "blockers": 0, "approval_pending": 0, "decisions_count": 0}}, {"session": "pitto-payroll", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}, "repo": "ma-navi/pitto", "progress": {"count": 39, "source": "gh api search/issues repo:ma-navi/pitto", "error": ""}, "prs": {"prs": [{"headRefName": "feat/aggregate-bank-pdf-split", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 408, "reviewDecision": "", "title": "feat(poc): #393 総合振込 debit 分割 — bank_transfer_detail PDF parser + reconciler 改善", "url": "https://github.com/ma-navi/pitto/pull/408", "ciSummary": "✓ 3 pass"}, {"headRefName": "fix/372-seed-note-misclass", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 375, "reviewDecision": "", "title": "fix(poc): cosmos seed 未着手 7 行の triage 誤分類を解消", "url": "https://github.com/ma-navi/pitto/pull/375", "ciSummary": "✓ 3 pass"}, {"headRefName": "dependabot/npm_and_yarn/development-dependencies-3bc154b33b", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 368, "reviewDecision": "", "title": "chore(deps-dev): bump @types/node from 25.9.4 to 26.1.0 in the development-dependencies group across 1 directory", "url": "https://github.com/ma-navi/pitto/pull/368", "ciSummary": "❌ 1/3 fail"}, {"headRefName": "dependabot/npm_and_yarn/production-dependencies-1fdd88ad7e", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 367, "reviewDecision": "", "title": "chore(deps): bump the production-dependencies group across 1 directory with 2 updates", "url": "https://github.com/ma-navi/pitto/pull/367", "ciSummary": "❌ 1/3 fail"}, {"headRefName": "dependabot/github_actions/actions/checkout-7", "isDraft": false, "mergeStateStatus": "UNKNOWN", "number": 366, "reviewDecision": "", "title": "chore(deps): bump actions/checkout from 4 to 7", "url": "https://github.com/ma-navi/pitto/pull/366", "ciSummary": "✓ 5 pass"}], "error": ""}, "issues": {"issues": [{"labels": [{"id": "LA_kwDOSrgxD88AAAACndrMBA", "name": "backlog", "description": "将来着手・現在は射程外", "color": "c2e0c6"}, {"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 498, "title": "chore(infra): schema-only / 骨格-only PR で kaizen-loop verify が worktree runtime 不足で回せない件", "updatedAt": "2026-07-08T10:23:34Z", "url": "https://github.com/ma-navi/pitto/issues/498"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClXGDVg", "name": "architecture-audit", "description": "2026-05-31 全体アーキテクチャ監査で起票", "color": "5319e7"}, {"id": "LA_kwDOSrgxD88AAAACndrMBA", "name": "backlog", "description": "将来着手・現在は射程外", "color": "c2e0c6"}, {"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 497, "title": "chore(architecture): orgs/_id-registry.json drift 3 件修正 + validate-id-registry.ts pre-push 組み込み", "updatedAt": "2026-07-08T10:23:13Z", "url": "https://github.com/ma-navi/pitto/issues/497"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 489, "title": "[運用] issue close 忘れ 週次監査レポート (毎週月曜 09:07 JST 自動コメント)", "updatedAt": "2026-07-07T05:19:57Z", "url": "https://github.com/ma-navi/pitto/issues/489"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACndrMBA", "name": "backlog", "description": "将来着手・現在は射程外", "color": "c2e0c6"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}, {"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}], "number": 488, "title": "[payroll] gate 強化 follow-up: baseline 受理の耐久記録 / input-master fingerprint / 法定控除 gate 昇格判断", "updatedAt": "2026-07-07T09:36:56Z", "url": "https://github.com/ma-navi/pitto/issues/488"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACp9wXjA", "name": "goal:bk-cosmos", "description": "", "color": "1d76db"}], "number": 452, "title": "[cosmos] 軽減税率混在の受領証を税率別行へ分割する汎用 feature (pochi/receipt パイプライン)", "updatedAt": "2026-07-03T08:06:35Z", "url": "https://github.com/ma-navi/pitto/issues/452"}, {"labels": [], "number": 441, "title": "chore(poc): cosmos 売上返還・小粒4種の source/parser 調査 — approved_exclusion 残 約30件の解消方針決め", "updatedAt": "2026-07-03T07:42:25Z", "url": "https://github.com/ma-navi/pitto/issues/441"}, {"labels": [], "number": 439, "title": "feat(poc): cosmos 岐阜信用金庫 通帳 parser 実装 — approved_exclusion 最大29件解消（証憑受領確認が先行）", "updatedAt": "2026-07-03T05:34:59Z", "url": "https://github.com/ma-navi/pitto/issues/439"}, {"labels": [], "number": 437, "title": "feat(poc): cosmos 経理報告（買掛/仕入明細）parser 実装 — approved_exclusion 最大62件解消", "updatedAt": "2026-07-03T06:23:14Z", "url": "https://github.com/ma-navi/pitto/issues/437"}, {"labels": [], "number": 435, "title": "cosmos 2026-02: B-3 買掛金 取り崩し4件 (Slice #2 of #370, 優先度低)", "updatedAt": "2026-07-03T05:03:30Z", "url": "https://github.com/ma-navi/pitto/issues/435"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}], "number": 427, "title": "[jingu] 神宮先生 確認・依頼事項トラッカー (パスワード解除 / 1月分総合振込内訳 / UFJ普通預金明細 / でんさい決済明細)", "updatedAt": "2026-07-07T11:04:59Z", "url": "https://github.com/ma-navi/pitto/issues/427"}, {"labels": [], "number": 424, "title": "[cosmos] 月次売上 相殺手数料仕訳の generator 追加 (+12 entries, +3.8% NSM)", "updatedAt": "2026-07-03T07:52:48Z", "url": "https://github.com/ma-navi/pitto/issues/424"}, {"labels": [], "number": 421, "title": "[cosmos] 楽天カード月跨ぎ対応: split_per_charge_and_settle (#388 follow-up)", "updatedAt": "2026-07-03T07:53:16Z", "url": "https://github.com/ma-navi/pitto/issues/421"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}], "number": 398, "title": "[jingu] 融資返済/利息: unmatched truth ~10 lines (長期借入金/支払利息/普通預金)", "updatedAt": "2026-07-03T03:49:20Z", "url": "https://github.com/ma-navi/pitto/issues/398"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACojpMPA", "name": "task", "description": "タスク issue", "color": "0075ca"}, {"id": "LA_kwDOSrgxD88AAAACojpMjw", "name": "proj:cosmos", "description": "cosmos プロジェクト", "color": "0e8a16"}, {"id": "LA_kwDOSrgxD88AAAACojpMxg", "name": "side", "description": "PDM未承認のサイド開発", "color": "c5def5"}], "number": 371, "title": "cosmos triage dashboard を tracer 計測サイクルで自動更新する", "updatedAt": "2026-06-23T07:20:46Z", "url": "https://github.com/ma-navi/pitto/issues/371"}, {"labels": [], "number": 370, "title": "cosmos 2026-02: B-3 買掛金 23件 通用ベース照合試行 (self-improvable)", "updatedAt": "2026-07-03T04:50:29Z", "url": "https://github.com/ma-navi/pitto/issues/370"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 365, "title": "[payroll][blocked] 外部依頼トラッカー (賃金台帳・住民税通知・事業所所在地・foodtech 翌月 truth)", "updatedAt": "2026-07-08T07:07:51Z", "url": "https://github.com/ma-navi/pitto/issues/365"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 364, "title": "[payroll] nissei 所定 7.5h 投入 + 月給者 self-improvable 分 master 完成", "updatedAt": "2026-07-07T08:31:31Z", "url": "https://github.com/ma-navi/pitto/issues/364"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 363, "title": "[payroll] tm_giken multi-office 15部署対応 (本社+東京支店)", "updatedAt": "2026-06-19T06:01:20Z", "url": "https://github.com/ma-navi/pitto/issues/363"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 362, "title": "[payroll] tm_giken 役員2名 SMR・甲乙・使用人兼務確定", "updatedAt": "2026-07-07T08:39:10Z", "url": "https://github.com/ma-navi/pitto/issues/362"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 361, "title": "[payroll][blocked] tm_giken 固定残業時間 master 取込 (賃金台帳依存)", "updatedAt": "2026-06-19T06:01:07Z", "url": "https://github.com/ma-navi/pitto/issues/361"}, {"labels": [], "number": 357, "title": "harness follow-up: score 劣化を CI で hard block (合成 fixture) + P2 整理 (Refs #345)", "updatedAt": "2026-06-18T13:39:43Z", "url": "https://github.com/ma-navi/pitto/issues/357"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAAClXGDVg", "name": "architecture-audit", "description": "2026-05-31 全体アーキテクチャ監査で起票", "color": "5319e7"}], "number": 345, "title": "agent harness 棚卸し: prompt依存→Sensor機械強制のギャップ対応 (P0 score gate / branch protection / PII commit block)", "updatedAt": "2026-06-18T13:39:51Z", "url": "https://github.com/ma-navi/pitto/issues/345"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 336, "title": "[goal:nsm][cosmos] P4-3 3ヶ月評価集計 (analyze-funnel-multi 新規開発)", "updatedAt": "2026-07-03T05:11:27Z", "url": "https://github.com/ma-navi/pitto/issues/336"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 331, "title": "[goal:nsm][cosmos] P4-2 2026-01 / 2026-03 dataset 有効化 (source 配置 + 3ヶ月 e2e 集計)", "updatedAt": "2026-07-07T05:30:53Z", "url": "https://github.com/ma-navi/pitto/issues/331"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 317, "title": "[payroll] 給与計算ドメイン 実装トラッキング (ADR-022)", "updatedAt": "2026-07-06T04:59:28Z", "url": "https://github.com/ma-navi/pitto/issues/317"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 316, "title": "[payroll][blocked] nissei 月給22名の従業員マスタ完成", "updatedAt": "2026-06-19T06:01:40Z", "url": "https://github.com/ma-navi/pitto/issues/316"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAAClOyIuw", "name": "enhancement", "description": "New feature or request", "color": "a2eeef"}, {"id": "LA_kwDOSrgxD88AAAACndrLmg", "name": "blocked", "description": "外部要因(source受領待ち等)で着手不能", "color": "b60205"}, {"id": "LA_kwDOSrgxD88AAAACn6hNHg", "name": "goal:payroll", "description": "payroll improvement (goal-pm)", "color": "5319e7"}], "number": 315, "title": "[payroll] 実NSM改善: 標準報酬月額(SMR)等級の精密化", "updatedAt": "2026-06-19T05:07:26Z", "url": "https://github.com/ma-navi/pitto/issues/315"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 305, "title": "[cosmos] 森先生 6/18 問い合わせ一括トラッカー (Q-13/16/17/18/19/20)", "updatedAt": "2026-07-03T07:52:50Z", "url": "https://github.com/ma-navi/pitto/issues/305"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 304, "title": "[goal:nsm][cosmos] 工事売上 parser 実装 (月次売上 xlsx 受領分の in-scope 化)", "updatedAt": "2026-06-15T06:37:35Z", "url": "https://github.com/ma-navi/pitto/issues/304"}, {"labels": [{"id": "LA_kwDOSrgxD88AAAACmyGLTQ", "name": "goal:nsm", "description": "", "color": "1d76db"}], "number": 299, "title": "[goal:nsm][cosmos] P2-13 pochi 過剰生成 phantom + 残誤分類の整理 (#283 後継)", "updatedAt": "2026-07-03T08:05:13Z", "url": "https://github.com/ma-navi/pitto/issues/299"}], "error": ""}, "priority": "仮: 中 (達成済み)", "metrics": {"status": "stalled", "latest_ts": "", "blockers": 0, "approval_pending": 0, "decisions_count": 0}}], "decisions": [], "patrols": [{"datetime": "2026-07-08 21:34", "summary": "観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち)"}, {"datetime": "2026-07-08 21:44", "summary": "観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0"}, {"datetime": "2026-07-08 21:54", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目"}, {"datetime": "2026-07-08 22:04", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了"}, {"datetime": "2026-07-08 22:14", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例"}, {"datetime": "2026-07-08 22:24", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用)"}, {"datetime": "2026-07-08 22:34", "summary": "観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要"}, {"datetime": "2026-07-08 22:44", "summary": "観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続"}, {"datetime": "2026-07-08 22:54", "summary": "観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止"}, {"datetime": "2026-07-08 23:04", "summary": "観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回)"}], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}], "goals": [{"repo": "ma-navi/pitto", "source": "issue-495 (M&A ナビ org 追加) + PR #496 (self-check)", "session_role": "ma_navi org kaizen loop 立ち上げ", "goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで **達成 (2026-07-08 18:18 UTC merged、fe1405c で main 反映済み、後片付け完了)**。follow-up 3 件は konuma 判断待ち (drift 3 件・schema-only PR verify 問題)", "priority": "仮: 中 (達成済み)", "registered": "2026-07-08"}, {"repo": "ma-navi/pitto", "source": "[#365](https://github.com/ma-navi/pitto/issues/365) + `pitto/.claude/goals/payroll.md` (tracer, autonomy L2)", "session_role": "payroll kaizen", "goal": "payroll 照合 kaizen の再開 (明日=07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "priority": "仮: 中", "registered": "2026-07-07"}, {"repo": "ma-navi/navibot", "source": "[epic #802](https://github.com/ma-navi/navibot/issues/802)", "session_role": "navibot×Forge 統合", "goal": "ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "ma-navi/ma_navi_forge", "source": "[epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211)", "session_role": "AI agent v1", "goal": "v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち)", "priority": "仮: 高", "registered": "2026-07-07"}, {"repo": "/Users/navi (home)", "source": "~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md", "session_role": "memory 統治ループ", "goal": "定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done", "priority": "仮: 低", "registered": "2026-07-07"}]}</script>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
 
@@ -187,12 +209,175 @@
       const pane = document.createElement('div');
       pane.id = t.id;
       pane.className = 'tab-pane';
-      const ph = document.createElement('div');
-      ph.className = 'placeholder';
-      ph.textContent = '(#21 で epic 別の開発者ビューを実装予定 — Goal + acceptance_criteria check list / 開いてる PR + CI / 開いてる issue / 直近 decisions / 監督 AI 判定履歴 等)';
-      pane.appendChild(ph);
+      renderEpicTab(pane, t.spec, data);
       tabEpicsContainer.appendChild(pane);
     }
+  }
+
+  // ===== Per-epic tab renderer (#21) =====
+  function renderEpicTab(pane, s, data) {
+    const spec = s.spec || {};
+    const m = s.metrics || {};
+
+    // Head: name + repo link + status badge + goal
+    const head = document.createElement('div');
+    head.className = 'epic-tab-head';
+    const name = document.createElement('span'); name.className = 'name'; name.textContent = s.session; head.appendChild(name);
+    if (s.repo) {
+      const repoWrap = document.createElement('span'); repoWrap.className = 'repo-link';
+      const repoA = document.createElement('a');
+      repoA.href = 'https://github.com/' + s.repo; repoA.target = '_blank'; repoA.rel = 'noopener';
+      repoA.textContent = s.repo;
+      repoWrap.appendChild(repoA);
+      head.appendChild(repoWrap);
+    }
+    if (s.priority) {
+      const pri = document.createElement('span'); pri.className = 'repo-link';
+      pri.textContent = '優先度: ' + s.priority; head.appendChild(pri);
+    }
+    const badge = document.createElement('span');
+    badge.className = 'status-badge ' + (m.status || 'on-track');
+    badge.textContent = m.status || 'on-track';
+    head.appendChild(badge);
+    if (spec.goal) {
+      const g = document.createElement('div'); g.className = 'goal-txt'; g.textContent = spec.goal;
+      head.appendChild(g);
+    }
+    pane.appendChild(head);
+
+    // acceptance_criteria (open by default in epic tab)
+    if (spec.acceptance_criteria && spec.acceptance_criteria.length > 0) {
+      const sec = document.createElement('section');
+      const h = document.createElement('h2'); h.textContent = 'acceptance_criteria (' + spec.acceptance_criteria.length + ')'; sec.appendChild(h);
+      const ul = document.createElement('ul'); ul.className = 'criteria-list';
+      for (const c of spec.acceptance_criteria) {
+        const li = document.createElement('li'); li.textContent = c; ul.appendChild(li);
+      }
+      sec.appendChild(ul);
+      pane.appendChild(sec);
+    }
+
+    // Open PRs
+    const prSec = document.createElement('section');
+    const prH = document.createElement('h2'); prH.textContent = '開いてる PR' + (s.repo ? ' (' + s.repo + ')' : ''); prSec.appendChild(prH);
+    const prd = s.prs || {};
+    if (prd.error) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = prd.error; prSec.appendChild(em);
+    } else if (!prd.prs || prd.prs.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(open PR なし)'; prSec.appendChild(em);
+    } else {
+      const tbl = document.createElement('table');
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>#</th><th>title</th><th>CI</th><th>review</th><th>merge</th></tr>';
+      tbl.appendChild(thead);
+      const tb = document.createElement('tbody');
+      for (const pr of prd.prs) {
+        const tr = document.createElement('tr'); tr.className = 'pr-row';
+        const num = document.createElement('td'); num.className = 'num';
+        const a = document.createElement('a'); a.href = pr.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '#' + pr.number;
+        num.appendChild(a);
+        tr.appendChild(num);
+        const title = document.createElement('td'); title.className = 'title';
+        if (pr.isDraft) {
+          const dt = document.createElement('span'); dt.className = 'draft-tag'; dt.textContent = 'draft';
+          title.appendChild(dt);
+        }
+        title.appendChild(document.createTextNode(pr.title || ''));
+        tr.appendChild(title);
+        const ci = document.createElement('td'); ci.className = 'ci'; ci.textContent = pr.ciSummary || ''; tr.appendChild(ci);
+        const rev = document.createElement('td'); rev.className = 'ci'; rev.textContent = pr.reviewDecision || ''; tr.appendChild(rev);
+        const mrg = document.createElement('td'); mrg.className = 'ci'; mrg.textContent = pr.mergeStateStatus || ''; tr.appendChild(mrg);
+        tb.appendChild(tr);
+      }
+      tbl.appendChild(tb);
+      prSec.appendChild(tbl);
+    }
+    pane.appendChild(prSec);
+
+    // Open Issues
+    const isSec = document.createElement('section');
+    const isH = document.createElement('h2'); isH.textContent = '開いてる issue' + (s.repo ? ' (' + s.repo + ')' : ''); isSec.appendChild(isH);
+    const isd = s.issues || {};
+    if (isd.error) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = isd.error; isSec.appendChild(em);
+    } else if (!isd.issues || isd.issues.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(open issue なし)'; isSec.appendChild(em);
+    } else {
+      const tbl = document.createElement('table');
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>#</th><th>title</th><th>labels</th><th>updated</th></tr>';
+      tbl.appendChild(thead);
+      const tb = document.createElement('tbody');
+      for (const iss of isd.issues) {
+        const tr = document.createElement('tr'); tr.className = 'issue-row';
+        const num = document.createElement('td'); num.className = 'num';
+        const a = document.createElement('a'); a.href = iss.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '#' + iss.number;
+        num.appendChild(a); tr.appendChild(num);
+        const title = document.createElement('td'); title.className = 'title'; title.textContent = iss.title || ''; tr.appendChild(title);
+        const lbl = document.createElement('td');
+        for (const l of iss.labels || []) {
+          const chip = document.createElement('span'); chip.className = 'label-chip'; chip.textContent = l.name || l; lbl.appendChild(chip);
+        }
+        tr.appendChild(lbl);
+        const upd = document.createElement('td'); upd.className = 'metric-ts';
+        upd.textContent = (iss.updatedAt || '').replace('T', ' ').slice(0, 16); tr.appendChild(upd);
+        tb.appendChild(tr);
+      }
+      tbl.appendChild(tb);
+      isSec.appendChild(tbl);
+    }
+    pane.appendChild(isSec);
+
+    // Filtered decisions (this epic only)
+    const decSec = document.createElement('section');
+    const decH = document.createElement('h2'); decH.textContent = '直近 decisions (' + s.session + ' 関連)'; decSec.appendChild(decH);
+    const relevant = (data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session));
+    if (relevant.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(該当なし)'; decSec.appendChild(em);
+    } else {
+      const tl = document.createElement('div'); tl.className = 'timeline';
+      for (const ev of relevant.slice().reverse()) {
+        tl.appendChild(renderEvent(ev));
+      }
+      decSec.appendChild(tl);
+    }
+    pane.appendChild(decSec);
+
+    // Oversight (v0.15.0) history for this epic
+    const ovSec = document.createElement('section');
+    const ovH = document.createElement('h2'); ovH.textContent = '監督 AI 判定履歴 (' + s.session + ' 関連)'; ovSec.appendChild(ovH);
+    const ovs = (data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session)
+                                                    && String(ev.branch || '').includes('監督 AI'));
+    if (ovs.length === 0) {
+      const em = document.createElement('div'); em.className = 'empty';
+      em.textContent = '(監督 AI 判定なし。試験運用対象未指定 or 未起動)'; ovSec.appendChild(em);
+    } else {
+      const tl = document.createElement('div'); tl.className = 'timeline';
+      for (const ev of ovs.slice().reverse()) tl.appendChild(renderEvent(ev));
+      ovSec.appendChild(tl);
+    }
+    pane.appendChild(ovSec);
+  }
+
+  // Shared event renderer (used by main timeline and per-epic timeline)
+  function renderEvent(ev) {
+    const el = document.createElement('div');
+    const branch = String(ev.branch || '');
+    const branchClass = branch === '1' ? 'branch-1' : (branch.includes('監督 AI') ? 'branch-oversight' : '');
+    el.className = 'event ' + branchClass;
+    const head = document.createElement('div'); head.className = 'head';
+    const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || ''; head.appendChild(ts);
+    const br = document.createElement('span'); br.className = 'branch'; br.textContent = '枝 ' + branch; head.appendChild(br);
+    const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || ''; head.appendChild(tgt);
+    el.appendChild(head);
+    const dec = document.createElement('div'); dec.className = 'decision'; dec.textContent = ev.decision || ''; el.appendChild(dec);
+    if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
+    if (ev.self_review) {
+      const rv = document.createElement('div');
+      const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
+      rv.className = 'review ' + cls; rv.textContent = ev.self_review; el.appendChild(rv);
+    }
+    return el;
   }
 
   // ===== PM table =====
@@ -310,29 +495,7 @@
   if (data.decisions.length === 0) {
     decEl.innerHTML = '<div class="empty">decisions-YYYY-MM.jsonl 未生成 or 空 (v0.14.0 以降で新規エントリ併記化)</div>';
   } else {
-    for (const ev of data.decisions.slice().reverse()) {
-      const el = document.createElement('div');
-      const branch = String(ev.branch || '');
-      const branchClass = branch === '1' ? 'branch-1' : (branch.includes('監督 AI') ? 'branch-oversight' : '');
-      el.className = 'event ' + branchClass;
-      const head = document.createElement('div');
-      head.className = 'head';
-      const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || '';
-      const br = document.createElement('span'); br.className = 'branch'; br.textContent = '枝 ' + branch;
-      const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || '';
-      head.appendChild(ts); head.appendChild(br); head.appendChild(tgt);
-      el.appendChild(head);
-      const dec = document.createElement('div'); dec.className = 'decision'; dec.textContent = ev.decision || ''; el.appendChild(dec);
-      if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
-      if (ev.self_review) {
-        const rv = document.createElement('div');
-        const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
-        rv.className = 'review ' + cls;
-        rv.textContent = ev.self_review;
-        el.appendChild(rv);
-      }
-      decEl.appendChild(el);
-    }
+    for (const ev of data.decisions.slice().reverse()) decEl.appendChild(renderEvent(ev));
   }
 
   const patBody = document.querySelector('#patrols tbody');

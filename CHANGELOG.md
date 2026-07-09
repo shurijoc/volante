@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.15.6] - 2026-07-09
+
+- **dashboard: epic 別タブに開発者ビューを実装** (issue #21、親 #17):
+  各 epic タブ (Spec ごと 1 タブ) に以下を配置。全体タブ内のセクションは維持:
+  1. **Head**: Spec name + repo link (GitHub 遷移) + 優先度 + status badge + Goal 全文
+  2. **acceptance_criteria** (デフォルト展開、epic tab 内では折りたたみなし)
+  3. **開いてる PR**: `gh pr list --json number,title,mergeStateStatus,statusCheckRollup,reviewDecision,url,isDraft`
+     を generate 時に取得。CI 状態は `statusCheckRollup` から fail/pending/pass の集計に圧縮
+  4. **開いてる issue**: `gh issue list --json number,title,url,labels,updatedAt`。label は chip 表示、
+     updated timestamp 併記
+  5. **直近 decisions (this epic)**: `data.decisions` を `target_session.includes(basename)` で filter
+  6. **監督 AI 判定履歴**: 上記に `branch.includes("監督 AI")` を追加 filter
+- **per-repo キャッシュ**: 同一 repo に複数 Spec (現状 pitto-kaizen / pitto-payroll) がある場合、
+  gh query は repo 単位で 1 度のみ実行し結果を各 Spec に配布 (無駄クエリ削減)
+- **`renderEvent()` 共通化**: 全体タブと epic タブの decisions timeline で同じ描画関数を使用 (DRY)
+- **gh query 失敗時のフォールバック**: 各セクションで `data.error` を表示、generate 自体は成功する
+  (SKILL.md 3. ground_truth の「実測不可」明記に準拠)
+- **既知の制限** (issue #21 コメント記載予定):
+  - 同一 repo 複数 Spec で PR / issue が同じリスト表示 (per-epic filter 未実装、Spec に epic id 拡張要)
+  - kitty @ get-text の STATUS snapshot 未統合 (別 issue 想定)
+  - CI 詳細 / branch 情報 / retro 抜粋 は未実装 (別 issue 想定)
+- 判断木・芯・Spec schema すべて不変
+
 ## [0.15.5] - 2026-07-09
 
 - **dashboard: tab 構造化 + 全体タブ (PM 視点 Epics テーブル)** (issue #20、親 #17):
