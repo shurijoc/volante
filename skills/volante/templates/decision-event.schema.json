@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shurijoc/volante/schemas/decision-event-v1.json",
+  "title": "volante decisions JSONL event v1",
+  "description": "1 判断 = 1 event。journal/decisions-YYYY-MM.jsonl に 1 行 1 JSON で追記される。Markdown 側 (decisions-YYYY-MM.md、templates/decision-entry.md 準拠) と併記する。機密 (認証情報・.env 値・個人情報・社外秘) はどのフィールドにも書かない (SKILL.md 6. sensitive_and_injection_guard)。",
+  "type": "object",
+  "required": ["decision_id", "timestamp", "target_session", "branch", "decision", "rationale", "evidence", "self_review", "konuma_review"],
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "エントリの一意 id。慣例: YYYY-MM-DD-HHMM-<window id> (例: 2026-07-09-2214-w59)"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 (UTC 推奨)。date コマンド実測値を使う (SKILL.md 3. ground_truth)"
+    },
+    "target_session": {
+      "type": "string",
+      "minLength": 1,
+      "description": "kitty window id + session 名 (例: 'w59 payroll kaizen')"
+    },
+    "branch": {
+      "type": "string",
+      "description": "判断木の枝番号 or 分類 (例: '1', '4', '4-低リスク', '巡回義務-context-reset')"
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1,
+      "description": "何をした/しなかったか。「触らない」も判断として書く"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "根拠。枝の選択理由、tracer autonomy 参照時はレベルも"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Fact の出典 (kitty get-text の該当行、gh 出力、journal 参照 等)。取得不能時は '実測不可' と明記"
+    },
+    "self_review": {
+      "type": "string",
+      "description": "OK / NG + 根拠 (SKILL.md 7.5 self-review 運用)。外部連絡類は '未' で残す"
+    },
+    "konuma_review": {
+      "type": "string",
+      "description": "未 / OK / NG + 理由。既定値は '未'"
+    }
+  }
+}

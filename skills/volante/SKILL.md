@@ -377,6 +377,12 @@ kitty @ send-text --match id:$ID "$BODY"$'\r'
 - journal に書く時刻は 3. ground_truth のとおり `date` 実測値を使う
 - 1 判断 = 1 エントリを `$VOLANTE_REPO/journal/decisions-YYYY-MM.md` に追記
   (フォーマット: `templates/decision-entry.md`)。**指示を送らなかった判断も記録する** (「触らない」も判断)
+- **併記: JSONL 追記** (v0.14.0+、subagent 入力用): 上記 Markdown エントリと同一内容を 1 行 1 JSON で
+  `$VOLANTE_REPO/journal/decisions-YYYY-MM.jsonl` にも追記する。スキーマは
+  `templates/decision-event.schema.json` (v1、9 フィールド全 required、`additionalProperties: false`)。
+  Markdown は human-readable 用、JSONL は監督 AI subagent (v0.15.0+) の入力用。既存の Markdown
+  過去分は遡及変換しない (新規エントリのみ併記)。抽出は `skills/volante/scripts/decisions-extract.py`
+  (`--last N` で直近 N 件を JSON/JSONL 形式で標準出力へ)
 - **`konuma レビュー` 欄の self-review 運用** (konuma 決定 2026-07-08 18:44): 各 decisions エントリの
   `konuma レビュー` 欄は volante 自身が OK/NG + 根拠で埋める (社内・内部の判断のみ)。**外部連絡類**
   (Slack/メール/社外向け PR・issue コメント、外部 API 呼び出し等) を含む判断は self-review 対象外で、

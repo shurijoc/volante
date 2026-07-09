@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.14.0] - 2026-07-09
+
+- **decisions ログ JSONL 併記化 + 抽出スクリプト** (issue #15、親 #10 の v0.14.0):
+  - `templates/decision-event.schema.json` (v1、9 フィールド全 required、`additionalProperties: false`、
+    JSON Schema draft 2020-12) と `templates/decision-event.example.json` を新設
+  - `scripts/decisions-extract.py` (`--last N` で直近 N 件を JSON / JSONL 形式で標準出力へ、
+    デフォルトは `journal/decisions-<current-month>.jsonl` の直近 20 件、malformed 行は warning で通過)
+  - SKILL.md 7.5 に「併記: JSONL 追記」を追記。Markdown は human-readable、JSONL は
+    subagent 入力用 (v0.15.0+)。既存の Markdown 過去分は遡及変換しない (新規エントリのみ併記)
+- **背景 Fact** (issue #18 で計測、2026-07-09): decisions-2026-07.md は 154.2 KB / 1531 lines / 3 日で、
+  平均 51 KB/日。月末見込み ~1.3 MB。opus context 上限内には収まるが grep / 目視レビューが重くなるため
+  JSONL 併記化のタイミング妥当と判定
+
 ## [0.13.0] - 2026-07-09
 
 - **HOTL Platform 昇華ロードマップの第 1 段** (issue #10、konuma 承認 2026-07-09 /goal「一通り完了するまで

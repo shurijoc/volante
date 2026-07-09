@@ -1,0 +1,11 @@
+{
+  "decision_id": "2026-07-09-2214-w59",
+  "timestamp": "2026-07-09T22:14:00+09:00",
+  "target_session": "w59 payroll kaizen (ma-navi/pitto)",
+  "branch": "4",
+  "decision": "対象セッションが konuma に出した #137 の推奨案代答 (option A を選択)。次アクション代答も併用",
+  "rationale": "枝 4 の konuma 宛て質問代答条件を満たす (推奨案明示・内部・可逆)。goals.md に登録済み、Spec 準備前のため goals.md「ゴール 1 行」列でフォールバック",
+  "evidence": "kitty @ get-text --match id:w59 の末尾 20 行に 'AskUserQuestion 1./2./3.' + セッション自身の推奨: A、journal/goals.md 該当行",
+  "self_review": "OK (self-review 2026-07-09 22:15 by volante、根拠: 枝適用適切・Fact/Hypothesis 分離済・境界明示・22:44 に全完了で結果良)",
+  "konuma_review": "未"
+}
