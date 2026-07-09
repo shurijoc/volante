@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shurijoc/volante/schemas/spec-v1.json",
+  "title": "volante Session Spec v1",
+  "description": "セッション単位の Spec (v1)。Goal + acceptance_criteria の 2 要素のみ。session/repo の識別は filename convention (journal/specs/<session>.json) と goals.md index で担う。追加項目 (制約 / 非目標 / 前提と仮定 / 依存関係 / エスカレーション条件) は v0.14.0 以降で段階拡張予定。",
+  "type": "object",
+  "required": ["goal", "acceptance_criteria"],
+  "additionalProperties": false,
+  "properties": {
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "セッションのゴール (1 文相当)。goals.md の「ゴール 1 行」列と対応。"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "客観的に判定可能な受け入れ基準の列挙。各項目は独立に検証可能な形で記述する。"
+    }
+  }
+}
