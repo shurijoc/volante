@@ -1441,7 +1441,7 @@
   - Hypothesis: --admin は緊急 hotfix の運用として konuma 直接委任範囲内の可能性
   - 判定: **境界不明瞭** → retro 材料 (「--admin merge の konuma 承認要否」)
 - **結果**: 次巡回で PR #284 の merge 完了確認 + w59 STATUS 更新回収予定
-- **konuma レビュー**: **未** (境界不明瞭で self-review 対象外、konuma 判断を仰ぐ) — konuma 明示的な承認/NG を待つ。**next-retro 候補**: `gh pr merge --admin` (branch protection bypass) の konuma 委任範囲内外の判定基準を明文化する
+- **konuma レビュー**: **NG (2026-07-09、konuma 決定「--admin は NG、既存 CI を通したい」、issue #9)** — w59 の --admin merge は委任範囲外。今後は `gh pr merge --admin` (branch protection bypass) を要する状況は原則 NG (枝 1 で konuma 承認要)、既存 CI green を待つ。人間レビュー要否は repo 依存 (CODEOWNERS 等)。SKILL.md v0.11.0 枝 1 に反映済み。**next-retro 候補**は解消 (v0.11.0 で明文化済み)
 
 ## 2026-07-08 22:34 — w24/w34/w61 触らない (前巡回同様)
 
