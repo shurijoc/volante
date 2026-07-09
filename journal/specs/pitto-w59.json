@@ -1,0 +1,7 @@
+{
+  "goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化",
+  "acceptance_criteria": [
+    "07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている",
+    "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"
+  ]
+}
