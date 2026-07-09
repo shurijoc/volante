@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>volante dashboard</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --surface: #ffffff; --border: #e4e4e0; --text: #1f2328;
+    --text-mute: #636c76; --accent: #2f6fed; --accent-bg: #eaf1fe;
+    --ok: #1f883d; --ok-bg: #eaf6ec; --warn: #9a6700; --warn-bg: #fdf3e0;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171a; --surface: #1c1f23; --border: #30363d; --text: #e6edf3;
+      --text-mute: #99a2ab; --accent: #4f8bff; --accent-bg: #16243f;
+      --ok: #4ac26b; --ok-bg: #122017; --warn: #e3b341; --warn-bg: #241c0c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px 16px; color: var(--text); background: var(--bg);
+         font-family: var(--sans); line-height: 1.55; font-size: 14px;
+         -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header { padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header .meta { color: var(--text-mute); font-family: var(--mono); font-size: 12px; }
+  section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; padding: 16px 18px; }
+  section > h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: .08em;
+                 text-transform: uppercase; color: var(--text-mute); font-weight: 700; }
+  .spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+               gap: 12px; }
+  .spec { border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--bg); }
+  .spec .name { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 4px; }
+  .spec .goal { margin-bottom: 8px; }
+  .spec ul { margin: 0; padding-left: 18px; font-size: 13px; }
+  .spec li { margin-bottom: 2px; }
+  .timeline { display: flex; flex-direction: column; gap: 8px; }
+  .event { border-left: 3px solid var(--border); padding: 4px 12px; font-size: 13px; }
+  .event.branch-1 { border-color: var(--warn); background: var(--warn-bg); }
+  .event.branch-oversight { border-color: var(--accent); background: var(--accent-bg); }
+  .event .head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .event .ts { font-family: var(--mono); color: var(--text-mute); font-size: 12px; }
+  .event .branch { font-family: var(--mono); font-size: 11px; padding: 1px 6px;
+                   border-radius: 4px; background: var(--surface); border: 1px solid var(--border); }
+  .event .target { font-family: var(--mono); font-size: 12px; color: var(--text-mute); }
+  .event .decision { margin: 4px 0; }
+  .event .rationale { color: var(--text-mute); font-size: 12px; }
+  .event .review { font-family: var(--mono); font-size: 11px; color: var(--text-mute); margin-top: 4px; }
+  .event .review.ok::before { content: "✓ "; color: var(--ok); }
+  .event .review.ng::before { content: "✗ "; color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table th, table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border);
+                       vertical-align: top; }
+  table th { font-weight: 600; color: var(--text-mute); font-size: 11px;
+             text-transform: uppercase; letter-spacing: .05em; }
+  .patrol-row { font-family: var(--mono); font-size: 12px; padding: 4px 0;
+                border-bottom: 1px dashed var(--border); }
+  .empty { color: var(--text-mute); font-style: italic; }
+  code { font-family: var(--mono); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>volante dashboard</h1>
+    <span class="meta">. · generated 2026-07-09 (MVP test) (issue #17 MVP)</span>
+  </header>
+
+  <section>
+    <h2>Sessions (Spec v1)</h2>
+    <div id="specs" class="spec-grid"></div>
+  </section>
+
+  <section>
+    <h2>Recent decisions (JSONL、直近 20 件)</h2>
+    <div id="decisions" class="timeline"></div>
+  </section>
+
+  <section>
+    <h2>Recent patrols (直近 10 行)</h2>
+    <div id="patrols"></div>
+  </section>
+
+  <section>
+    <h2>Retro index</h2>
+    <table id="retros"><thead><tr><th>date</th><th>file</th></tr></thead><tbody></tbody></table>
+  </section>
+</div>
+
+<script id="volante-data" type="application/json">{"specs": [{"session": "pitto-w24", "spec": {"goal": "新規 ma_navi org の scaffold + kaizen-loop verify を通し PR #496 を merge まで (状態: 2026-07-08 18:18 UTC merged / fe1405c で main 反映済み / 後片付け完了、follow-up 3 件 konuma 判断待ち)", "acceptance_criteria": ["ma-navi/pitto の PR #496 が main に merge されている (fe1405c)", "kaizen-loop の verify が全 check pass している", "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"]}}, {"session": "pitto-w59", "spec": {"goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化", "acceptance_criteria": ["07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている", "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"]}}], "decisions": [], "patrols": ["| 2026-07-08 21:34 | 観測 4 / IDLE 2 (w59/w61) / IDLE→RUNNING 2 (w24 A 推奨代答・w34 Fact 訂正 D 回答) / 指示 2 / retro-2026-07-08-2134.md 生成 (Act 発火 21 件、更新案 6 = 枝 4 拡張・更新案 7 = goals.md 仮置き、konuma 承認待ち) |", "| 2026-07-08 21:44 | 観測 4 / IDLE 4 (全 idle) / 指示 0 / w24: 3 commit local stack + NSM 解釈 konuma 待ち / w34: 認識回復 + draft §5/§8 konuma レビュー待ち / 21:04 反省点適用の効果実証 (A 推奨代答 → w24 3 commit 進行、Fact 訂正 → w34 認識回復) / 自動停止カウント 0 |", "| 2026-07-08 21:54 | 観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 context-reset skill 起動) / 指示 1 (w59 /context-reset) / w59 /clear ヒント 131.9k 新規表示で発火 (副条件 = issue 集約で context 依存なし) / 段階的 reset 4 例目 |", "| 2026-07-08 22:04 | 観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 reset step 2-3 完了で Swooping…) / 指示 2 (w59 /clear + 再開プロンプト、追送 CR 要) / w59 131.9k 解放 / 段階的 reset 4 例目完了 |", "| 2026-07-08 22:14 | 観測 4 / IDLE 3 (w24/w34/w61 変化なし) / WAITING 1→解消 (w59 pickup 候補 4 件、選択肢 1 #137 Recommended で代答) / 指示 1 (w59 CR) / retro-2026-07-08-2134 更新案 6「次アクション選択の代答」の実践第 1 例 |", "| 2026-07-08 22:24 | 観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59 #137 実装完了・PR #282 作成・CI polling 中) / 指示 0 / retro-2026-07-08-2134 更新案 6 実践結果: pickup 選択→実装→PR 作成の全自動進行 (11m13s、23.1k tokens 使用) |", "| 2026-07-08 22:34 | 観測 4 / IDLE 3 (w24/w34/w61 変化なし) / RUNNING 1 (w59: PR #282 CI fail → fix/issue-283 branch → PR #284 --admin self-merge 実行中) / 指示 0 / **境界不明瞭検知**: --admin (branch protection bypass) が konuma 委任範囲内外か要判断 → retro 材料 + konuma review 必要 |", "| 2026-07-08 22:44 | 観測 4 / IDLE 4 (w24/w34/w61 変化なし・w59 全完了) / 指示 0 / w59 #137 + PR #282/#284 両 merge 済み、worktree/branch/issue 全片付け完了、konuma 実機確認待ち / --admin merge の境界判断は 22:34 エントリの konuma review 待ち枠内で継続 |", "| 2026-07-08 22:54 | 観測 4 / IDLE 4 (全セッション変化なし・STATUS 内容も 22:44 と同一) / 指示 0 / 変化なし 1 回目 (自動停止カウント 1/2)。次巡回で変化なしなら自動停止 |", "| 2026-07-08 23:04 | 観測 4 / IDLE 4 (全セッション変化なし、22:54 と同一) / 指示 0 / **konuma 指示による手動ループ停止**。cron job cf572129 削除済み。ループ稼働期間: 18:10:25 JST (実 commit 時刻) 〜 23:04 (約 4h54m、実巡回 27 回) |"], "retros": [{"file": "retro-2026-07-08.md", "date": "2026-07-08", "suffix": ""}, {"file": "retro-2026-07-08-2134.md", "date": "2026-07-08", "suffix": "2134"}, {"file": "retro-2026-07-08-1954.md", "date": "2026-07-08", "suffix": "1954"}, {"file": "retro-2026-07-08-1824.md", "date": "2026-07-08", "suffix": "1824"}, {"file": "retro-2026-07-08-1450.md", "date": "2026-07-08", "suffix": "1450"}, {"file": "retro-2026-07-07.md", "date": "2026-07-07", "suffix": ""}, {"file": "retro-2026-07-07-2.md", "date": "2026-07-07", "suffix": "2"}]}</script>
+<script>
+  const data = JSON.parse(document.getElementById('volante-data').textContent);
+
+  const specsEl = document.getElementById('specs');
+  if (data.specs.length === 0) {
+    specsEl.innerHTML = '<div class="empty">Spec 未登録</div>';
+  } else {
+    for (const s of data.specs) {
+      const el = document.createElement('div');
+      el.className = 'spec';
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = s.session;
+      el.appendChild(name);
+      const goal = document.createElement('div');
+      goal.className = 'goal';
+      goal.textContent = s.spec.goal || '';
+      el.appendChild(goal);
+      const ul = document.createElement('ul');
+      for (const c of (s.spec.acceptance_criteria || [])) {
+        const li = document.createElement('li');
+        li.textContent = c;
+        ul.appendChild(li);
+      }
+      el.appendChild(ul);
+      specsEl.appendChild(el);
+    }
+  }
+
+  const decEl = document.getElementById('decisions');
+  if (data.decisions.length === 0) {
+    decEl.innerHTML = '<div class="empty">decisions-YYYY-MM.jsonl 未生成 or 空 (v0.14.0 以降で新規エントリ併記化)</div>';
+  } else {
+    for (const ev of data.decisions.slice().reverse()) {
+      const el = document.createElement('div');
+      const branch = String(ev.branch || '');
+      const branchClass = branch === '1' ? 'branch-1' : (branch.includes('監督 AI') ? 'branch-oversight' : '');
+      el.className = 'event ' + branchClass;
+      const head = document.createElement('div');
+      head.className = 'head';
+      const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || '';
+      const br = document.createElement('span'); br.className = 'branch'; br.textContent = '枝 ' + branch;
+      const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || '';
+      head.appendChild(ts); head.appendChild(br); head.appendChild(tgt);
+      el.appendChild(head);
+      const dec = document.createElement('div'); dec.className = 'decision'; dec.textContent = ev.decision || ''; el.appendChild(dec);
+      if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
+      if (ev.self_review) {
+        const rv = document.createElement('div');
+        const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
+        rv.className = 'review ' + cls;
+        rv.textContent = ev.self_review;
+        el.appendChild(rv);
+      }
+      decEl.appendChild(el);
+    }
+  }
+
+  const patEl = document.getElementById('patrols');
+  if (data.patrols.length === 0) {
+    patEl.innerHTML = '<div class="empty">patrols.md 空</div>';
+  } else {
+    for (const row of data.patrols) {
+      const el = document.createElement('div');
+      el.className = 'patrol-row';
+      el.textContent = row;
+      patEl.appendChild(el);
+    }
+  }
+
+  const retroBody = document.querySelector('#retros tbody');
+  if (data.retros.length === 0) {
+    retroBody.innerHTML = '<tr><td colspan="2" class="empty">retro なし</td></tr>';
+  } else {
+    for (const r of data.retros) {
+      const tr = document.createElement('tr');
+      const d = document.createElement('td'); d.textContent = r.date || '?'; tr.appendChild(d);
+      const f = document.createElement('td');
+      const code = document.createElement('code'); code.textContent = r.file; f.appendChild(code);
+      tr.appendChild(f);
+      retroBody.appendChild(tr);
+    }
+  }
+</script>
+</body>
+</html>

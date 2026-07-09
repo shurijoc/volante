@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.15.1] - 2026-07-09
+
+- **HTML + JSON 型ローカル UI の MVP 第 1 段** (issue #17 v1.0 epic の「着手」段階、konuma /goal 承認済み)。
+  epic は継続 open で、以下は v0 スタート:
+  - `skills/volante/scripts/dashboard-generate.py`: journal/ を読み `journal/dashboard.html` を生成する
+    Python スクリプト。読み込み対象は `journal/specs/*.json` (v0.13.0-b)、
+    `journal/decisions-<current-month>.jsonl` (v0.14.0)、`journal/patrols.md`、`journal/retro-*.md`
+  - **出力は完全自己完結**: 単一 HTML ファイル + `<script type="application/json">` 埋め込みデータ。
+    サーバー不要、`open journal/dashboard.html` だけで動く (CLAUDE.md 設計原則 / SKILL.md 芯 9 遵守)
+  - **表示**: Sessions grid (Spec の goal + acceptance_criteria)、Recent decisions timeline (直近 20 件、
+    枝 1 と「監督 AI 判定」を色分け)、Recent patrols (直近 10 行)、Retro index
+  - light / dark mode 対応 (`prefers-color-scheme`)。tracer の `dashboard-template.html` (14KB) を
+    参考実装として意匠を圧縮 (`</` エスケープでスクリプト境界も安全)
+  - **意図的に含めていない** (次イテレーション以降): 監督 AI 判定の詳細展開、retro 本文表示、対話的
+    フィルタ、goal 更新履歴グラフ。dashboard.html は毎回 regenerate 前提で、差分管理はしない
+
 ## [0.15.0] - 2026-07-09
 
 - **監督 AI subagent v1 (試験運用、pitto 対象のみ)** (issue #16、親 #10 の v0.15.0):
