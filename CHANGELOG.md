@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.15.9] - 2026-07-10
+
+- **新規 skill `/volante-epic`: epic (Spec) の追加・削除・編集を対話的に** (issue #24):
+  `journal/specs/*.json` の手書き + `journal/goals.md` 行の手編集という 2 段階の運用を、
+  1 回の対話で両方同時に更新するツールに置き換えた
+  - `skills/volante-epic/SKILL.md` + `skills/volante-epic/scripts/epic_tool.py` (add/remove/edit/list の
+    4 subcommand)。スクリプトはファイル書き込みのみ (`dashboard-generate.py` と同じ分離)、
+    git add/commit/push は SKILL.md の手順側で行う
+  - `add`: `kpi_sheet_tab` (`gid`+`name`) が未指定だと拒否される (issue #23 依存)。`優先度` 列は聞かず
+    `未指定` を書く (konuma 専有、`skills/volante/SKILL.md` 芯 7 に従う)
+  - `remove`: `journal/specs/<slug>.json` を `journal/specs/_archive/<slug>.json` へ移動 (削除ではなく
+    アーカイブ) し、goals.md の該当行を削除する。SKILL.md 側で実行前に konuma へ 1 度確認する運用とした
+  - `edit`: 指定したフィールドだけを個別上書き。`goal` を編集すると spec と goals.md の「ゴール 1 行」列を
+    両方同期し乖離を防ぐ。`acceptance_criteria` はフルリスト置換 (差分マージなし)
+  - **schema 検証は `jsonschema` パッケージを使わず自前の最小 validator** (type/required/
+    additionalProperties/properties/minLength/minItems/items のみ対応) で `skills/volante/templates/
+    spec-template.json` を都度読んで検証する。この環境に `jsonschema` が未インストールで、
+    かつ現行 schema がこのサブセットしか使っていないため (依存追加なし、既存スクリプト群と同じ方針)
+  - **このスキル発の goals.md 行に限り `session (役割名)` セルを slug そのものにする**ことで
+    remove/edit がどの行かを一意に決める。既存の手書き行 (`ma_navi org kaizen loop 立ち上げ` 等) は
+    slug 形式ではないため対象外のまま (触らない)
+  - `.claude-plugin/plugin.json` の description に `/volante-epic` を追記、version を 0.15.9 に
+- 判断木・芯・Spec schema 自体は不変 (このスキルは既存 schema を読むだけで拡張しない)
+
 ## [0.15.8] - 2026-07-10
 
 - **dashboard.html を進捗表示・リンク・patrols/retro の 4 点で強化** (issue #22):

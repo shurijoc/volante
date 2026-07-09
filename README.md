@@ -11,6 +11,8 @@
 ```
 /volante        # 1 回起動 = 1 巡回 (Plan → Do → Check → Act → 報告)
 /loop 10m /volante   # 定期巡回したい場合 (daemon は持たない)
+
+/volante-epic add|remove|edit|list   # epic (Spec) の追加・削除・編集・一覧を対話 1 回で
 ```
 
 ## インストール (ローカル)
