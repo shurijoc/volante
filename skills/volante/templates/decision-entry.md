@@ -1,7 +1,7 @@
 <!-- 1 判断 = 1 エントリ。decisions-YYYY-MM.md に追記する。
      機密 (認証情報・.env 値・個人情報・社外秘) はどの欄にも書かない。「機密のため非記載」と書く (SKILL.md 6. ガード) -->
 
-## YYYY-MM-DD HH:MM — <window id> <window title>
+## YYYY-MM-DD HH:MM — <session id> <session title>
 
 - **repo**: <対象セッションの cwd / repo>
 - **状態**: WAITING / IDLE / STUCK

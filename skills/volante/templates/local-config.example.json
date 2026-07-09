@@ -1,0 +1,10 @@
+{
+  "$schema": "https://github.com/shurijoc/volante/schemas/local-config-v1.json",
+  "adapter": "kitty",
+  "adapter_config": {
+    "note": "kitty/tmux は追加設定不要 (自動で $KITTY_WINDOW_ID / $TMUX_PANE を参照)。空 object のままで良い"
+  },
+  "shell": "fish",
+  "editor": "nvim",
+  "notes": "M1 Mac / kitty 0.42"
+}

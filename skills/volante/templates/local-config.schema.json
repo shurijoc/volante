@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shurijoc/volante/schemas/local-config-v1.json",
+  "title": "volante local config v1",
+  "description": "PC ごとの adapter 選択・接続設定。$HOME/.config/volante/config.json に置く。git 管理外 (issue #25)。SKILL.md 7.1 が初回起動時に対話生成し、以後は読むだけ。",
+  "type": "object",
+  "required": ["adapter"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "adapter": {
+      "type": "string",
+      "enum": ["kitty", "tmux", "wezterm", "manual"],
+      "description": "skills/volante/adapters/<adapter>.sh を選ぶ。wezterm/manual は enum のみ確保・未実装 (adapters/interface.md 参照)"
+    },
+    "adapter_config": {
+      "type": "object",
+      "description": "adapter ごとに任意。現行 adapter (kitty/tmux) はどちらも必須項目なし (kitty は $KITTY_WINDOW_ID、tmux は $TMUX_PANE を自動参照)。将来 adapter 追加時のための自由形式object",
+      "additionalProperties": true
+    },
+    "shell": {
+      "type": "string",
+      "description": "任意。参考情報 (volante の判断には使わない)"
+    },
+    "editor": {
+      "type": "string",
+      "description": "任意。参考情報 (volante の判断には使わない)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "任意。自由記述メモ"
+    }
+  }
+}

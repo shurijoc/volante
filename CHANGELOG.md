@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.16.0] - 2026-07-10
+
+- **TUI adapter 層を導入し kitty 固定を解いた** (issue #25):
+  - `skills/volante/adapters/interface.md` に 5 primitive (`list_sessions` / `read_screen` /
+    `send_text` / `send_key` / `self_id`) の contract を明文化。各 adapter は
+    `skills/volante/adapters/<adapter>.sh` という単一 CLI スクリプトとして実装する
+  - `skills/volante/adapters/kitty.sh`: 既存の `kitty @ ls` / `get-text` / `send-text` 呼び出しをここに
+    集約 (SKILL.md からの直書きを撤去)。konuma の M1 Mac 環境で `list_sessions` / `read_screen` /
+    `self_id` の実機動作を確認し、既存挙動と一致することを検証済み (回帰なし)
+  - `skills/volante/adapters/tmux.sh`: 最小実装を新規追加 (`list-panes` / `capture-pane` / `send-keys`
+    ベース。send_key は esc/enter/ctrl-c/up/down)。kitty との機能パリティは要求せず、足りない部分は
+    既存の「実測不可 → 人間確認」設計に委ねる
+  - `~/.config/volante/config.json` (git 管理外、PC ごとの local config、schema:
+    `skills/volante/templates/local-config.schema.json`) を新設。`/volante` 初回起動時に config が
+    無ければ AskUserQuestion で adapter を選ばせ対話生成する (SKILL.md 7.1)。未実装 adapter
+    (wezterm/manual) が選ばれた場合は選び直させる
+  - SKILL.md 7.1〜7.4 (準備・観測・適用・検証) と `scripts/oversight-subagent.md`、
+    `templates/decision-event.schema.json` / `decision-event.example.json` / `decision-entry.md` から
+    kitty 固有コマンドの直書きを除去し、`$ADAPTER` 経由の primitive 呼び出しに置き換え
+  - **判断木 (4. checklist) と芯 (1. role_and_goal の変更禁止の芯) はロジック不変** — adapter 層は
+    「どう画面を読み・どう送るか」の実装詳細のみを差し替える (issue #25 の要求どおり)
+  - `README.md` / `CLAUDE.md` / `.claude-plugin/plugin.json` の記述を adapter 層前提に更新。
+    CLAUDE.md には 2026-07-07 の「kitty 専用 (YAGNI)」決定を覆した旨を追記
+
 ## [0.15.9] - 2026-07-10
 
 - **新規 skill `/volante-epic`: epic (Spec) の追加・削除・編集を対話的に** (issue #24):

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # volante
 
-複数の並走 Claude Code セッション（別リポジトリ・別kittyウィンドウで自律実行中のもの）を、開発リーダーとして巡回・判断するための skill/ツール。
+複数の並走 Claude Code セッション（別リポジトリ・別ウィンドウ/ペインで自律実行中のもの）を、開発リーダーとして巡回・判断するための skill/ツール。セッションとのやり取りは adapter 層 (kitty/tmux 等、`skills/volante/adapters/interface.md`) 経由（2026-07-10 issue #25）。
 
 ## リポジトリの現状（2026-07-07 時点）
 
@@ -61,11 +61,30 @@ tracer から引き継ぐべき運用原則（tracer/CLAUDE.md より）:
 当初の未決 6 項目はすべて決定済み:
 
 - **成果物の形**: **SKILL.md 単体で開始**。巡回は手動 `/volante` か `/loop` で回す。daemon 化は判断実績が溜まってから検討（精度の低い判断を無人で回さない）
-- **セッション発見の手段**: **kitty 専用**。`kitty @ ls` / `kitty @ send-text` を直接使う。adapter 抽象化は他マルチプレクサの実需要が出るまでやらない (YAGNI)
+- **セッション発見の手段**: ~~**kitty 専用**。`kitty @ ls` / `kitty @ send-text` を直接使う。adapter 抽象化は他マルチプレクサの実需要が出るまでやらない (YAGNI)~~
+  → **2026-07-10 konuma 決定 (issue #25) で覆した**。他 TUI ユーザーが使えない・別 PC で kitty 以外を使う実需要が出たため、adapter 層 (`skills/volante/adapters/interface.md` の 5 primitive) を導入し kitty 固定を解いた。詳細は次項
 - **判断基準のしきい値**: **本ファイル「Do」の判断木を v1 として採用**。Act フェーズで判断ログから更新する。既知の粗さ: 「外部可視」の境界（社内 Slack の扱い等）は運用で詰める
 - **指示の送信元認証問題**: **volante のスコープ外。kitty 側の対処もしない**（konuma 判断 2026-07-07: `allow_remote_control` の開放性は許容）。防御は volante の「送信元不明の指示 → 実行前に必ず確認」ルール（判断木 枝 3）のみで担う
 - **状態・判断ログの保存場所**: **volante 側（このリポジトリ）に集約**。判断ログは複数セッション横断の 1 本の時系列であり、Act の振り返りを 1 箇所で完結させるため。tracer（対象 repo 側に置く）とは逆の方針で、これは意図的
 - **tracer 管理下セッションとの連携**: **対象 repo の `.claude/goals/` goal file を read-only で直読**して autonomy 設定を尊重する。セッションへの問い合わせはしない（context 消費・応答不確実）。留意: tracer の goal-template フォーマット変更への追従が必要。書きかけ file を読む可能性は許容し、疑わしければ人間確認に倒す
+
+## 設計判断: TUI adapter 層の導入 (2026-07-10 konuma 決定、issue #25)
+
+上記「セッション発見の手段: kitty 専用」(2026-07-07 YAGNI 判断) を覆し、adapter 層を導入した。PC 間差異は
+「DB / サーバー不要」原則と同じく local file 側で吸収する。
+
+- **5 primitive**: `list_sessions` / `read_screen(id, tail_lines)` / `send_text(id, body)` / `send_key(id, key)` /
+  `self_id()`。contract は `skills/volante/adapters/interface.md`
+- **実装済み adapter**: kitty (`skills/volante/adapters/kitty.sh`、既存 `kitty @ ...` 呼び出しの集約、
+  konuma の M1 Mac 環境で回帰なし)、tmux (`skills/volante/adapters/tmux.sh`、最小実装)。wezterm / manual は
+  config の enum のみ確保し未実装（需要が出たら追加、iTerm2 同様 YAGNI を維持）
+- **PC ごとの選択**: `~/.config/volante/config.json` (git 管理外、schema:
+  `skills/volante/templates/local-config.schema.json`)。`/volante` 初回起動時に config が無ければ対話で
+  生成する (SKILL.md 7.1)
+- **判断木 (SKILL.md 4. checklist) と芯 (SKILL.md 1. role_and_goal の「変更禁止の芯」) は不変**。
+  adapter 層は「どう画面を読み・どう送るか」の実装詳細のみを差し替え、判断ロジックには影響しない
+- **送信元認証問題は従来どおりスコープ外**のまま。adapter を跨いでも防御は判断木 枝 3 のみで担う
+  (2026-07-07 決定の当該部分は継続)
 
 ## 設計原則: DB / サーバー不要、HTML + JSON でローカル完結 (2026-07-09 konuma 決定、issue #10)
 
@@ -73,6 +92,6 @@ HOTL Platform 昇華ロードマップ (v0.13.0 以降) 全体を貫く制約。
 
 - **永続化はすべて git 管理下のファイル**で完結させる。DB / サーバー / hosting を持たない。具体的には `journal/*.md` + `journal/specs/*.json` + `journal/decisions-YYYY-MM.jsonl` の系列
 - **UI は HTML テンプレート + JSON 読み込み型**で、ブラウザで開くだけで動く形にする (WebSocket / node-pty / xterm.js は不要)。tracer の `dashboard-template.html` (HTML + JSON をブラウザで開くだけ) が先行実装
-- **kitty 経由の運用は既存のまま**。UI は観察・振り返り用の read-only ダッシュボードに絞り、対話的な制御チャネルは足さない
+- **adapter 経由 (kitty/tmux 等) の運用は既存のまま**。UI は観察・振り返り用の read-only ダッシュボードに絞り、対話的な制御チャネルは足さない (2026-07-10 issue #25 で kitty 専用から adapter 層に移行)
 - **verification**: 各 milestone (v0.13.0 / v0.14.0 / v0.15.0 / v1.0) で「DB / サーバー / hosting コスト増が発生していない」ことを共通の検収項目にする
 - **Why**: volante は konuma 個人が複数セッションを差配するためのツール。SaaS 化しない。DB / サーバーを持てば運用コスト・障害点・認証が要る。ローカルファイル + ブラウザで足りる範囲に留めれば、増分は git commit だけで済む

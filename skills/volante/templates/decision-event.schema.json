@@ -20,7 +20,7 @@
     "target_session": {
       "type": "string",
       "minLength": 1,
-      "description": "kitty window id + session 役割名 (例: '<window-id> <session-role>')"
+      "description": "adapter 依存の session id (kitty なら window id、tmux なら pane id 等) + session 役割名 (例: '<session-id> <session-role>')"
     },
     "branch": {
       "type": "string",
@@ -37,7 +37,7 @@
     },
     "evidence": {
       "type": "string",
-      "description": "Fact の出典 (kitty get-text の該当行、gh 出力、journal 参照 等)。取得不能時は '実測不可' と明記"
+      "description": "Fact の出典 (adapter read_screen の該当行、gh 出力、journal 参照 等)。取得不能時は '実測不可' と明記"
     },
     "self_review": {
       "type": "string",
