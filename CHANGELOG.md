@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.13.0] - 2026-07-09
+
+- **HOTL Platform 昇華ロードマップの第 1 段** (issue #10、konuma 承認 2026-07-09 /goal「一通り完了するまで
+  merge 含めて実装を進めて」)。差配の起点を goals.md から Session Spec (JSON) に段階移行する:
+  1. **Spec schema v1 導入** (#12): `skills/volante/templates/spec-template.json` (JSON Schema draft
+     2020-12、`additionalProperties: false`)。要素は `goal` (string) と `acceptance_criteria`
+     (array of string、`minItems: 1`) のみ。制約 / 非目標 / 前提 / 依存 / エスカレーションは v0.14.0
+     以降で段階拡張
+  2. **pitto 先行移行** (#13): `journal/specs/pitto-w24.json` / `pitto-w59.json` を作成し schema
+     v1 で validate 済み
+  3. **SKILL.md 判断木更新** (#14):
+     - **芯 9 追記** (設計原則): 「DB / サーバーを持たない。永続化は git 管理下ファイルで完結、UI は
+       HTML + JSON 読み込み型のみ」を SaaS 化しない原則として明示。CLAUDE.md「設計原則」節と一致
+     - **正本 3 層 → 4 層に拡張** (2. canonical_model): Session Spec (差配起点) と goals.md index
+       (index 降格) を分離。Spec 未整備 session は goals.md「ゴール 1 行」列でフォールバック
+     - **差配とゴール紐付け節** (4. checklist): 起点を Spec の `goal` / `acceptance_criteria` に切替。
+       未登録処理は goals.md 未登録に加え「Spec 未登録」も同扱い
+     - **乖離チェック節** (4. checklist): 3 系統 (正本↔Spec / Spec↔セッション行動 / goals.md↔正本) に拡張。
+       Spec の acceptance_criteria との突き合わせ手順を追加。criteria 全体入れ替え等の大幅再定義は枝 1
+       (konuma 事前確認) に倒す
+     - **7.1 準備節**: 巡回冒頭で `journal/specs/` と `goals.md` の両方を読むよう更新
+- 判断木の枝 1〜5 の意味・優先順位・番号は不変。芯 1〜8 も不変 (芯 9 の追加のみ)
+- v0.14.0 (decisions JSONL 併記) / v0.15.0 (監督 AI subagent) / v1.0 epic (HTML + JSON 型ローカル UI) は
+  それぞれ子 issue #15 / #16 / #17 で継続
+
 ## [0.12.0] - 2026-07-09
 
 - **SKILL.md を「良いプロンプト」9 ブロック構造へ全面再構成** (issue #11、konuma 起票 + plan 承認 2026-07-09。
