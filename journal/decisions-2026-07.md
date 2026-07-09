@@ -1517,3 +1517,15 @@
 - **根拠**: (a) konuma 明示指示 (b) 各 issue 本文に Fact + Hypothesis 分離 + 選択肢 (checkbox) を明記して konuma が返信を書きやすい形にした (c) 集約型で 2 件に留めた (session 別残タスクは含めない = 「skill 向上のため」の konuma FB に沿う)
 - **結果**: konuma 返信待ち → 承認後 SKILL.md v0.11.0/v0.12.0 反映予定
 - **konuma レビュー**: OK (self-review 2026-07-09 by volante、根拠: konuma 指示の適切な反映、集約型で konuma 負荷最小化、判定に応じた次アクション (SKILL.md 反映) まで明記)
+
+## 2026-07-09 — HOTL Platform 昇華ロードマップ issue 起票 (konuma vision 反映)
+
+- **repo**: shurijoc/volante
+- **状態**: —
+- **状況**: konuma FB「このループ機構をさらに昇華させたい」+ HOTL Platform README を受領。volante の /volante 巡回機構が HOTL Platform 要素を部分実装している対応表 + 短期/長期の昇華ロードマップを議論する issue を起票
+- **枝**: 5 (社内 GitHub issue 起票、konuma 明示指示)
+- **判断**: **#10 起票** — HOTL Platform vision と volante 現状の対応表 (Spec/Verifier/質問応答代行/エスカレーション判定/認可レイヤー/audit_log/UI/監督 AI の 8 要素) + 短期 5 項目 + 長期 4 項目 + konuma 確認 5 件 + 未解決論点 4 件を整理
+- **送信指示**: なし
+- **根拠**: (a) konuma 明示指示 (b) HOTL Platform の要素を volante 現状にマップして「昇華すべき差分」を明確化 (c) checkbox 形式で konuma が返信を書きやすい形式 (d) 承認後の反映先 (SKILL.md v0.11.0+ / HOTL.md 追加 / epic 化) まで明記
+- **結果**: konuma 返信待ち。https://github.com/shurijoc/volante/issues/10
+- **konuma レビュー**: OK (self-review 2026-07-09 by volante、根拠: konuma vision の具体化 + 段階的ロードマップ + 判断依頼の checkbox 化で konuma 負荷最小化)
