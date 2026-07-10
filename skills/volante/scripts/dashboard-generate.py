@@ -32,6 +32,9 @@ import sys
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+JST = ZoneInfo("Asia/Tokyo")
 
 
 def find_repo_root(start: Path) -> Path | None:
@@ -693,6 +696,19 @@ TEMPLATE = """<!DOCTYPE html>
   document.getElementById('decisions-limit').textContent = data.decisions_limit ?? '?';
   document.getElementById('patrols-limit').textContent = data.patrols_limit ?? '?';
 
+  // issue #33: decisions-*.jsonl の timestamp は正本 (UTC ISO 8601, 例 "2026-07-10T08:56:00Z") の
+  // まま保持し、表示のときだけ JST に変換する。patrols.md の日時は元々 JST の壁時計表記のため無変換。
+  function formatJST(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const parts = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    }).formatToParts(d).reduce((acc, p) => (acc[p.type] = p.value, acc), {});
+    return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute} JST`;
+  }
+
   // issue #26: fields shown inside the collapsible "詳細" panel for 監督 AI judgement events.
   // Declared early (before the tab-construction loop below, which calls renderEvent via
   // renderEpicTab synchronously) to avoid a temporal-dead-zone ReferenceError.
@@ -1019,7 +1035,7 @@ TEMPLATE = """<!DOCTYPE html>
     const branchClass = branch === '1' ? 'branch-1' : (isOversight ? 'branch-oversight' : '');
     el.className = 'event ' + branchClass;
     const head = document.createElement('div'); head.className = 'head';
-    const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || ''; head.appendChild(ts);
+    const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = formatJST(ev.timestamp); head.appendChild(ts);
     const br = document.createElement('span'); br.className = 'branch'; br.textContent = '枝 ' + branch; head.appendChild(br);
     const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || ''; head.appendChild(tgt);
     el.appendChild(head);
@@ -1075,7 +1091,7 @@ TEMPLATE = """<!DOCTYPE html>
       if (pinfo.title) progTd.title = pinfo.title;
       tr.appendChild(progTd);
       const tsTd = document.createElement('td'); tsTd.className = 'metric-ts';
-      tsTd.textContent = m.latest_ts ? m.latest_ts.replace('T', ' ').slice(0, 16) : '—';
+      tsTd.textContent = m.latest_ts ? formatJST(m.latest_ts) : '—';
       tr.appendChild(tsTd);
       const blkTd = document.createElement('td'); blkTd.className = 'metric-num';
       if (m.blockers > 0) blkTd.classList.add('warn');
@@ -1471,7 +1487,8 @@ def build_payload(root: Path, args: argparse.Namespace) -> dict:
             "decisions_count": len(matches),
         }
 
-    now_str = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    # issue #33: 生成時刻の表示は JST (正本の decisions/patrols timestamp 自体は UTC のまま)
+    now_str = args.now or datetime.now(JST).strftime("%Y-%m-%d %H:%M JST")
 
     return {"specs": specs, "decisions": decisions, "decisions_all": decisions_all,
             "patrols": patrols, "retros": retros, "goals": goals_rows,
