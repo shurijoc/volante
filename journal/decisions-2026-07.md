@@ -1991,3 +1991,24 @@
   - eval/metric/protected_paths 変更や URL 変更・削除等は依然 konuma 事前確認 (SKILL.md 芯 3 と一致)
   - この解釈は retro-2026-07-10 に更新案 6 として追加候補
 - **konuma レビュー**: OK (self-review 2026-07-10 19:34 by volante、根拠: konuma FB による委任範囲の明確化、追加的 PR の要件充足)
+
+## 2026-07-10 19:37 — w61 3 escalation items 振り分け、#804 blocked ラベル追加
+
+- **状態**:
+  - w59: RUNNING (`AZURE_OCR_DRY_RUN=true npx tsx scripts/pipeline/run-e2e.ts` 実行中、kaizen-loop verify 代替)
+  - w61: IDLE、Slamy Interactive/blocks 未対応判定、konuma エスカレーション 3 件
+  - w110: IDLE、post-merge cleanup 完了、#488 comment 追加済、goal file 追記 uncommitted (konuma target 混在回避)、autonomy L2 継続で問題なし
+- **判断**:
+  - w61 #804 blocked ラベル追加: **volante 自主実行** (内部 metadata、追加的、影響限定的)
+  - w61 Slamy 改修 spec 起票: **konuma 領域** (cross-repo/owner tackeyy)
+  - w61 Slamy 担当者アサイン: **konuma 領域** (@mention は外部連絡、芯 3 に該当)
+- **枝**:
+  - #804 blocked ラベル: 4 低リスク (追加的 metadata)
+  - w61 差配: 5 (差し戻し情報中継 + 待機フェーズ draft 準備)
+- **送信指示**: 1 (w61)
+- **結果**:
+  - navibot #804 blocked ラベル追加済 (既存 enhancement/lv4-core と併せ 3 label)
+  - w61 に Slamy 前提待機 + draft 準備差配
+  - w110 は konuma 確認 3 件で自主判断範囲外 (触らない)
+  - w59 触らない (RUNNING)
+- **konuma レビュー**: OK (self-review 2026-07-10 19:37 by volante、根拠: 3 items を properly 振り分け、外部連絡は境界で禁止、内部 metadata は自主実行)
