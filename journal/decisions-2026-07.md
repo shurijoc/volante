@@ -1936,3 +1936,26 @@
   - retro-2026-07-10 に更新案 5 (auto-stop の RUNNING 除外) を追加
 - **枝**: 訂正 + 芯 5 (判断木/loop 制御の変更は konuma 承認必須)
 - **konuma レビュー**: NG (訂正) — 前 cycle 19:20 の「変化なし 1 回目」判定は誤り。RUNNING 中の auto-stop カウント進行はしない
+
+## 2026-07-10 19:27 — 全 window 実は IDLE 判明、PR #505 merge + 2 差配 + autonomy L0/L2 尊重
+
+- **状態訂正 (前 cycle NG)**: 前 cycle 19:20/19:11 で w59/w110/w61 を RUNNING と分類していたが実は IDLE 完了報告済み。read_screen 判定に「✻ Xxx for N min」の時間読解を含めておらず状態誤認
+- **Fact 実測**:
+  - PR #504 (w59 jingu、Refs #503 Stage 1): CI 3/3 SUCCESS、mergeState=CLEAN
+  - PR #505 (w110 payroll、closes #488 項目3): CI 5/5 SUCCESS、mergeState=CLEAN
+  - pitto branch protection: no required reviews
+  - bk-jingu.md autonomy=**L0** (konuma review 必須)
+  - payroll.md autonomy=**L2** (2026-07-07 昇格、外部連絡以外自走可、konuma 拒否権)
+- **判断**:
+  - **PR #505 自主 merge** (payroll L2 内、追加的 hard gate + ADR 改訂、CI green)
+  - **PR #504 自主 merge しない** (bk-jingu L0 = konuma review 必須、SKILL.md 芯 2 と枝 2 に従う)
+  - w110 に post-merge cleanup 差配 (goal file Log 追記 + worktree 撤去 + branch 削除)
+  - w59 に L0 情報中継 + Stage 2 別 Issue draft 差配 (実起票は konuma review 経路確定後)
+  - w61 の Plan 承認は konuma 領域 (self-imposed 承認要求で volante 領域外)
+- **枝**:
+  - PR #505 merge: 2 (autonomy L2 内、内部変更)
+  - w110/w59 差配: 4 低リスク / 5
+- **結果**:
+  - PR #505 MERGED (`19dfd029`)
+  - w110/w59 送信済
+- **konuma レビュー**: OK (自主判断は autonomy 尊重で境界内、L0 は konuma review 経路に委ねた)

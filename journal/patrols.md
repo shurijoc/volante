@@ -121,3 +121,4 @@
 | 2026-07-10 19:11 | 観測 8 / RUNNING 3 (w59/w110/w61) + IDLE 4 + WAITING 1 (w113) / 指示 0 / PR #309 CI check 継続中 |
 | 2026-07-10 19:16 | 観測 8 / RUNNING 3 + IDLE 4 + WAITING 1 / 指示 0 (PR #309 merge 実行) / **PR #309 MERGED**、#140 CLOSED、scope:ai-agent 2→1 (実質達成間近) |
 | 2026-07-10 19:20 | 観測 8 / RUNNING 3 (w59/w110/w61) + IDLE 4 + WAITING 1 (w113) / 指示 0 / **konuma FB で auto-stop 判定を修正**: RUNNING が 1 つでもあれば count しない → カウント 0/2 |
+| 2026-07-10 19:27 | 観測 8 / IDLE 6 (w24/w34/w59/w61/w110/w111/w112 → 実は w59/w110 完了、w61 plan draft) / **指示 2 (w110/w59)** + PR #505 merge / **状態分類誤りを訂正 (実は IDLE 3)** |
