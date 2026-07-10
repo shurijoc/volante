@@ -1529,3 +1529,22 @@
 - **根拠**: (a) konuma 明示指示 (b) HOTL Platform の要素を volante 現状にマップして「昇華すべき差分」を明確化 (c) checkbox 形式で konuma が返信を書きやすい形式 (d) 承認後の反映先 (SKILL.md v0.11.0+ / HOTL.md 追加 / epic 化) まで明記
 - **結果**: konuma 返信待ち。https://github.com/shurijoc/volante/issues/10
 - **konuma レビュー**: OK (self-review 2026-07-09 by volante、根拠: konuma vision の具体化 + 段階的ロードマップ + 判断依頼の checkbox 化で konuma 負荷最小化)
+
+## 2026-07-10 17:56 — 巡回 (8 対象、goal 未登録が全対象)
+
+- **repo**: 複数 (対象セッションごとに異なる。以下参照)
+- **状態**: RUNNING 1 (w113) / IDLE 7 (w24/w34/w59/w61/w110/w111/w112)
+- **状況**: 
+  - w113 (auto_approach): Fable5 で issue #2665 の /plan 進行中 (Booping thinking 5m 36s、plan mode)
+  - w34 (ma_navi/develop): M&A 100億宣言分析の STATUS 表示、konuma に方向判断 3 件を確認依頼中 (業種フィルタ / entry_source 分離 / scoring 組み込み)
+  - w24/w59/w61/w110/w111/w112: /clear 直後の空プロンプト状態、context 0-10%、STATUS なし
+- **枝**: 差配なし (全対象が Spec 未紐付け → 「差配とゴール紐付け」に従い新規差配せず)
+- **判断**: **全対象に対して指示送信なし**。理由:
+  - w113 は RUNNING (触らない)
+  - w34 は既存 spec (pitto/forge/navibot 系) に該当なし、ma_navi/develop での独立分析 → Spec 未登録扱い、代答不可
+  - 6 空セッションは cwd と status bar の repo が食い違うものを含み (w61 list=pitto/status=navibot、w110 list=navibot/status=pitto、w111 list=pitto/status=forge)、どの spec に紐付くか session 側の意思表明なしには判定不能
+  - context reset 巡回義務: 全 IDLE の 🧠 は 0-10% で発火条件 (50% or /clear ヒント) 未達 → 実行しない
+- **送信指示**: なし
+- **根拠**: SKILL.md 4. 差配とゴール紐付け「対象セッションが Spec も goals.md も未登録の場合、goal 未設定を放置しない。新規差配は最小限に留める」+ 4. 巡回義務 (context reset 発火条件未達) + 芯 6 (対象 state 変更禁止)
+- **結果**: konuma に「8 セッション全てが Spec 未紐付け、goal 設定要求」を報告 (下記 STATUS)
+- **konuma レビュー**: OK (self-review 2026-07-10 17:56 by volante、根拠: Spec 未紐付け session への代答を差し控え SKILL.md 4. のフェイルセーフを適用、context 破壊リスクなし)
