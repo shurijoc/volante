@@ -3,9 +3,10 @@
 
 Reads:
   - journal/specs/*.json         (Session Spec v1)
-  - journal/decisions-<YYYY-MM>.jsonl (latest month, last N events)
+  - journal/decisions-<YYYY-MM>.jsonl (current month, last N events; issue #26/#27/#28)
+  - journal/decisions-*.jsonl     (all months, globbed, for the "全期間" toggle + epic-tab filter)
   - journal/patrols.md            (last few rows)
-  - journal/retro-*.md           (index only)
+  - journal/retro-*.md           (index + truncated body, issue #27)
 
 Outputs:
   - journal/dashboard.html       (self-contained, JSON embedded via <script>)
@@ -14,8 +15,8 @@ Design principle (CLAUDE.md 設計原則, SKILL.md 芯 9):
   DB / サーバー不要、HTML + JSON でローカル完結。The output is a single .html
   file with embedded JSON. Open with `open journal/dashboard.html` — no server.
 
-Status: v0.16.0-preview / MVP (issue #17 の第 1 段)。監督 AI 判定表示、
-retro の内容展開、UI 洗練は継続イテレーションで対応する。
+Status: v0.16.1 — 監督 AI 判定の詳細展開 (#26)、retro 本文の折りたたみ表示 (#27)、
+前月以前の decisions ログの横断表示 (#28) を実装。
 """
 import argparse
 import json
@@ -47,9 +48,8 @@ def load_specs(specs_dir: Path) -> list[dict]:
     return specs
 
 
-def load_recent_decisions(journal: Path, limit: int) -> list[dict]:
-    now_month = datetime.now(timezone.utc).strftime("%Y-%m")
-    path = journal / f"decisions-{now_month}.jsonl"
+def _parse_decisions_file(path: Path) -> list[dict]:
+    """Parse one decisions-YYYY-MM.jsonl file into a list of event dicts (chronological)."""
     if not path.exists():
         return []
     events = []
@@ -61,7 +61,24 @@ def load_recent_decisions(journal: Path, limit: int) -> list[dict]:
             events.append(json.loads(line))
         except json.JSONDecodeError as e:
             print(f"warning: parse error at {path}:{i}: {e}", file=sys.stderr)
+    return events
+
+
+def load_recent_decisions(journal: Path, limit: int) -> list[dict]:
+    """Load the current month's decisions-YYYY-MM.jsonl (unlimited if limit<=0)."""
+    now_month = datetime.now(timezone.utc).strftime("%Y-%m")
+    events = _parse_decisions_file(journal / f"decisions-{now_month}.jsonl")
     return events[-limit:] if limit > 0 else events
+
+
+def load_all_decisions(journal: Path) -> list[dict]:
+    """issue #28: glob every decisions-YYYY-MM.jsonl and concatenate in chronological
+    (filename-sorted) order, so past months don't disappear once the calendar rolls over.
+    Returns [] when no jsonl has ever been written (Fact 主義: 現状のまま、何も無ければ空)."""
+    events = []
+    for path in sorted(journal.glob("decisions-*.jsonl")):
+        events.extend(_parse_decisions_file(path))
+    return events
 
 
 def parse_goals_md(journal: Path) -> list[dict]:
@@ -278,14 +295,30 @@ def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
     return rows[-limit:] if limit > 0 else rows
 
 
+RETRO_BODY_TRUNCATE_CHARS = 2000
+
+
 def load_retro_index(journal: Path) -> list[dict]:
+    """issue #27: load the retro-*.md body (truncated) alongside the index so the
+    dashboard can render an inline <details> preview, not just a link."""
     entries = []
     for path in sorted(journal.glob("retro-*.md"), reverse=True):
         m = re.search(r"retro-(\d{4}-\d{2}-\d{2})(?:-(\d+))?\.md$", path.name)
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as e:
+            print(f"warning: could not read {path}: {e}", file=sys.stderr)
+            text = ""
+        truncated = len(text) > RETRO_BODY_TRUNCATE_CHARS
+        body = text[:RETRO_BODY_TRUNCATE_CHARS]
+        if truncated:
+            body += "\n... [continued]"
         entries.append({
             "file": path.name,
             "date": m.group(1) if m else "",
             "suffix": m.group(2) or "" if m else "",
+            "body": body,
+            "truncated": truncated,
         })
     return entries
 
@@ -361,6 +394,18 @@ TEMPLATE = """<!DOCTYPE html>
   .event .review { font-family: var(--mono); font-size: 11px; color: var(--text-mute); margin-top: 4px; }
   .event .review.ok::before { content: "✓ "; color: var(--ok); }
   .event .review.ng::before { content: "✗ "; color: var(--warn); }
+  .event details.event-detail { margin-top: 6px; font-size: 12px; }
+  .event details.event-detail > summary { cursor: pointer; color: var(--text-mute); font-size: 12px;
+                                          list-style: none; padding: 3px 0; }
+  .event details.event-detail > summary::marker, .event details.event-detail > summary::-webkit-details-marker { display: none; }
+  .event details.event-detail > summary::before { content: "▸ 詳細"; display: inline-block; }
+  .event details.event-detail[open] > summary::before { content: "▾ 詳細"; }
+  .event-detail-row { margin: 6px 0 0; }
+  .event-detail-row .label { display: block; color: var(--text-mute); font-size: 10.5px;
+                             text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
+  .event-detail-row pre { font-family: var(--mono); font-size: 12px; white-space: pre-wrap;
+                          word-break: break-word; margin: 0; background: var(--surface);
+                          border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   table th, table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border);
                        vertical-align: top; }
@@ -430,6 +475,22 @@ TEMPLATE = """<!DOCTYPE html>
   .retro-link { color: inherit; text-decoration: none; }
   .retro-link:hover { text-decoration: underline; }
   #patrols td.memo { font-size: 12.5px; line-height: 1.5; }
+  .retro-list { display: flex; flex-direction: column; gap: 6px; }
+  .retro-entry { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; background: var(--bg); }
+  .retro-entry > summary { cursor: pointer; font-size: 13px; display: flex; gap: 10px; align-items: baseline;
+                           list-style: none; }
+  .retro-entry > summary::-webkit-details-marker { display: none; }
+  .retro-entry > summary::before { content: "▸ "; color: var(--text-mute); }
+  .retro-entry[open] > summary::before { content: "▾ "; }
+  .retro-entry .date { font-family: var(--mono); color: var(--text-mute); font-size: 12px; white-space: nowrap; }
+  .retro-body { margin: 10px 0 0; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border);
+               border-radius: 6px; font-family: var(--mono); font-size: 12px; white-space: pre-wrap;
+               word-break: break-word; max-height: 480px; overflow-y: auto; }
+  .decisions-scope { display: flex; gap: 6px; margin-bottom: 12px; }
+  .scope-btn { padding: 3px 12px; font-size: 12px; font-family: var(--sans); border: 1px solid var(--border);
+              border-radius: 12px; background: var(--surface); color: var(--text-mute); cursor: pointer; }
+  .scope-btn:hover { color: var(--text); }
+  .scope-btn.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -470,6 +531,10 @@ TEMPLATE = """<!DOCTYPE html>
 
       <section>
         <h2>Recent decisions (JSONL、直近 __DECISIONS_LIMIT__ 件)</h2>
+        <div class="decisions-scope">
+          <button type="button" class="scope-btn active" data-scope="month">今月のみ</button>
+          <button type="button" class="scope-btn" data-scope="all">全期間</button>
+        </div>
         <div id="decisions" class="timeline"></div>
       </section>
 
@@ -480,7 +545,7 @@ TEMPLATE = """<!DOCTYPE html>
 
       <section>
         <h2>Retro index</h2>
-        <table id="retros"><thead><tr><th>date</th><th>file</th></tr></thead><tbody></tbody></table>
+        <div id="retros" class="retro-list"></div>
       </section>
     </div>
 
@@ -491,6 +556,18 @@ TEMPLATE = """<!DOCTYPE html>
 <script id="volante-data" type="application/json">__DATA_JSON__</script>
 <script>
   const data = JSON.parse(document.getElementById('volante-data').textContent);
+
+  // issue #26: fields shown inside the collapsible "詳細" panel for 監督 AI judgement events.
+  // Declared early (before the tab-construction loop below, which calls renderEvent via
+  // renderEpicTab synchronously) to avoid a temporal-dead-zone ReferenceError.
+  const OVERSIGHT_DETAIL_FIELDS = [
+    ['rationale', '根拠 (rationale)'],
+    ['self_review', 'self_review'],
+    ['evidence', 'evidence'],
+    ['konuma_review', 'konuma レビュー'],
+    ['oversight_verdict', 'oversight_verdict'],
+    ['oversight_evidence', 'oversight_evidence'],
+  ];
 
   // ===== KPI sheet link (issue #23: epic は必ず PJCI シートのタブに紐付ける) =====
   const KPI_SHEET_ID = '1WyEk-SLza9RjXfoYmoxn6zNwSKfeu4As7QIlUz0zj4U';
@@ -692,10 +769,11 @@ TEMPLATE = """<!DOCTYPE html>
     }
     pane.appendChild(isSec);
 
-    // Filtered decisions (this epic only)
+    // Filtered decisions (this epic only). issue #28: filter from the full-period set
+    // (decisions_all), not just the current-month-limited main timeline list.
     const decSec = document.createElement('section');
-    const decH = document.createElement('h2'); decH.textContent = '直近 decisions (' + s.session + ' 関連)'; decSec.appendChild(decH);
-    const relevant = (data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session));
+    const decH = document.createElement('h2'); decH.textContent = '直近 decisions (' + s.session + ' 関連・全期間)'; decSec.appendChild(decH);
+    const relevant = (data.decisions_all || data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session));
     if (relevant.length === 0) {
       const em = document.createElement('div'); em.className = 'empty'; em.textContent = '(該当なし)'; decSec.appendChild(em);
     } else {
@@ -710,7 +788,7 @@ TEMPLATE = """<!DOCTYPE html>
     // Oversight (v0.15.0) history for this epic
     const ovSec = document.createElement('section');
     const ovH = document.createElement('h2'); ovH.textContent = '監督 AI 判定履歴 (' + s.session + ' 関連)'; ovSec.appendChild(ovH);
-    const ovs = (data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session)
+    const ovs = (data.decisions_all || data.decisions || []).filter(ev => (ev.target_session || '').includes(s.session)
                                                     && String(ev.branch || '').includes('監督 AI'));
     if (ovs.length === 0) {
       const em = document.createElement('div'); em.className = 'empty';
@@ -727,7 +805,8 @@ TEMPLATE = """<!DOCTYPE html>
   function renderEvent(ev) {
     const el = document.createElement('div');
     const branch = String(ev.branch || '');
-    const branchClass = branch === '1' ? 'branch-1' : (branch.includes('監督 AI') ? 'branch-oversight' : '');
+    const isOversight = branch.includes('監督 AI');
+    const branchClass = branch === '1' ? 'branch-1' : (isOversight ? 'branch-oversight' : '');
     el.className = 'event ' + branchClass;
     const head = document.createElement('div'); head.className = 'head';
     const ts = document.createElement('span'); ts.className = 'ts'; ts.textContent = ev.timestamp || ''; head.appendChild(ts);
@@ -735,11 +814,30 @@ TEMPLATE = """<!DOCTYPE html>
     const tgt = document.createElement('span'); tgt.className = 'target'; tgt.textContent = ev.target_session || ''; head.appendChild(tgt);
     el.appendChild(head);
     const dec = document.createElement('div'); dec.className = 'decision'; dec.textContent = ev.decision || ''; el.appendChild(dec);
-    if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
-    if (ev.self_review) {
-      const rv = document.createElement('div');
-      const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
-      rv.className = 'review ' + cls; rv.textContent = ev.self_review; el.appendChild(rv);
+
+    if (isOversight) {
+      // issue #26: 監督 AI event だけ、詳細フィールドを <details> に折りたたむ (非監督 event は下の else 節のまま = 回帰なし)
+      const present = OVERSIGHT_DETAIL_FIELDS.filter(([key]) => ev[key]);
+      if (present.length > 0) {
+        const det = document.createElement('details'); det.className = 'event-detail';
+        const sum = document.createElement('summary'); det.appendChild(sum);
+        for (const [key, label] of present) {
+          const row = document.createElement('div'); row.className = 'event-detail-row';
+          const lab = document.createElement('span'); lab.className = 'label'; lab.textContent = label;
+          row.appendChild(lab);
+          const pre = document.createElement('pre'); pre.textContent = String(ev[key]);
+          row.appendChild(pre);
+          det.appendChild(row);
+        }
+        el.appendChild(det);
+      }
+    } else {
+      if (ev.rationale) { const r = document.createElement('div'); r.className = 'rationale'; r.textContent = ev.rationale; el.appendChild(r); }
+      if (ev.self_review) {
+        const rv = document.createElement('div');
+        const cls = /^OK/i.test(ev.self_review) ? 'ok' : (/^NG/i.test(ev.self_review) ? 'ng' : '');
+        rv.className = 'review ' + cls; rv.textContent = ev.self_review; el.appendChild(rv);
+      }
     }
     return el;
   }
@@ -851,12 +949,29 @@ TEMPLATE = """<!DOCTYPE html>
     }
   }
 
+  // issue #28: 表示範囲 (今月のみ / 全期間) 切替。デフォルトは今月のみ = 既存挙動維持
   const decEl = document.getElementById('decisions');
-  if (data.decisions.length === 0) {
-    decEl.innerHTML = '<div class="empty">decisions-YYYY-MM.jsonl 未生成 or 空 (v0.14.0 以降で新規エントリ併記化)</div>';
-  } else {
-    for (const ev of data.decisions.slice().reverse()) decEl.appendChild(renderEvent(ev));
+  let decisionsScope = 'month';
+  function renderDecisionsTimeline() {
+    const list = decisionsScope === 'all' ? (data.decisions_all || []) : (data.decisions || []);
+    decEl.innerHTML = '';
+    if (list.length === 0) {
+      const msg = decisionsScope === 'all'
+        ? '過去分含め decisions-YYYY-MM.jsonl 未生成 or 空'
+        : 'decisions-YYYY-MM.jsonl 未生成 or 空 (v0.14.0 以降で新規エントリ併記化)';
+      decEl.innerHTML = '<div class="empty">' + msg + '</div>';
+    } else {
+      for (const ev of list.slice().reverse()) decEl.appendChild(renderEvent(ev));
+    }
   }
+  document.querySelectorAll('.scope-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      decisionsScope = btn.dataset.scope;
+      document.querySelectorAll('.scope-btn').forEach(b => b.classList.toggle('active', b === btn));
+      renderDecisionsTimeline();
+    });
+  });
+  renderDecisionsTimeline();
 
   const patBody = document.querySelector('#patrols tbody');
   const PATROL_METRIC_COLS = ['observed', 'idle', 'running', 'waiting', 'instructed'];
@@ -874,20 +989,24 @@ TEMPLATE = """<!DOCTYPE html>
     }
   }
 
-  const retroBody = document.querySelector('#retros tbody');
+  // issue #27: retro index を <details> の折りたたみリストに (link はそのまま summary 内に残す)
+  const retroBody = document.getElementById('retros');
   if (data.retros.length === 0) {
-    retroBody.innerHTML = '<tr><td colspan="2" class="empty">retro なし</td></tr>';
+    retroBody.innerHTML = '<div class="empty">retro なし</div>';
   } else {
     for (const r of data.retros) {
-      const tr = document.createElement('tr');
-      const d = document.createElement('td'); d.textContent = r.date || '?'; tr.appendChild(d);
-      const f = document.createElement('td');
+      const det = document.createElement('details'); det.className = 'retro-entry';
+      const sum = document.createElement('summary');
+      const d = document.createElement('span'); d.className = 'date'; d.textContent = r.date || '?'; sum.appendChild(d);
       const code = document.createElement('code');
       const a = document.createElement('a'); a.className = 'retro-link'; a.href = './' + r.file; a.textContent = r.file;
       code.appendChild(a);
-      f.appendChild(code);
-      tr.appendChild(f);
-      retroBody.appendChild(tr);
+      sum.appendChild(code);
+      det.appendChild(sum);
+      const pre = document.createElement('pre'); pre.className = 'retro-body';
+      pre.textContent = r.body || '(本文取得不可)';
+      det.appendChild(pre);
+      retroBody.appendChild(det);
     }
   }
 </script>
@@ -914,6 +1033,12 @@ def main() -> None:
     specs = load_specs(journal / "specs")
     all_decisions = load_recent_decisions(journal, 0)
     decisions = all_decisions[-args.decisions_limit:] if args.decisions_limit > 0 else all_decisions
+    # issue #28: full multi-month set, capped by the same --decisions-limit, for the
+    # "全期間" toggle + epic-tab filter. all_decisions (current-month-only, unlimited)
+    # keeps feeding the PM-table metrics below unchanged (regression-free).
+    all_decisions_multi = load_all_decisions(journal)
+    decisions_all = (all_decisions_multi[-args.decisions_limit:]
+                      if args.decisions_limit > 0 else all_decisions_multi)
     patrols = load_recent_patrols(journal, args.patrols_limit)
     retros = load_retro_index(journal)
     goals_rows = parse_goals_md(journal)
@@ -993,7 +1118,8 @@ def main() -> None:
             "decisions_count": len(matches),
         }
 
-    payload = {"specs": specs, "decisions": decisions, "patrols": patrols, "retros": retros, "goals": goals_rows}
+    payload = {"specs": specs, "decisions": decisions, "decisions_all": decisions_all,
+               "patrols": patrols, "retros": retros, "goals": goals_rows}
     payload_json = json.dumps(payload, ensure_ascii=False)
     now_str = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 

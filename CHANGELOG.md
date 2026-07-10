@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.16.1] - 2026-07-10
+
+- **dashboard を 3 点強化** (issue #26, #27, #28):
+  - **監督 AI 判定の詳細をインライン展開表示** (#26): `renderEvent()` を 監督 AI event (`branch` に
+    "監督 AI" を含む) とそれ以外で分岐。監督 AI event はサマリ行 (時刻/枝/対象/判断) は従来どおり
+    常時表示しつつ、`rationale` / `self_review` / `evidence` / `konuma_review` / (存在すれば)
+    `oversight_verdict` / `oversight_evidence` を `<details>` 折りたたみ (`event-detail`) の中に monospace
+    で表示するよう変更。非監督 event は従来の inline 表示のまま (回帰なし)
+  - **retro 本文の折りたたみ表示** (#27): `dashboard-generate.py` の `load_retro_index()` が
+    `journal/retro-*.md` の本文を先頭 2000 文字で truncate (超過時は `... [continued]` 付き `truncated: true`)
+    して JSON に載せる。dashboard 側は Retro index を表形式から `<details><summary>date + file link</summary>
+    <pre>本文</pre></details>` の折りたたみリスト (`.retro-list`) に変更。file リンクは summary 内に残るので
+    従来どおりクリックで元 md に遷移できる
+  - **前月以前の decisions ログを横断表示** (#28): `load_recent_decisions()` は current-month
+    `decisions-YYYY-MM.jsonl` 専用のまま (PM table の指標計算はこれまでどおり今月のみ基準、回帰なし)。
+    新設 `load_all_decisions()` が `decisions-*.jsonl` を glob して全月ぶんを時系列連結し、
+    payload に `decisions_all` として追加。全体タブの Recent decisions timeline に
+    「今月のみ / 全期間」切替ボタン (`.scope-btn`) を追加 (デフォルト: 今月のみ = 既存挙動維持)。
+    epic タブ側の「直近 decisions」「監督 AI 判定履歴」フィルタは `decisions_all` を参照するよう変更し、
+    月をまたいだ過去 event も対象セッションで絞り込めるようにした (表示件数上限は既存の
+    `--decisions-limit` を両リストに同じく適用)
+  - 実装中に判明した不具合を修正: `OVERSIGHT_DETAIL_FIELDS` の `const` 宣言をスクリプト先頭に移動。
+    タブ構築ループが `renderEpicTab` → `renderEvent` を同期呼び出しする際、宣言前の temporal dead zone
+    で `ReferenceError` が発生し dashboard 全体が描画不能になっていた (jsdom での DOM 実行テストで検出)
+  - 検証: jsdom で decisions 複数月・監督 AI event・2000 文字超 retro を含む合成データを描画し、
+    scope 切替・詳細展開・retro truncate・epic タブ全期間フィルタの期待動作を自動アサートで確認。
+    実 repo データ (`journal/`) でも dashboard-generate.py 実行 + jsdom 描画でエラー無しを確認
+- Spec schema・判断木・芯には変更なし。`journal/dashboard.html` を再生成しコミットに含める
+- konuma 判断待ち: なし (UI 拡張のみ。3 issue とも acceptance criteria 通り実装)
+
 ## [0.16.0] - 2026-07-10
 
 - **TUI adapter 層を導入し kitty 固定を解いた** (issue #25):
