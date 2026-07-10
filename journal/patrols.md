@@ -119,3 +119,4 @@
 | 2026-07-10 19:03 | 観測 8 / RUNNING 2 (w59/w110 impl) + IDLE 5 (他) + WAITING 1 (w113) / 指示 0 (PR merge 実行) / **PR #864 MERGED**、#838 CLOSED、navibot refs 5→4、scope:ai-agent 3→2 |
 | 2026-07-10 19:07 | 観測 8 / RUNNING 3 (w59/w110/w61 差配処理) + IDLE 4 + WAITING 1 (w113) / 指示 1 (w61 #804 調査) + PR #309 rebase 実行 (CI 再走) |
 | 2026-07-10 19:11 | 観測 8 / RUNNING 3 (w59/w110/w61) + IDLE 4 + WAITING 1 (w113) / 指示 0 / PR #309 CI check 継続中 |
+| 2026-07-10 19:16 | 観測 8 / RUNNING 3 + IDLE 4 + WAITING 1 / 指示 0 (PR #309 merge 実行) / **PR #309 MERGED**、#140 CLOSED、scope:ai-agent 2→1 (実質達成間近) |
