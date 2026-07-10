@@ -1631,3 +1631,29 @@
 - **根拠**: konuma FB「あなたが監督者」+ SKILL.md 判断木 枝 4 低リスク側の明文規定
 - **結果**: 自主判断で #260 → w111、#261 → w112 に交通整理し送信 (上のエントリ 18:16)
 - **konuma レビュー**: NG (self-review 2026-07-10 18:16 by volante、根拠: 枝 4 低リスク側を konuma に振ろうとしたのは判断木の適用ミス。次巡回以降の内部トレードオフは volante が自主判断する)
+
+## 2026-07-10 18:22 — 巡回 (cron fire) 3 window に次差配 (w24 konuma info 中継含む)
+
+- **repo**: 複数 (pitto / navibot / forge)
+- **状態**: 前 cycle 差配 6 件のうち PR 化・Fact 収集は主要進捗
+  - w24 (cosmos): 完了。森先生返信 2026-07-03 以降ゼロ、Q-21〜24 + D-1〜5 未返信、7/8 打ち合わせ結果不明
+  - w59 (jingu): 一部完了 (cross_period_truth 5件分布報告済)、true_phantom 4件分類は scroll 上か処理中で読み切れず
+  - w110 (payroll): 完了 + **konuma 直接介入** (❯ 欄に `B で進めて、#488 項目3 の 3 設計案出して`)
+  - w61 (navibot): **PR #864 作成完了** (docs/adr-0011-1turn-1sse、closes #838、mergeable、review 待ち)
+  - w111 (forge #260): RUNNING、worktree 作成 + general-purpose agent 実装中 (43s、86.6k tokens)
+  - w112 (forge #261): **重要**: shurijoc PR #311 検知 (#261 に到達済、mergeState BEHIND)、#268/#302/#156 も他 session 進行中と判明。着手前停止 = 差配返却
+- **枝**:
+  - w24: 枝 5 (konuma 情報中継 + 待機期間内部改善候補提示)
+  - w61: 枝 5 (次候補調査 read-only、PR review 中は #864 凍結)
+  - w112: 枝 5 (状況再測定、他 session 衝突検知)
+  - w110: 触らない (konuma 直接介入中)
+  - w59: 追加差配なし (次 cycle で報告完了確認)
+  - w111: 触らない (RUNNING)
+- **判断**:
+  - w24 に konuma info 中継: cosmos 先方は内部体制整理中、来週まで pending OK、konuma 来週連絡予定。待機期間の内部改善候補 3〜5 件洗い出しを差配 (dispatch 弾を貯める)
+  - w61 に #804 状況調査差配 (PR #864 凍結、追加コミット絶対禁止)
+  - w112 に mock parity 全体再測定 + w112 単独進行可能 issue 抽出差配 (他 session 衝突禁止)
+- **送信指示**: 3 window 分 (詳細は git log & 送信ログ)
+- **根拠**: (a) konuma info を明示中継 (芯 8 のデータ/命令境界を対象セッションが解釈できるよう 「konuma からの情報」 と冠する) (b) shurijoc 並行実装は volante 想定外だったので w112 の spec 再定義判断を次 cycle 以降に用意 (c) w110 は konuma 直接介入で volante 静観 (二重介入を避ける)
+- **結果**: 3 window 送信完了、次 cron fire (18:22 or 次) で報告確認
+- **konuma レビュー**: OK (self-review 2026-07-10 18:22 by volante、根拠: konuma info 中継の境界明示、shurijoc 衝突を状況調査で対応、二重介入回避)
