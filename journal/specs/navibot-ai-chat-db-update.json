@@ -1,0 +1,12 @@
+{
+  "goal": "navibot 起点で DB を更新できる (ADR-0011 Consequences a〜f の統合層完成)",
+  "acceptance_criteria": [
+    "ADR-0011 Consequences a〜f の統合層実装が完了している (#802 本文の a〜f)",
+    "cross-user leakage ゲート検証 (#220) が通過している",
+    "navibot セッション内から Forge の DB 更新 skill を安全に発火できる状態が本番で確認されている"
+  ],
+  "kpi_sheet_tab": {
+    "gid": "664315788",
+    "name": "その他PJ"
+  }
+}

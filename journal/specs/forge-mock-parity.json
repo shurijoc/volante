@@ -1,0 +1,12 @@
+{
+  "goal": "既存 open issue の実装を消化し mock との差分を完成させる (PR 済分の merge を含む)",
+  "acceptance_criteria": [
+    "mock 差分に該当する既存 open issue (現時点で scope:forge の plan-ready 群) の実装が全て完了している",
+    "既に PR 済の issue はレビュー・merge が完了している",
+    "forge 本番の主要導線 (deals / companies / mobile 等) が mock と乖離のない状態で動作している"
+  ],
+  "kpi_sheet_tab": {
+    "gid": "664315788",
+    "name": "その他PJ"
+  }
+}
