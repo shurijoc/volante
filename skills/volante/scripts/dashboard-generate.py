@@ -20,7 +20,8 @@ Design principle (CLAUDE.md 設計原則, SKILL.md 芯 9):
   `<script src="dashboard-data.js">` global-assignment file loads fine under `file://` — that's
   why data is a .js file, not a plain .json. Open with `open journal/dashboard.html` — no server.
 
-Status: v0.17.1 — 生成時埋め込みをやめ dashboard-data.js 分離 (#31)。v0.16.1 で
+Status: v0.17.2 — epic の日本語表示名 (`name_ja`, spec schema v1.3) を表示 (#32)。v0.17.1 で
+生成時埋め込みをやめ dashboard-data.js 分離 (#31)。v0.16.1 で
 監督 AI 判定の詳細展開 (#26)、retro 本文の折りたたみ表示 (#27)、
 前月以前の decisions ログの横断表示 (#28) を実装済み。
 """
@@ -729,6 +730,12 @@ TEMPLATE = """<!DOCTYPE html>
   function epicIssuesUrl(repo, epicLabel) {
     return 'https://github.com/' + repo + '/issues?q=' + encodeURIComponent('is:issue label:' + epicLabel);
   }
+  // issue #32: 日本語表示名 (name_ja) があれば「日本語名 (slug)」併記、無ければ従来どおり slug のみ
+  // (epic カード / PM テーブル / タブ名 すべてこの関数経由で統一表示)
+  function epicDisplayName(s) {
+    const nameJa = (s.spec || {}).name_ja;
+    return nameJa ? (nameJa + ' (' + s.session + ')') : s.session;
+  }
   function renderEpicName(s, className) {
     const epicLabel = (s.spec || {}).epic_label;
     if (epicLabel && s.repo) {
@@ -736,12 +743,12 @@ TEMPLATE = """<!DOCTYPE html>
       a.className = (className + ' epic-name-link').trim();
       a.href = epicIssuesUrl(s.repo, epicLabel);
       a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = s.session;
+      a.textContent = epicDisplayName(s);
       return a;
     }
     const span = document.createElement('span');
     span.className = className;
-    span.textContent = s.session;
+    span.textContent = epicDisplayName(s);
     return span;
   }
 
@@ -839,7 +846,7 @@ TEMPLATE = """<!DOCTYPE html>
   const tabBtns = document.getElementById('tab-buttons');
   const tabEpicsContainer = document.getElementById('tab-epics-container');
   const allTabs = [{id: 'tab-all', label: '全体'}];
-  for (const s of data.specs) allTabs.push({id: 'tab-' + s.session, label: s.session, spec: s});
+  for (const s of data.specs) allTabs.push({id: 'tab-' + s.session, label: epicDisplayName(s), spec: s});
   function activateTab(id) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === id));
