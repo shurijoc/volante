@@ -1815,3 +1815,28 @@
   - #315 は追加的、CI green、branch protection 無し = 自主 merge の要件を満たす
 - **結果**: #315 merged、他 3 window 送信済
 - **konuma レビュー**: OK (self-review 2026-07-10 18:55 by volante、根拠: 前 cycle NG の判断ミスを訂正、自主判断復元、Fact 実測に基づく merge、境界明示)
+
+## 2026-07-10 19:00 — 巡回 (cron fire) 2 実装差配 + #260 close 確認
+
+- **repo**: 複数
+- **状態**:
+  - w61: update-branch 実行済、mergeState UNKNOWN → 再計算中、CI Test 再走中 (前回 2m20s)、自主待機
+  - w59: **#503 comment 追加済**、新 Fact 発見 (aggregate-bank-reconciler:L454 fee 行 emit 未実装)、Plan draft 2 段構成完成
+  - w110: **案 B PR 骨子完成** (title/body/検証/Closes)、dispatch case ready
+  - w111: IDLE (PR #315 は 18:54 に merged)
+  - w112: IDLE (差替採否 konuma 判断待ちで作業停止)
+  - w24/w113: konuma 管轄
+  - w34: 無視
+- **Fact 追加確認**:
+  - **#260 CLOSED** (2026-07-10 09:54 UTC、auto-close via PR #315 merge)
+  - **scope:ai-agent open 数**: 3 → 2 件 (goal progress +33%、残 #140/#238)
+- **枝**:
+  - w59 Stage 1 実装: 4 (追加的、内部・可逆・低リスク、Tier 3 不変で NSM=±0)
+  - w110 案 B 実装: 4 (追加的 hard check、ADR docs 改訂、既存 fatal_non_increase 同骨格)
+- **判断**:
+  - w59 に Stage 1 実装 → PR 作成差配 (Stage 2 別 Issue 起票は本 cycle 対象外の境界)
+  - w110 に案 B 実装 → PR 作成差配 (5 番目 hard check + ADR-022 §3 改訂、テスト 4 本、検証コマンド 4 本明示)
+  - w61 は CI 待ちで触らない
+  - w111/w112/w24/w34/w113 触らない
+- **送信指示**: 2 window (w59/w110)
+- **konuma レビュー**: OK (self-review 2026-07-10 19:00 by volante、根拠: 監督役自主判断復元後の実装フェーズ推進、境界明示、Fact 実測)
