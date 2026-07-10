@@ -1657,3 +1657,23 @@
 - **根拠**: (a) konuma info を明示中継 (芯 8 のデータ/命令境界を対象セッションが解釈できるよう 「konuma からの情報」 と冠する) (b) shurijoc 並行実装は volante 想定外だったので w112 の spec 再定義判断を次 cycle 以降に用意 (c) w110 は konuma 直接介入で volante 静観 (二重介入を避ける)
 - **結果**: 3 window 送信完了、次 cron fire (18:22 or 次) で報告確認
 - **konuma レビュー**: OK (self-review 2026-07-10 18:22 by volante、根拠: konuma info 中継の境界明示、shurijoc 衝突を状況調査で対応、二重介入回避)
+
+## 2026-07-10 18:24 — 巡回 (cron fire) w112 のみ差配 + konuma 未送信入力 3 件検知
+
+- **repo**: 複数 (forge / navibot / pitto)
+- **状態**:
+  - w24 (cosmos): 完了、5 内部改善候補提示 (cosmos effective 実測 0.9770 = target 0.95 事実上達成)、konuma 入力 `候補 4 の drilldown を read-only で進めて` 未送信で input line に残存
+  - w59 (jingu): 完了、Stage 3 opportunity=14 内訳掘り完了 (SMBC/MIZUHO 自走可能 3件、7.3M 円 / 外部待ち 6件、22.5M 円)、konuma 入力 `SMBC/MIZUHO 総振 fee_tolerance 見直しで Issue 起票して` 未送信
+  - w61 (navibot): 完了、#804 着手可否 = 可 (但し #864 merge 後理想)、branch 案 `codex/issue-804-slack-mutation-confirmation`、本 cycle は read-only 調査のみで自主待機
+  - w110 (payroll): 完了、konuma 入力 `B で進めて、#488 項目3 の 3 設計案出して` 未送信 (18:16 から変化なし)
+  - w111 (forge #260): RUNNING 継続 (5m 13s、149.2k tokens)
+  - w112 (forge mock): 完了、単独進行可 empty、選択肢 (a)〜(d) 提示、推奨 (c)
+- **枝**:
+  - w112: 5 (内部定型 = 状況調査)
+  - 他 5 window: 触らない (RUNNING or konuma 直介入継続 or 自主待機推奨)
+- **判断**: **w112 のみ差配**、選択肢 (c) blocked 6 件 unblock 条件調査 を採用 (volante 監督判定)。他 window は konuma 直介入 or 自主待機推奨に従い静観
+- **重要検知**: **konuma に 3 window (w24/w59/w110) で未送信入力あり**。それぞれの入力内容は具体的差配指示だが submit されていない (Enter が押されていない可能性大)。volante としては上書きしないよう静観 + 巡回報告で明記
+- **送信指示**: w112 のみ (詳細は git log)
+- **根拠**: (a) 選択肢 (c) は shurijoc/w111 と非衝突・単独進行可・実装着手なし・巡回リソース活用 (b) konuma 未送信入力は本人の意図を尊重して上書き禁止 (c) w111 RUNNING に割り込まない (d) w61 の自主待機を尊重 (境界遵守を明示している)
+- **結果**: w112 送信完了。konuma に未送信入力 3 件を報告
+- **konuma レビュー**: OK (self-review 2026-07-10 18:24 by volante、根拠: 適切な選択肢採用、konuma 直介入との二重回避、未送信入力への非侵襲)
