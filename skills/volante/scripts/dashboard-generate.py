@@ -295,6 +295,77 @@ def load_recent_patrols(journal: Path, limit: int) -> list[dict]:
     return rows[-limit:] if limit > 0 else rows
 
 
+def load_spec_history(root: Path, spec_slug: str) -> list[dict]:
+    """issue #30: walk the git history of journal/specs/<spec_slug>.json (following
+    renames, since specs get renamed e.g. w24 → kaizen) and return each revision's
+    `goal` text, newest first.
+
+    Returns [] when the file isn't tracked by git at all (`git ls-files` empty) or
+    when git itself isn't available/fails — dashboard then omits the "Goal 履歴"
+    section entirely per acceptance criteria (git 履歴が取れない環境は section を出さない).
+    """
+    rel_path = f"journal/specs/{spec_slug}.json"
+    try:
+        ls = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "--", rel_path],
+            capture_output=True, text=True, timeout=15,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return []
+    if ls.returncode != 0 or not ls.stdout.strip():
+        return []
+
+    try:
+        log = subprocess.run(
+            ["git", "-C", str(root), "log", "--follow", "--name-status",
+             "--format=%x00%H%x01%aI", "--", rel_path],
+            capture_output=True, text=True, timeout=20,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return []
+    if log.returncode != 0:
+        return []
+
+    history = []
+    for block in log.stdout.split("\x00"):
+        if not block.strip():
+            continue
+        lines = block.splitlines()
+        header = lines[0] if lines else ""
+        if "\x01" not in header:
+            continue
+        commit_hash, ts = header.split("\x01", 1)
+        # The file's path in this commit's tree is the last column of the last
+        # name-status line (handles A/M plain paths and R### rename "old\tnew" pairs).
+        path_at_commit = rel_path
+        for line in lines[1:]:
+            line = line.strip()
+            if not line:
+                continue
+            fields = line.split("\t")
+            path_at_commit = fields[-1]
+        try:
+            show = subprocess.run(
+                ["git", "-C", str(root), "show", f"{commit_hash}:{path_at_commit}"],
+                capture_output=True, text=True, timeout=15,
+            )
+        except subprocess.TimeoutExpired:
+            continue
+        if show.returncode != 0:
+            continue
+        try:
+            spec_data = json.loads(show.stdout)
+        except json.JSONDecodeError:
+            continue
+        history.append({
+            "hash": commit_hash,
+            "hash_short": commit_hash[:7],
+            "ts": ts,
+            "goal": spec_data.get("goal", ""),
+        })
+    return history  # `git log` default order is already newest-first
+
+
 RETRO_BODY_TRUNCATE_CHARS = 2000
 
 
@@ -486,11 +557,40 @@ TEMPLATE = """<!DOCTYPE html>
   .retro-body { margin: 10px 0 0; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border);
                border-radius: 6px; font-family: var(--mono); font-size: 12px; white-space: pre-wrap;
                word-break: break-word; max-height: 480px; overflow-y: auto; }
-  .decisions-scope { display: flex; gap: 6px; margin-bottom: 12px; }
-  .scope-btn { padding: 3px 12px; font-size: 12px; font-family: var(--sans); border: 1px solid var(--border);
-              border-radius: 12px; background: var(--surface); color: var(--text-mute); cursor: pointer; }
-  .scope-btn:hover { color: var(--text); }
-  .scope-btn.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  .decisions-filter { display: flex; flex-direction: column; gap: 10px; }
+  .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .filter-label { font-size: 11px; color: var(--text-mute); text-transform: uppercase;
+                  letter-spacing: .05em; font-weight: 700; min-width: 44px; }
+  .chip-group, .radio-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { padding: 3px 12px; font-size: 12px; font-family: var(--sans); border: 1px solid var(--border);
+         border-radius: 12px; background: var(--surface); color: var(--text-mute); cursor: pointer; }
+  .chip:hover { color: var(--text); }
+  .chip.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  .radio-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-mute);
+               cursor: pointer; }
+  .radio-chip input { cursor: pointer; }
+  #filter-session { font-size: 12px; font-family: var(--sans); padding: 3px 8px; border-radius: 6px;
+                    border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  .filter-checkbox { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; cursor: pointer; }
+  .filter-checkbox input { cursor: pointer; }
+  .filter-reset-btn { padding: 3px 12px; font-size: 12px; font-family: var(--sans); border: 1px solid var(--border);
+                      border-radius: 6px; background: var(--surface); color: var(--text-mute); cursor: pointer; }
+  .filter-reset-btn:hover { color: var(--text); }
+  #decisions-count { font-family: var(--mono); color: var(--text); }
+  .goal-history { margin-top: 10px; font-size: 13px; }
+  .goal-history > summary { cursor: pointer; color: var(--text-mute); font-size: 12.5px;
+                            list-style: none; padding: 4px 0; }
+  .goal-history > summary::-webkit-details-marker { display: none; }
+  .goal-history > summary::before { content: "▸ "; }
+  .goal-history[open] > summary::before { content: "▾ "; }
+  .goal-history-list { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+  .goal-history-row { border-left: 2px solid var(--border); padding: 4px 10px; }
+  .goal-history-meta { font-family: var(--mono); font-size: 11px; color: var(--text-mute); margin-bottom: 2px; }
+  .goal-history-diff { font-size: 13px; line-height: 1.6; }
+  .diff-add { background: var(--ok-bg); color: var(--ok); border-radius: 2px; padding: 0 1px; }
+  .diff-del { background: var(--warn-bg); color: var(--warn); text-decoration: line-through;
+             border-radius: 2px; padding: 0 1px; }
+  .diff-unchanged { color: var(--text-mute); }
 </style>
 </head>
 <body>
@@ -530,11 +630,29 @@ TEMPLATE = """<!DOCTYPE html>
       </section>
 
       <section>
-        <h2>Recent decisions (JSONL、直近 __DECISIONS_LIMIT__ 件)</h2>
-        <div class="decisions-scope">
-          <button type="button" class="scope-btn active" data-scope="month">今月のみ</button>
-          <button type="button" class="scope-btn" data-scope="all">全期間</button>
+        <h2>Decisions フィルタ (issue #29)</h2>
+        <div id="decisions-filter" class="decisions-filter">
+          <div class="filter-row">
+            <span class="filter-label">枝</span>
+            <div id="filter-branch-chips" class="chip-group"></div>
+          </div>
+          <div class="filter-row">
+            <span class="filter-label">session</span>
+            <select id="filter-session"></select>
+          </div>
+          <div class="filter-row">
+            <span class="filter-label">期間</span>
+            <div id="filter-period-radios" class="radio-group"></div>
+          </div>
+          <div class="filter-row">
+            <label class="filter-checkbox"><input type="checkbox" id="filter-oversight-only"> 監督 AI のみ</label>
+            <button type="button" id="filter-reset" class="filter-reset-btn">リセット</button>
+          </div>
         </div>
+      </section>
+
+      <section>
+        <h2>Recent decisions (直近 __DECISIONS_LIMIT__ 件中 <span id="decisions-count">0</span> 件表示)</h2>
         <div id="decisions" class="timeline"></div>
       </section>
 
@@ -629,6 +747,76 @@ TEMPLATE = """<!DOCTYPE html>
     return { text: '(進捗未定義)', done: false, unknown: true, title: p.error || '' };
   }
 
+  // ===== issue #30: Goal 履歴の簡易 word-diff (外部 chart/diff library 禁止 → 自前実装) =====
+  function tokenizeForDiff(s) { return s.match(/\\s+|[^\\s]+/g) || []; }
+
+  function diffTokens(a, b) {
+    const n = a.length, m = b.length;
+    const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+    for (let i = n - 1; i >= 0; i--) {
+      for (let j = m - 1; j >= 0; j--) {
+        dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+      }
+    }
+    const ops = [];
+    let i = 0, j = 0;
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { ops.push(['eq', a[i]]); i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push(['del', a[i]]); i++; }
+      else { ops.push(['add', b[j]]); j++; }
+    }
+    while (i < n) { ops.push(['del', a[i]]); i++; }
+    while (j < m) { ops.push(['add', b[j]]); j++; }
+    return ops;
+  }
+
+  function renderGoalDiff(oldStr, newStr) {
+    const frag = document.createDocumentFragment();
+    if (oldStr === newStr) {
+      const span = document.createElement('span'); span.className = 'diff-unchanged';
+      span.textContent = newStr || '(変更なし)';
+      frag.appendChild(span);
+      return frag;
+    }
+    const ops = diffTokens(tokenizeForDiff(oldStr || ''), tokenizeForDiff(newStr || ''));
+    for (const [type, text] of ops) {
+      if (type === 'eq') { frag.appendChild(document.createTextNode(text)); continue; }
+      const span = document.createElement('span');
+      span.className = type === 'add' ? 'diff-add' : 'diff-del';
+      span.textContent = text;
+      frag.appendChild(span);
+    }
+    return frag;
+  }
+
+  // Renders the collapsible "Goal 履歴 (N revisions)" block for one epic tab.
+  // history is newest-first ({ts, goal, hash, hash_short}[]); each revision is diffed
+  // against the next (older) entry. Suppressed entirely when <=1 revision (new spec)
+  // or when git history wasn't available (dashboard-generate.py returns [] in that case).
+  function renderGoalHistory(history) {
+    if (!history || history.length <= 1) return null;
+    const det = document.createElement('details'); det.className = 'goal-history';
+    const sum = document.createElement('summary'); sum.textContent = 'Goal 履歴 (' + history.length + ' revisions)';
+    det.appendChild(sum);
+    const list = document.createElement('div'); list.className = 'goal-history-list';
+    for (let i = 0; i < history.length; i++) {
+      const rev = history[i];
+      const older = history[i + 1];
+      const row = document.createElement('div'); row.className = 'goal-history-row';
+      const meta = document.createElement('div'); meta.className = 'goal-history-meta';
+      meta.textContent = (rev.ts || '').replace('T', ' ').slice(0, 16) + '  ' + (rev.hash_short || '')
+        + (older ? '' : '  (初版)');
+      row.appendChild(meta);
+      const diffEl = document.createElement('div'); diffEl.className = 'goal-history-diff';
+      diffEl.appendChild(older ? renderGoalDiff(older.goal || '', rev.goal || '')
+                                : document.createTextNode(rev.goal || ''));
+      row.appendChild(diffEl);
+      list.appendChild(row);
+    }
+    det.appendChild(list);
+    return det;
+  }
+
   // ===== Tab framework =====
   const tabBtns = document.getElementById('tab-buttons');
   const tabEpicsContainer = document.getElementById('tab-epics-container');
@@ -685,6 +873,10 @@ TEMPLATE = """<!DOCTYPE html>
       head.appendChild(g);
     }
     pane.appendChild(head);
+
+    // issue #30: Goal 履歴 (git log --follow 由来の revision diff)
+    const goalHistoryEl = renderGoalHistory((data.spec_history || {})[s.session]);
+    if (goalHistoryEl) pane.appendChild(goalHistoryEl);
 
     // acceptance_criteria (open by default in epic tab)
     if (spec.acceptance_criteria && spec.acceptance_criteria.length > 0) {
@@ -949,28 +1141,160 @@ TEMPLATE = """<!DOCTYPE html>
     }
   }
 
-  // issue #28: 表示範囲 (今月のみ / 全期間) 切替。デフォルトは今月のみ = 既存挙動維持
+  // ===== issue #29: 対話的フィルタ (枝別・session 別・期間・監督 AI のみ) =====
+  // Supersedes the old #28 "今月のみ/全期間" scope toggle: 期間 radio's "全期間" option
+  // covers that case, and the filter now always reads from decisions_all (full multi-month
+  // set, capped by --decisions-limit as before) so 24h/7d/月内 can filter across months too.
   const decEl = document.getElementById('decisions');
-  let decisionsScope = 'month';
-  function renderDecisionsTimeline() {
-    const list = decisionsScope === 'all' ? (data.decisions_all || []) : (data.decisions || []);
-    decEl.innerHTML = '';
-    if (list.length === 0) {
-      const msg = decisionsScope === 'all'
-        ? '過去分含め decisions-YYYY-MM.jsonl 未生成 or 空'
-        : 'decisions-YYYY-MM.jsonl 未生成 or 空 (v0.14.0 以降で新規エントリ併記化)';
-      decEl.innerHTML = '<div class="empty">' + msg + '</div>';
-    } else {
-      for (const ev of list.slice().reverse()) decEl.appendChild(renderEvent(ev));
+  const decCountEl = document.getElementById('decisions-count');
+  const BRANCH_CHIP_DEFS = [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['oversight', '監督 AI']];
+  const PERIOD_DEFS = [['all', '全期間'], ['24h', '24h'], ['7d', '7d'], ['month', '今月']];
+  const DEFAULT_FILTER_STATE = { branches: new Set(), session: '', period: 'month', oversightOnly: false };
+
+  function parseFilterHash() {
+    const raw = location.hash.startsWith('#') ? location.hash.slice(1) : location.hash;
+    const params = new URLSearchParams(raw);
+    const branchParam = params.get('branch');
+    return {
+      branches: branchParam ? new Set(branchParam.split(',').filter(Boolean)) : new Set(),
+      session: params.get('session') || '',
+      period: params.get('period') || 'month',
+      oversightOnly: params.get('osonly') === '1',
+    };
+  }
+
+  function writeFilterHash() {
+    const params = new URLSearchParams();
+    if (filterState.branches.size > 0) params.set('branch', Array.from(filterState.branches).join(','));
+    if (filterState.session) params.set('session', filterState.session);
+    if (filterState.period !== 'month') params.set('period', filterState.period);
+    if (filterState.oversightOnly) params.set('osonly', '1');
+    const qs = params.toString();
+    history.replaceState(null, '', qs ? ('#' + qs) : (location.pathname + location.search));
+  }
+
+  let filterState = parseFilterHash();
+
+  function renderBranchChips() {
+    const container = document.getElementById('filter-branch-chips');
+    container.innerHTML = '';
+    const allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.className = 'chip' + (filterState.branches.size === 0 ? ' active' : '');
+    allBtn.textContent = '全';
+    allBtn.addEventListener('click', () => { filterState.branches = new Set(); onFilterChange(); });
+    container.appendChild(allBtn);
+    for (const [val, label] of BRANCH_CHIP_DEFS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip' + (filterState.branches.has(val) ? ' active' : '');
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        if (filterState.branches.has(val)) filterState.branches.delete(val); else filterState.branches.add(val);
+        onFilterChange();
+      });
+      container.appendChild(btn);
     }
   }
-  document.querySelectorAll('.scope-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      decisionsScope = btn.dataset.scope;
-      document.querySelectorAll('.scope-btn').forEach(b => b.classList.toggle('active', b === btn));
-      renderDecisionsTimeline();
-    });
+
+  function renderSessionSelect() {
+    const sel = document.getElementById('filter-session');
+    sel.innerHTML = '';
+    const optAll = document.createElement('option'); optAll.value = ''; optAll.textContent = '全';
+    sel.appendChild(optAll);
+    for (const s of data.specs) {
+      const opt = document.createElement('option'); opt.value = s.session; opt.textContent = s.session;
+      sel.appendChild(opt);
+    }
+    sel.value = filterState.session;
+    sel.addEventListener('change', () => { filterState.session = sel.value; onFilterChange(); });
+  }
+
+  function renderPeriodRadios() {
+    const container = document.getElementById('filter-period-radios');
+    container.innerHTML = '';
+    for (const [val, label] of PERIOD_DEFS) {
+      const wrap = document.createElement('label'); wrap.className = 'radio-chip';
+      const input = document.createElement('input');
+      input.type = 'radio'; input.name = 'filter-period'; input.value = val;
+      input.checked = filterState.period === val;
+      input.addEventListener('change', () => { filterState.period = val; onFilterChange(); });
+      wrap.appendChild(input);
+      wrap.appendChild(document.createTextNode(label));
+      container.appendChild(wrap);
+    }
+  }
+
+  function refreshFilterUI() {
+    renderBranchChips();
+    renderSessionSelect();
+    renderPeriodRadios();
+    document.getElementById('filter-oversight-only').checked = filterState.oversightOnly;
+  }
+
+  function onFilterChange() {
+    writeFilterHash();
+    refreshFilterUI();
+    renderDecisionsTimeline();
+  }
+
+  document.getElementById('filter-oversight-only').addEventListener('change', (e) => {
+    filterState.oversightOnly = e.target.checked;
+    onFilterChange();
   });
+  document.getElementById('filter-reset').addEventListener('click', () => {
+    filterState = { branches: new Set(), session: '', period: 'month', oversightOnly: false };
+    onFilterChange();
+  });
+  window.addEventListener('hashchange', () => {
+    filterState = parseFilterHash();
+    refreshFilterUI();
+    renderDecisionsTimeline();
+  });
+
+  function passesDecisionFilter(ev) {
+    const branch = String(ev.branch || '');
+    const isOv = branch.includes('監督 AI');
+    if (filterState.branches.size > 0) {
+      let ok = false;
+      for (const b of filterState.branches) {
+        if (b === 'oversight') { if (isOv) { ok = true; break; } }
+        else if (branch === b) { ok = true; break; }
+      }
+      if (!ok) return false;
+    }
+    if (filterState.oversightOnly && !isOv) return false;
+    if (filterState.session && !String(ev.target_session || '').includes(filterState.session)) return false;
+    if (filterState.period !== 'all') {
+      const ts = ev.timestamp || '';
+      const evDate = new Date(ts);
+      if (!ts || isNaN(evDate.getTime())) return false;
+      const now = new Date();
+      if (filterState.period === '24h' && (now - evDate) > 24 * 3600 * 1000) return false;
+      if (filterState.period === '7d' && (now - evDate) > 7 * 24 * 3600 * 1000) return false;
+      if (filterState.period === 'month' && ts.slice(0, 7) !== now.toISOString().slice(0, 7)) return false;
+    }
+    return true;
+  }
+
+  function renderDecisionsTimeline() {
+    const source = (data.decisions_all && data.decisions_all.length) ? data.decisions_all : (data.decisions || []);
+    decEl.innerHTML = '';
+    if (source.length === 0) {
+      decCountEl.textContent = '0';
+      decEl.innerHTML = '<div class="empty">decisions-YYYY-MM.jsonl 未生成 or 空</div>';
+      return;
+    }
+    const filtered = source.filter(passesDecisionFilter);
+    decCountEl.textContent = String(filtered.length);
+    if (filtered.length === 0) {
+      decEl.innerHTML = '<div class="empty">条件に一致する decision がありません</div>';
+      return;
+    }
+    for (const ev of filtered.slice().reverse()) decEl.appendChild(renderEvent(ev));
+  }
+
+  refreshFilterUI();
   renderDecisionsTimeline();
 
   const patBody = document.querySelector('#patrols tbody');
@@ -1079,6 +1403,9 @@ def main() -> None:
                 break
         spec["priority"] = priority
 
+    # issue #30: goal revision history per spec, keyed by basename (spec_slug)
+    spec_history = {spec["session"]: load_spec_history(root, spec["session"]) for spec in specs}
+
     # Compute PM-view metrics per spec (v0.15.5+, issue #20)
     now_dt = datetime.now(timezone.utc)
     for spec in specs:
@@ -1119,7 +1446,8 @@ def main() -> None:
         }
 
     payload = {"specs": specs, "decisions": decisions, "decisions_all": decisions_all,
-               "patrols": patrols, "retros": retros, "goals": goals_rows}
+               "patrols": patrols, "retros": retros, "goals": goals_rows,
+               "spec_history": spec_history}
     payload_json = json.dumps(payload, ensure_ascii=False)
     now_str = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 

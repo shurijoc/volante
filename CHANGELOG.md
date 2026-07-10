@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.16.2] - 2026-07-10
+
+- **dashboard に対話的フィルタ + goal 履歴を追加** (issue #29, #30):
+  - **対話的フィルタ** (#29): 全体タブの Recent decisions section 直上に `Decisions フィルタ`
+    section を新設。枝別 (全 / 1〜5 / 監督 AI、chip multi-select) / session 別 (select、現存 spec
+    のみ列挙) / 期間 (全期間 / 24h / 7d / 今月、radio、デフォルト今月) / 監督 AI のみ (checkbox、
+    枝別と AND) の 4 軸で `data.decisions_all` を client-side in-memory filter する。フィルタ状態は
+    `location.hash` (`#branch=1&session=...&period=...&osonly=1` の URLSearchParams 形式) に同期し、
+    リロード・ブラウザ戻る/進むでも復元される。旧 #28 の「今月のみ/全期間」ボタン (`.scope-btn`) は
+    新フィルタの期間 radio に統合・撤去 (機能的に上位互換、回帰なし)
+  - **goal 更新履歴** (#30): `dashboard-generate.py` に `load_spec_history()` を追加。
+    `git log --follow --name-status` で `journal/specs/<spec>.json` の全 revision (rename 追跡込み)
+    を辿り、各 revision 時点の `goal` を `git show <hash>:<path>` で取得して
+    `data.spec_history[spec_slug] = [{ts, goal, hash, hash_short}, ...]` (新しい順) を JSON に載せる。
+    各 epic タブの Head 直下に「Goal 履歴 (N revisions)」の `<details>` を追加し、展開すると
+    revision を新しい順に並べ、直前 revision との word 単位 diff (追加 = 緑 `.diff-add`、削除 = 赤
+    `.diff-del` の取り消し線) を自前の LCS ベース diff で表示 (外部 chart/diff library 不使用、
+    CLAUDE.md 設計原則どおり)。revision が 1 件 (新規 spec) または git 追跡外のファイルは
+    section 自体を出さない
+  - 検証: jsdom で合成データ (複数枝・複数 session・月またぎ event、3 revision の goal 変遷 spec、
+    1 revision のみの spec) を描画し、chip/select/radio/checkbox 操作での絞り込み件数・URL hash
+    書き込み/復元・reset・goal diff の追加/削除 span・1 revision spec でのセクション非表示を自動
+    アサートで確認。実 repo データ (`journal/`) でも dashboard-generate.py 実行 + jsdom 描画で
+    エラー無し、実際の goal 文言変遷 (rename に伴う微修正) の diff 表示も確認
+- Spec schema・判断木・芯には変更なし。`journal/dashboard.html` を再生成しコミットに含める
+- konuma 判断待ち: なし (UI 拡張のみ。2 issue とも acceptance criteria 通り実装)
+
 ## [0.16.1] - 2026-07-10
 
 - **dashboard を 3 点強化** (issue #26, #27, #28):
