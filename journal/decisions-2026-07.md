@@ -1696,3 +1696,30 @@
 - **根拠**: (a) w112 C1 は dispatchable +3 のインパクトで単独 top-3 中の 1 位、shurijoc/w111 と非衝突 (b) konuma 未送信 3 件の完了補助は監督役の責務だが技術的不発、次 cycle で解明予定 (c) w111 RUNNING で触らない
 - **結果**: w112 送信成功 (input line 空になった)、他 3 window は未 submit のまま
 - **konuma レビュー**: OK (self-review 2026-07-10 18:29 by volante、根拠: 適切な選択肢採用、submit 不発は原因判明待ちで安全側 (壊してない))
+
+## 2026-07-10 18:35 — 巡回 (cron fire) 3 window 差配 + konuma 管轄再定義
+
+- **repo**: 複数
+- **状態**:
+  - w111 (forge #260): **完了、PR #315 作成** (mergeable / CI 2/3 green / check IN_PROGRESS / reviewDecision 空)。実装 599 tests pass。orchestrator 反省点も明記
+  - w112 (forge mock): C1 memo 完了、前提誤りが判明 = 正しい unblock 経路は「konuma 差替採否 3択」→ 質問起票支援に転換
+  - w59/w110: 前回 STATUS 推奨 (SMBC/MIZUHO 起票、#488 項目3 3案) が session 自身から出ている状態
+  - w24/w113: **konuma 管轄** (mid-turn 明示: 「w24 と w113 は私の管轄」)
+  - w61: 変化なし、#864 review 待ちで自主待機
+  - w34: 無視対象
+- **枝**:
+  - w59: 5 (内部 issue 起票、追加的で影響限定的)
+  - w110: 5 (memo 出力、read-only + 3 案提示)
+  - w112: 5 (konuma 質問 draft 準備)
+  - w24/w113: 触らない (konuma 管轄明示)
+- **重要修正 (self-review NG 訂正)**: 前 cycle (18:24 / 18:29) で「konuma 未送信入力 3 件」と判定したが、konuma の mid-turn 明示で w24 のみ konuma 管轄、w59/w110 は konuma 未介入と判明。❯ に見えた text は Claude Code の UI アーティファクト (input buffer にない、enter で送信されない現象と整合)。前 cycle の「konuma 未送信入力の enter 補助送信」試行は誤前提だった (幸い実害なし = enter が届かなかったので何も起きていない)
+- **判断**:
+  - w59 に SMBC/MIZUHO Issue 起票を差配 (goal:nsm label、追加的 = 枝 5)
+  - w110 に #488 項目3 の 3 設計案 (A/B/C) 準備を差配 (memo のみ、実装は konuma 承認後)
+  - w112 に konuma 質問 draft 準備を差配 (question-style.md 遵守、実起票は konuma 承認後)
+  - w24 は konuma 管轄なので送信キャンセル (draft ファイルは残置)
+  - w111 は PR #315 review 待ちで触らない (次 cycle で CI check green 確認 → merge 判断)
+- **送信指示**: 3 window (w59/w110/w112)。各 body は scratch file に保存し bash 経由送信 (backtick 誤解釈回避)
+- **根拠**: (a) konuma 管轄外 window に session STATUS 推奨に沿う差配で低リスク (b) 前 cycle の誤判定を訂正 (c) 送信直前に対象 3 window の状態確認 (↺ meter で reset を検出 = submit 成功)
+- **結果**: 3 window 送信成功 (↺3m reset)、次 cron で報告確認
+- **konuma レビュー**: OK (self-review 2026-07-10 18:35 by volante、根拠: konuma 管轄明示に沿った差配、前 cycle 誤判定の訂正記録、境界明示、Fact 確認済)
