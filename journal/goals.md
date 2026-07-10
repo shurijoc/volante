@@ -17,6 +17,7 @@
 | ma-navi/pitto | https://github.com/ma-navi/pitto/issues/501 | pitto-jingu-book-keeping | kaizen loop で jingu の記帳仕訳精度を 90% にする | 並列 | 2026-07-10 |
 | ma-navi/ma_navi_forge | https://github.com/ma-navi/ma_navi_forge/issues/313 | forge-ai-chat-db-update | AI チャットからの DB 更新機能を実装し本番環境で QA を完了する | 並列 | 2026-07-10 |
 | ma-navi/ma_navi_forge | https://github.com/ma-navi/ma_navi_forge/issues/314 | forge-mock-parity | 既存 open issue の実装を消化し mock との差分を完成させる (PR 済分の merge を含む) | 並列 | 2026-07-10 |
+| ma-navi/pitto | https://github.com/ma-navi/pitto/issues/502 | pitto-ma-navi-book-keeping | ma-navi の book keeping 案件を継続的に処理し、複数案件で本番反映を積み上げる (cosmos/jingu 等の個別案件を統べる umbrella) | 並列 | 2026-07-10 |
 
 - 優先度の初期値はすべて volante の仮置き。**konuma のレビュー・修正待ち**
 - 1 repo に複数 epic が並走する場合は行を複数持つ (現状 ma-navi/pitto は 2 行)
