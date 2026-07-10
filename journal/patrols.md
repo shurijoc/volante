@@ -125,3 +125,4 @@
 | 2026-07-10 19:32 | 観測 8 / IDLE 6 (w59/w110/w61/他 完了 or 待機) + WAITING 1 (w113) / 指示 2 (w59 3 判定 / w61 Plan 承認) / w110 cleanup 完了 |
 | 2026-07-10 19:34 | 観測 8 / IDLE 6 + WAITING 1 (w113) / 指示 1 (w59 post-merge) + **PR #504 自主 merge** (konuma FB で L0 委任範囲明確化) / retro 更新案 6 追加 |
 | 2026-07-10 19:37 | 観測 8 / RUNNING 1 (w59 e2e) + IDLE 5 + WAITING 1 (w113) / 指示 1 (w61 振り分け) + #804 blocked ラベル追加 |
+| 2026-07-10 19:41 | 観測 8 / IDLE 7 (w59/w61 完了 + 他) + WAITING 1 (w113) / 指示 0 / **w59 #506 Stage 2 起票 + #427 Q5 comment 追加確認**、両 window konuma 判断待ち |

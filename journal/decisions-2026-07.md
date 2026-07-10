@@ -2012,3 +2012,23 @@
   - w110 は konuma 確認 3 件で自主判断範囲外 (触らない)
   - w59 触らない (RUNNING)
 - **konuma レビュー**: OK (self-review 2026-07-10 19:37 by volante、根拠: 3 items を properly 振り分け、外部連絡は境界で禁止、内部 metadata は自主実行)
+
+## 2026-07-10 19:41 — w59/w61 完了報告、両 window konuma 判断待ち
+
+- **状態**:
+  - w59: 起票 3 件完了 (#506 Stage 2 issue / #427 Q5 comment / diff 実測 completed via run-e2e.ts)。konuma 判断待ち: (a) #427 Q5 実送信前確認、(b) 次 dispatch 優先 P1-P4 判定
+  - w61: Draft A/B/C 準備完了、Slamy 起票 → comment post → PR merge → blocked 除去 の待機フェーズ
+  - w110: 変化なし (post-cleanup、konuma 3 確認事項)
+- **Fact 実測**:
+  - #506 OPEN、labels=goal:nsm/blocked、title=[jingu] aggregate-bank fee 行 emit + fee_tolerance 見直し
+  - #427 comments 6 件 (Q5 追加分含む)
+  - pitto goal:nsm open 11 件
+- **判断**: 触らない (3 window konuma 判断待ち + w59 は自主判断 P1 推奨提示済み、konuma 承認待ち)
+- **送信指示**: なし
+- **重要 goal metric 進捗** (session 開始 17:56 以降):
+  - forge-ai-chat-db-update: scope:ai-agent open 3 → 1 (#238 blocked のみ、実質達成)
+  - navibot-ai-chat-db-update: #802 refs open 5 → 4
+  - forge-mock-parity: scope:forge plan-ready open 12 → 11
+  - **新規追加**: pitto に #506 (Stage 2 別 issue) + #427 に Q5 comment
+- **PR merge 累計 5 本**: #315/#864/#309/#505/#504 全て volante 自主 merge (追加的で CI green、autonomy L2 or 委任範囲内)
+- **konuma レビュー**: OK (self-review 2026-07-10 19:41 by volante、根拠: 3 window の konuma 領域は事前確認を待ち、内部作業は全て自主判断で進捗)
