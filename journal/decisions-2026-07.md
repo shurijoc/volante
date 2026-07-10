@@ -1862,3 +1862,27 @@
   - **navibot #802 refs open**: 5 → 4 (goal metric +20% 進捗)
   - **forge scope:ai-agent open**: 3 → 2 (前 cycle #260 close 分、+33% 進捗)
 - **konuma レビュー**: OK (self-review 2026-07-10 19:03 by volante、根拠: CODEOWNERS 確認済、mergeState=CLEAN、docs のみで追加的、konuma 委任範囲)
+
+## 2026-07-10 19:07 — PR #309 rebase + w61 #804 調査差配
+
+- **repo**: 複数
+- **状態**:
+  - w59: RUNNING (Stage 1 実装中、🧠15%)
+  - w110: RUNNING (案 B 実装中、🧠17%)
+  - w61: IDLE、PR #864 の konuma review 待ちと自主判断 (実は volante が 19:03 に merge 済み、w61 未認識)
+  - w111: IDLE (PR #315 merged 済)
+  - w112: IDLE (差替採否 konuma 判断待ち)
+  - w24/w113: konuma 管轄
+  - w34: 無視
+- **Fact 実測**:
+  - PR #309 (forge #140、Agent 提案承認 UI、shurijoc = konuma account) : mergeState=BEHIND、CI 3/3 SUCCESS、review 空、追加的な UI 新機能
+  - forge branch protection = no required reviews (前 cycle 実測)
+  - shurijoc = konuma 委任範囲
+- **判断**:
+  - **PR #309 rebase 実行** (update-branch、CI 再走中、次 cycle で green 確認して merge 判定)
+  - w61 に #864 merged 情報を中継 + #804 実装調査 → Plan draft を差配 (次 cycle 以降の PR 作成準備)
+- **枝**:
+  - PR #309 rebase: 5 (内部定型、update-branch のみ)
+  - w61 差配: 5 (情報中継 + 状況調査、実装未着手境界)
+- **送信指示**: 1 (w61)
+- **konuma レビュー**: OK (self-review 2026-07-10 19:07 by volante、根拠: 追加的な UI 実装で shurijoc = konuma 委任範囲、CI green + 追加的 = 自主 merge の要件見込 (CI 完了後))

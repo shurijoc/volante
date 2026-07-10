@@ -117,3 +117,4 @@
 | 2026-07-10 18:55 | 観測 8 / IDLE 4 (w24/w34/w111/w112) + RUNNING 3 (w61/w59/w110 差配処理中) + WAITING 1 (w113) / **指示 4** (#315 merge + w61 rebase + w59 判定 + w110 案 B) / **konuma 訂正指摘で自主判断復元** |
 | 2026-07-10 19:00 | 観測 8 / IDLE 3 (w24/w34/w111/w112) + RUNNING 3 (w61 CI待/w59/w110) + WAITING 1 (w113) / 指示 2 (w59 Stage1 / w110 案B PR) / #260 CLOSED、scope:ai-agent 3→2 |
 | 2026-07-10 19:03 | 観測 8 / RUNNING 2 (w59/w110 impl) + IDLE 5 (他) + WAITING 1 (w113) / 指示 0 (PR merge 実行) / **PR #864 MERGED**、#838 CLOSED、navibot refs 5→4、scope:ai-agent 3→2 |
+| 2026-07-10 19:07 | 観測 8 / RUNNING 3 (w59/w110/w61 差配処理) + IDLE 4 + WAITING 1 (w113) / 指示 1 (w61 #804 調査) + PR #309 rebase 実行 (CI 再走) |
