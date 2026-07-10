@@ -2,7 +2,7 @@
 """Add / remove / edit / list volante epic Specs + the journal/goals.md index row.
 
 Backs `/volante-epic` (issue #24). Two files move together per epic:
-  - journal/specs/<slug>.json   (Spec schema v1.2, see skills/volante/templates/spec-template.json)
+  - journal/specs/<slug>.json   (Spec schema v1.3, see skills/volante/templates/spec-template.json)
   - journal/goals.md            (index row; primary key here is the `session (役割名)` cell,
                                   which this tool always sets to the slug verbatim so add/edit/
                                   remove can find the row unambiguously)
@@ -18,11 +18,12 @@ conversational flow — does that, matching the convention used by dashboard-gen
 Usage:
     epic_tool.py add --slug SLUG --repo REPO --goal GOAL --criteria C [--criteria C ...] \
         --kpi-gid GID --kpi-name NAME (--source SOURCE | --create-issue) \
-        [--epic-label LABEL] [--dry-run] [--repo-root PATH]
+        [--epic-label LABEL] [--name-ja NAME_JA] [--dry-run] [--repo-root PATH]
     epic_tool.py remove SLUG [--repo-root PATH]
     epic_tool.py edit SLUG [--repo REPO] [--source SOURCE] [--goal GOAL] \
         [--criteria C [--criteria C ...]] [--kpi-gid GID] [--kpi-name NAME] \
-        [--epic-label LABEL] [--clear-epic-label] [--repo-root PATH]
+        [--epic-label LABEL] [--clear-epic-label] [--name-ja NAME_JA] [--clear-name-ja] \
+        [--repo-root PATH]
     epic_tool.py list [--repo-root PATH]
 
 `add` requires exactly one of `--source <existing URL/path>` or `--create-issue`:
@@ -356,6 +357,8 @@ def cmd_add(args: argparse.Namespace) -> None:
         spec["kpi_sheet_tab"] = {"gid": args.kpi_gid or "", "name": args.kpi_name or ""}
     if args.epic_label:
         spec["epic_label"] = args.epic_label
+    if args.name_ja:
+        spec["name_ja"] = args.name_ja
 
     validate_spec(root, spec)  # kpi_sheet_tab required -> rejects here if omitted (issue #23 dependency)
 
@@ -422,6 +425,12 @@ def cmd_edit(args: argparse.Namespace) -> None:
     elif args.epic_label is not None:
         spec["epic_label"] = args.epic_label
         changed = True
+    if args.clear_name_ja:
+        spec.pop("name_ja", None)
+        changed = True
+    elif args.name_ja is not None:
+        spec["name_ja"] = args.name_ja
+        changed = True
 
     goals_updates: dict[int, str] = {}
     if args.repo is not None:
@@ -465,7 +474,8 @@ def cmd_list(args: argparse.Namespace) -> None:
         kpi_str = kpi.get("name", "?") if kpi else "未紐付け"
         n_criteria = len(spec.get("acceptance_criteria") or [])
         label = f" [{spec['epic_label']}]" if spec.get("epic_label") else ""
-        print(f"{slug}{label}  repo={repo}  kpi={kpi_str}  criteria={n_criteria}")
+        display_name = f"{spec['name_ja']} ({slug})" if spec.get("name_ja") else slug
+        print(f"{display_name}{label}  repo={repo}  kpi={kpi_str}  criteria={n_criteria}")
         print(f"  goal: {spec.get('goal', '')}")
 
 
@@ -487,6 +497,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_add.add_argument("--create-issue", action="store_true", help="create a new epic issue on --repo via gh and use its URL as source. Mutually exclusive with --source.")
     p_add.add_argument("--dry-run", action="store_true", help="(with --create-issue) print the issue title/body/label ops and exit without writing files or hitting GitHub.")
     p_add.add_argument("--epic-label", help="optional repo-side epic label (issue #22)")
+    p_add.add_argument("--name-ja", help="optional Japanese display name shown as '日本語名 (slug)' on the dashboard (issue #32)")
     p_add.set_defaults(func=cmd_add)
 
     p_rm = sub.add_parser("remove", help="archive a Spec + drop its goals.md row")
@@ -503,6 +514,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_edit.add_argument("--kpi-name")
     p_edit.add_argument("--epic-label")
     p_edit.add_argument("--clear-epic-label", action="store_true")
+    p_edit.add_argument("--name-ja", help="optional Japanese display name (issue #32)")
+    p_edit.add_argument("--clear-name-ja", action="store_true")
     p_edit.set_defaults(func=cmd_edit)
 
     p_list = sub.add_parser("list", help="print current specs to stdout")

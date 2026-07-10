@@ -22,7 +22,7 @@ description: >
 ## 前提知識 (このスキルが触る 2 ファイルの関係)
 
 - `journal/specs/<slug>.json`: Spec 本体。schema は `skills/volante/templates/spec-template.json`
-  (現行 v1.2: `goal` / `acceptance_criteria` / `kpi_sheet_tab` が必須、`epic_label` が任意)
+  (現行 v1.3: `goal` / `acceptance_criteria` / `kpi_sheet_tab` が必須、`epic_label` / `name_ja` が任意)
 - `journal/goals.md`: session ↔ repo ↔ 正本 URL の index。**`session (役割名)` セルにはこのスキルが
   常に slug をそのまま書く** — これにより remove/edit がどの行を触ればよいか一意に決まる
   (goals.md 本文コメントにある「repo × 正本 が主キー」という原則とは別に、このスキル発の行に限り
@@ -50,6 +50,8 @@ description: >
        konuma に見せて OK を取ってから本実行**する (下記 2 の手順参照)
    - `epic_label` (任意): 対象 repo 側の epic label (issue #22 の label 進捗集計用。上述の自動付与
      とは別軸の任意フィールド)
+   - `name_ja` (任意): epic の日本語表示名 (issue #32)。dashboard の Epics カード / PM テーブル / タブ名を
+     「日本語名 (slug)」併記で表示する。未回答なら聞かず省略してよい (slug のみ表示、後方互換)
    - `優先度` は聞かない (konuma 専有。goals.md には常に `未指定` を書く)
 2. 実行 (source 分岐):
    - **既存 URL がある場合**:
@@ -58,7 +60,7 @@ description: >
        --slug <slug> --repo <repo> --goal "<goal>" \
        --criteria "<criteria 1>" --criteria "<criteria 2>" \
        --kpi-gid <gid> --kpi-name "<name>" --source "<正本 URL>" \
-       [--epic-label "<epic_label>"]
+       [--epic-label "<epic_label>"] [--name-ja "<name_ja>"]
      ```
    - **新規 epic issue を起票する場合** (2 段階: dry-run → 本実行):
      ```bash
@@ -73,7 +75,7 @@ description: >
        --slug <slug> --repo <repo> --goal "<goal>" \
        --criteria "<criteria 1>" --criteria "<criteria 2>" \
        --kpi-gid <gid> --kpi-name "<name>" --create-issue \
-       [--epic-label "<epic_label>"]
+       [--epic-label "<epic_label>"] [--name-ja "<name_ja>"]
      ```
    - `--source` と `--create-issue` は排他 (両方指定 or 両方省略はエラー)
    - schema 違反 (kpi_sheet_tab 欠落等) やスラグ重複はスクリプトが exit 1 + エラー文で返す。エラーが出たら
@@ -112,14 +114,15 @@ description: >
 ## edit
 
 1. `<slug>` + 変更したいフィールドを聞く (goal / acceptance_criteria 全置換 / kpi_sheet_tab の gid・name /
-   epic_label 追加・削除 / repo / 正本 URL)。**変更しないフィールドは指定しない** (スクリプトは指定された
-   フィールドだけ上書きし、他は保持する)
+   epic_label 追加・削除 / name_ja 追加・削除 / repo / 正本 URL)。**変更しないフィールドは指定しない**
+   (スクリプトは指定されたフィールドだけ上書きし、他は保持する)
 2. 実行 (指定されたフラグだけ渡す):
    ```bash
    python3 "$VOLANTE_REPO/skills/volante-epic/scripts/epic_tool.py" --repo-root "$VOLANTE_REPO" edit <slug> \
      [--goal "<new goal>"] [--criteria "<c1>" --criteria "<c2>" ...] \
      [--kpi-gid <gid>] [--kpi-name "<name>"] \
      [--epic-label "<label>" | --clear-epic-label] \
+     [--name-ja "<name_ja>" | --clear-name-ja] \
      [--repo <repo>] [--source "<url>"]
    ```
    - `--goal` を指定すると spec の `goal` と goals.md の「ゴール 1 行」列の両方が更新される (乖離防止)

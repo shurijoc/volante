@@ -8,5 +8,6 @@
     "gid": "<PJCI シートの該当タブ gid (URL の gid=... の値)>",
     "name": "<タブ名 (人間可読)>"
   },
-  "epic_label": "<対象 repo 側の epic label, 例: epic:site-response-speed (任意。未設定なら repo 全体の open issue 数を進捗として使う)>"
+  "epic_label": "<対象 repo 側の epic label, 例: epic:site-response-speed (任意。未設定なら repo 全体の open issue 数を進捗として使う)>",
+  "name_ja": "<epic の日本語表示名 (任意。未設定なら dashboard は slug のみ表示、設定時は「日本語名 (slug)」併記)>"
 }

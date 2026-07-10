@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.17.2] - 2026-07-10
+
+- **spec: epic に日本語名 (`name_ja`) を追加し dashboard に表示** (issue #32):
+  - spec schema v1.3 (`skills/volante/templates/spec-template.json`): `name_ja` (string, 任意) を追加。
+    任意なので既存 spec は無改修でも valid のまま (段階移行、後方互換)
+  - dashboard 表示: `name_ja` があれば「日本語名 (slug)」形式で表示、無ければ従来どおり slug のみ表示。
+    `skills/volante/scripts/dashboard-generate.py` の TEMPLATE JS に `epicDisplayName(s)` を追加し、
+    Epics カード (`renderEpicName`) / PM テーブル / タブ名の 3 箇所すべてこの関数経由に統一 (表示形式は
+    issue 起票時の不明点「日本語名 + slug 併記」で確定、konuma 指示どおり)
+  - 既存 8 spec (`journal/specs/*.json`) に日本語名を付与 (文言は draft、konuma レビュー対象)
+  - `skills/volante-epic/scripts/epic_tool.py` (`/volante-epic add|edit`) に `--name-ja` /
+    `--clear-name-ja` を追加し、`list` 出力にも反映。手編集なしで `name_ja` を運用できるようにするため
+    (`epic_label` と同じ後付け任意フィールドの前例に揃えた)
+  - `spec-template.example.json` に例を追記。`skills/volante/SKILL.md` / `skills/volante-epic/SKILL.md`
+    のスキーマバージョン表記の既存 drift (`v1.1` 表記の残存 2 箇所) もこの機に `v1.3` へ訂正
+  - 判断木・芯には変更なし (spec schema の任意フィールド追加 + 表示ロジックのみ)
+
 ## [0.17.1] - 2026-07-10
 
 - **dashboard: 生成時埋め込みをやめ `journal/dashboard-data.js` 分離** (issue #31、案 A):

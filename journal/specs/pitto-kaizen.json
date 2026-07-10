@@ -4,5 +4,6 @@
     "ma-navi/pitto の PR #496 が main に merge されている (fe1405c)",
     "kaizen-loop の verify が全 check pass している",
     "follow-up 3 件 (drift 3 件・schema-only PR verify 問題) の対応方針が明確化されている"
-  ]
+  ],
+  "name_ja": "pitto scaffold kaizen"
 }

@@ -3,5 +3,6 @@
   "acceptance_criteria": [
     "07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている",
     "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"
-  ]
+  ],
+  "name_ja": "payroll照合kaizen"
 }
