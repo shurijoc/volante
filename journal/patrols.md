@@ -111,3 +111,4 @@
 | 2026-07-10 18:24 | 観測 8 / IDLE 5 (w24/w59/w61/w110/w112) + RUNNING 1 (w111) + WAITING 1 (w113) + IDLE 1 (w34) / 指示 1 (w112) / **konuma 未送信入力 3 件検知** (w24/w59/w110)、w61 自主待機、w111 実装中 |
 | 2026-07-10 18:29 | 観測 8 / IDLE 5 + RUNNING 1 (w111) + WAITING 1 (w113) + IDLE 1 (w34) / 指示 1 (w112 C1) + 3 window に enter 試行不発 (w24/w59/w110) / w111 二重実装統合中 |
 | 2026-07-10 18:35 | 観測 8 / IDLE 4 (w24 konuma管轄/w59/w110/w112) + RUNNING 1 (w111 実は完了 PR#315) + WAITING 1 (w113) + IDLE 1 (w34) / 指示 3 (w59/w110/w112) / w111 #260 PR#315 作成完了、konuma 管轄再定義 (w24/w113)、UI アーティファクト誤認訂正 |
+| 2026-07-10 18:38 | 観測 8 / IDLE 4 (w24/w34/w61/w111) + RUNNING 3 (w59/w110/w112 前差配処理中) + WAITING 1 (w113) / 指示 0 / PR #864 BEHIND・#315 BLOCKED review 待ち |

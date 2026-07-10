@@ -1723,3 +1723,22 @@
 - **根拠**: (a) konuma 管轄外 window に session STATUS 推奨に沿う差配で低リスク (b) 前 cycle の誤判定を訂正 (c) 送信直前に対象 3 window の状態確認 (↺ meter で reset を検出 = submit 成功)
 - **結果**: 3 window 送信成功 (↺3m reset)、次 cron で報告確認
 - **konuma レビュー**: OK (self-review 2026-07-10 18:35 by volante、根拠: konuma 管轄明示に沿った差配、前 cycle 誤判定の訂正記録、境界明示、Fact 確認済)
+
+## 2026-07-10 18:38 — 巡回 (cron fire) 観察のみ、指示 0
+
+- **repo**: 複数
+- **状態**:
+  - w59/w110/w112: 前 cycle 差配処理中 (↺2m、⏰43%)
+  - w111: teammate agent 完了、main IDLE、PR #315 review 待ち (追加アクションなし)
+  - w61: 変化なし、PR #864 (BEHIND、CI Test SUCCESS、review 未) 待ち
+  - w24: konuma 管轄、触らない (変化なし)
+  - w34: 無視 (変化なし)
+  - w113: konuma 管轄 plan mode editing (ctrl+g Nvim)、触らない
+- **枝**: 触らない (全対象が RUNNING or 待機 or konuma 管轄)
+- **判断**: 指示 0。3 window (w59/w110/w112) の完了報告を次 cycle で読む
+- **送信指示**: なし
+- **Fact 確認**:
+  - PR #864 (navibot): OPEN / merge=BEHIND / Test SUCCESS / review 未
+  - PR #315 (forge): OPEN / merge=BLOCKED / Claude Code Review SUCCESS / gitleaks SUCCESS / CI check IN_PROGRESS / human review 待ち (BLOCKED は多分 review 未 or CODEOWNERS 要)
+- **結果**: 記録のみ、konuma に 2 PR review を待たれている旨を STATUS で明記
+- **konuma レビュー**: OK (self-review 2026-07-10 18:38 by volante、根拠: 適切な観察・干渉なし・Fact 実測記録)
