@@ -1,8 +1,9 @@
 {
-  "goal": "既存 open issue の実装を消化し mock との差分を完成させる (PR 済分の merge を含む)",
+  "goal": "mock 差分対象の open issue (ma_navi_forge の scope:forge + plan-ready) を 0 にする (現在 12 件)",
   "acceptance_criteria": [
-    "mock 差分に該当する既存 open issue (現時点で scope:forge の plan-ready 群) の実装が全て完了している",
-    "既に PR 済の issue はレビュー・merge が完了している",
+    "ma-navi/ma_navi_forge の scope:forge + plan-ready open issue 数 = 0",
+    "対象 12 issue (#140/#156/#260/#261/#262/#263/#264/#265/#266/#268/#302/#304) 全ての実装が完了し close されている",
+    "PR 済分は review + merge が完了している",
     "forge 本番の主要導線 (deals / companies / mobile 等) が mock と乖離のない状態で動作している"
   ],
   "kpi_sheet_tab": {

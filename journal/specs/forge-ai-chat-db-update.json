@@ -1,8 +1,8 @@
 {
-  "goal": "AI チャットからの DB 更新機能を実装し本番環境で QA を完了する",
+  "goal": "AI チャットからの DB 更新関連の open issue (ma_navi_forge の scope:ai-agent) を 0 にする (現在 3 件: #140/#238/#260)",
   "acceptance_criteria": [
-    "AI チャット経由で DB 更新を実行できる機能が forge 本番環境にデプロイされている",
-    "本番環境で QA が完了しており、主要な更新パスで想定どおりに DB が更新されることが確認されている",
+    "ma-navi/ma_navi_forge の scope:ai-agent open issue 数 = 0",
+    "対象 3 issue (#140/#238/#260) それぞれが本番デプロイ + QA 通過を経て close されている",
     "承認フロー・監査ログ・失敗時のリカバリ手順が運用可能な状態で用意されている"
   ],
   "kpi_sheet_tab": {

@@ -12,12 +12,12 @@
 | ma-navi/navibot | [epic #802](https://github.com/ma-navi/navibot/issues/802) | navibot×Forge 統合 | ADR-0011 a〜f の統合層完成 + cross-user leakage ゲート検証 (#220) 通過 | 仮: 高 | 2026-07-07 |
 | ma-navi/ma_navi_forge | [epic #211](https://github.com/ma-navi/ma_navi_forge/issues/211) | AI agent v1 | v1 結合完了 — Forge/navibot 両側完了・結合テスト green (07-08)。残: konuma 実機確認 + WAF #6058 判断 + #220。再発防止は起票済み (#257/#258、PR #6057 merge 待ち) | 仮: 高 | 2026-07-07 |
 | /Users/navi (home) | ~/.claude/projects/-Users-navi/memory-audit-log-2026-07-07.md | memory 統治ループ | 定期 memory 監査 (次回 2026-07-14〜21 or 大規模リファクタ直後)。現サイクルは done | 仮: 低 | 2026-07-07 |
-| ma-navi/navibot | https://github.com/ma-navi/navibot/issues/802 | navibot-ai-chat-db-update | navibot 起点で DB を更新できる (ADR-0011 Consequences a〜f の統合層完成) | 並列 | 2026-07-10 |
+| ma-navi/navibot | https://github.com/ma-navi/navibot/issues/802 | navibot-ai-chat-db-update | navibot #802 (ADR-0011 個人スコープ操作) を本文で言及する navibot open issue を 0 にする (現在 5 件: #804/#835/#836/#838/#839) | 並列 | 2026-07-10 |
 | ma-navi/pitto | https://github.com/ma-navi/pitto/issues/500 | pitto-cosmos-book-keeping | kaizen loop で cosmos の記帳仕訳精度を 90% にする | 並列 | 2026-07-10 |
 | ma-navi/pitto | https://github.com/ma-navi/pitto/issues/501 | pitto-jingu-book-keeping | kaizen loop で jingu の記帳仕訳精度を 90% にする | 並列 | 2026-07-10 |
-| ma-navi/ma_navi_forge | https://github.com/ma-navi/ma_navi_forge/issues/313 | forge-ai-chat-db-update | AI チャットからの DB 更新機能を実装し本番環境で QA を完了する | 並列 | 2026-07-10 |
-| ma-navi/ma_navi_forge | https://github.com/ma-navi/ma_navi_forge/issues/314 | forge-mock-parity | 既存 open issue の実装を消化し mock との差分を完成させる (PR 済分の merge を含む) | 並列 | 2026-07-10 |
-| ma-navi/pitto | https://github.com/ma-navi/pitto/issues/502 | pitto-ma-navi-book-keeping | ma-navi の book keeping 案件を継続的に処理し、複数案件で本番反映を積み上げる (cosmos/jingu 等の個別案件を統べる umbrella) | 並列 | 2026-07-10 |
+| ma-navi/ma_navi_forge | https://github.com/ma-navi/ma_navi_forge/issues/313 | forge-ai-chat-db-update | AI チャットからの DB 更新関連の open issue (ma_navi_forge の scope:ai-agent) を 0 にする (現在 3 件: #140/#238/#260) | 並列 | 2026-07-10 |
+| ma-navi/ma_navi_forge | https://github.com/ma-navi/ma_navi_forge/issues/314 | forge-mock-parity | mock 差分対象の open issue (ma_navi_forge の scope:forge + plan-ready) を 0 にする (現在 12 件) | 並列 | 2026-07-10 |
+| ma-navi/pitto | https://github.com/ma-navi/pitto/issues/502 | pitto-ma-navi-book-keeping | ma-navi 全体の book keeping (cosmos / jingu 等) の記帳仕訳精度を 90% にする (cosmos/jingu の個別 epic を統べる umbrella) | 並列 | 2026-07-10 |
 
 - 優先度の初期値はすべて volante の仮置き。**konuma のレビュー・修正待ち**
 - 1 repo に複数 epic が並走する場合は行を複数持つ (現状 ma-navi/pitto は 2 行)

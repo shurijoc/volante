@@ -1,9 +1,9 @@
 {
-  "goal": "ma-navi の book keeping 案件を継続的に処理し、複数案件で本番反映を積み上げる (cosmos/jingu 等の個別案件を統べる umbrella)",
+  "goal": "ma-navi 全体の book keeping (cosmos / jingu 等) の記帳仕訳精度を 90% にする (cosmos/jingu の個別 epic を統べる umbrella)",
   "acceptance_criteria": [
-    "cosmos / jingu を含む個別 book keeping 案件が優先度順にバックログ化され、次に処理する案件が特定できている",
-    "直近サイクルで最低 1 案件が本番反映まで進んでいる (関連 epic: #500 cosmos / #501 jingu)",
-    "新規顧客向け book keeping 案件 (熊木先生 / 森先生 等) のオンボーディングが受入可能な状態で用意されている"
+    "ma-navi 全体の記帳仕訳総成功率が PJCI シート 記帳仕訳・給与計算 タブ上で 90% 以上に達している",
+    "対応中の全案件 (cosmos / jingu 等) で精度改善の kaizen loop が定期実行され、精度指標が反映されている",
+    "90% 未達の案件が特定され、次の改善対象が明確化されている (関連 epic: #500 cosmos / #501 jingu)"
   ],
   "kpi_sheet_tab": {
     "gid": "1685331228",

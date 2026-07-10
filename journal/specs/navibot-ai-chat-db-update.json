@@ -1,9 +1,9 @@
 {
-  "goal": "navibot 起点で DB を更新できる (ADR-0011 Consequences a〜f の統合層完成)",
+  "goal": "navibot #802 (ADR-0011 個人スコープ操作) を本文で言及する navibot open issue を 0 にする (現在 5 件: #804/#835/#836/#838/#839)",
   "acceptance_criteria": [
-    "ADR-0011 Consequences a〜f の統合層実装が完了している (#802 本文の a〜f)",
-    "cross-user leakage ゲート検証 (#220) が通過している",
-    "navibot セッション内から Forge の DB 更新 skill を安全に発火できる状態が本番で確認されている"
+    "ma-navi/navibot で #802 を本文で言及する open issue 数 = 0",
+    "ADR-0011 Consequences a〜f の統合層実装が完了している",
+    "cross-user leakage ゲート検証 (#220) が通過している"
   ],
   "kpi_sheet_tab": {
     "gid": "664315788",
