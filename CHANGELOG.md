@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.17.2] - 2026-07-10
+
+- **dashboard: 時刻表示を JST にする** (issue #33):
+  - `dashboard-generate.py` の生成時刻 (`generated_at`) を `ZoneInfo("Asia/Tokyo")` で
+    `"%Y-%m-%d %H:%M JST"` に変更 (従来は `datetime.now(timezone.utc)` で UTC 表示)
+  - decisions timeline (メイン + 監督 AI/epic タブ共通の `renderEvent`) と PM table の
+    「最終更新」列 (`m.latest_ts`) の timestamp を、テンプレート JS 側に追加した `formatJST()`
+    ヘルパーで描画時に UTC → JST 変換
+  - `journal/patrols.md` の日時列は元々 JST の壁時計表記 (patrol 実行時に skill が書く生の
+    ローカル時刻) のため無変換のまま
+  - **正本 (`decisions-*.jsonl` の `timestamp` フィールド、`patrols.md` の生データ) は UTC/元表記の
+    まま変更なし**。表示層 (`dashboard-generate.py` の時刻整形箇所 + テンプレート内 JS の描画関数)
+    のみの変更
+  - `journal/dashboard.html` (テンプレート) を `--mode template` で再生成。`journal/dashboard-data.js`
+    は次回巡回 (`--mode data`) で自動的に JST 表記の `generated_at` に更新される (このPRでは未再生成)
+
 ## [0.17.1] - 2026-07-10
 
 - **dashboard: 生成時埋め込みをやめ `journal/dashboard-data.js` 分離** (issue #31、案 A):
