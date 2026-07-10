@@ -1,5 +1,26 @@
 # Changelog
 
+## リリースチェック項目
+
+新しいバージョンをリリースするたびに以下を確認する (checklist、issue #34):
+
+- [ ] `SKILL.md` (判断木・巡回サイクル・データフロー・adapter 層など) を変更した場合、
+      `journal/about.html` (harness 内部処理の説明ページ) の記載が現行の SKILL.md と食い違っていないか確認する。
+      食い違っていれば同じリリースで about.html も更新する
+
+## [0.17.1] - 2026-07-10
+
+- **dashboard から辿れる harness 内部処理の説明ページ (`journal/about.html`) を追加** (issue #34):
+  - 静的・自己完結・JS 不要の単一 HTML。dashboard header から `about.html` へのリンクを追加
+    (`dashboard-generate.py` の TEMPLATE を更新し `journal/dashboard.html` を再生成)
+  - 記載内容: 巡回サイクル (Plan/Do/Check/Act と 7.1〜7.6 の対応表) / データフロー図 (CSS のみ、外部
+    diagram library 不使用) / 判断木の概要 (枝 1〜5、全文は SKILL.md へのリンクに留め二重管理を避ける) /
+    各ファイルの役割一覧 / adapter 層の位置づけ
+  - **判断木の記載粒度**: 概要 + SKILL.md へのリンクのみ (全文転記しない、issue #34 不明点 1 の konuma 回答)
+  - **陳腐化対策**: 上記「リリースチェック項目」を新設し「about.html 更新確認」を追加
+    (issue #34 不明点 2 の konuma 回答。手書き静的ページの放置による誤説明を防ぐ)
+- 判断木・芯・Spec schema には変更なし
+
 ## [0.17.0] - 2026-07-10
 
 - **`/volante-epic add` に `--create-issue` と `--source` label 自動同期を追加**:

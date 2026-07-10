@@ -423,6 +423,9 @@ TEMPLATE = """<!DOCTYPE html>
   header { padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
   header h1 { margin: 0 0 4px; font-size: 20px; }
   header .meta { color: var(--text-mute); font-family: var(--mono); font-size: 12px; }
+  header .about-link { margin-top: 6px; font-size: 12.5px; }
+  header .about-link a { color: var(--accent); text-decoration: none; }
+  header .about-link a:hover { text-decoration: underline; }
   section { margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border);
             border-radius: 10px; padding: 16px 18px; }
   section > h2 { margin: 0 0 12px; font-size: 12px; letter-spacing: .08em;
@@ -598,6 +601,7 @@ TEMPLATE = """<!DOCTYPE html>
   <header>
     <h1>volante dashboard</h1>
     <span class="meta">__REPO_PATH__ · generated __GENERATED_AT__ (issue #17 MVP)</span>
+    <div class="about-link"><a href="./about.html">仕組みの説明 (about) →</a></div>
   </header>
 
   <div class="tabs">
