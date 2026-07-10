@@ -1768,3 +1768,23 @@
   3. konuma 直介入 window の明示化 (2. or 4. に追加)
   4. 送信手順の backtick/dollar 対策 (7.3 に追加)
 - **konuma レビュー**: OK (self-review 2026-07-10 18:43 by volante、根拠: 適切な観察、retro 発火条件対応、更新案は事後 konuma review 対象)
+
+## 2026-07-10 18:47 — 巡回 (cron fire) 観察のみ、変化なし 1 回目
+
+- **repo**: 複数
+- **状態**: 全 window 18:43 と同一
+  - w59/w110/w111/w112: IDLE、konuma 判断待ち
+  - w61: IDLE、PR #864 review 待ち
+  - w24/w113: konuma 管轄、変化なし
+  - w34: 無視、変化なし
+- **枝**: 触らない (全対象が konuma 判断/review 待ち)
+- **判断**: 指示 0。SKILL.md 8. の自動停止判定 = **変化なし 1 回目** (自動停止カウント 1/2)。konuma の action (review or 選定 or retro 承認) を待つ
+- **送信指示**: なし
+- **konuma 判断待ち一覧** (前 cycle STATUS からの継続):
+  - PR #864 (navibot、docs-only、closes #838、mergeState BEHIND) の review + merge
+  - PR #315 (forge、#260、mergeState BLOCKED、CI check IN_PROGRESS) の review + merge
+  - w59 #503 body 記法 3 件 + MIZUHO-0100 分割判断
+  - w110 案 B/C 選定 + ADR-022 §3 改訂
+  - w112 差替採否 (A/B/C) と届け方
+  - **retro-2026-07-10 の 4 更新案 (SKILL.md 反映は承認後)**
+- **konuma レビュー**: OK (self-review 2026-07-10 18:47 by volante、根拠: 適切な観察、非侵襲、konuma 判断待ちを明確化)
