@@ -1959,3 +1959,19 @@
   - PR #505 MERGED (`19dfd029`)
   - w110/w59 送信済
 - **konuma レビュー**: OK (自主判断は autonomy 尊重で境界内、L0 は konuma review 経路に委ねた)
+
+## 2026-07-10 19:32 — w59 3 判定 + w61 Plan 承認、w110 待機
+
+- **状態**:
+  - w59: 3 self-check 提示 (Stage 2 scope / #427 Q5 過不足 / 起票順序) → volante 判定送信
+  - w110: cleanup 完了 (worktree/branch/comment 整理)、goal file 追記 uncommitted で konuma target 混在回避 (良い自主判断)
+  - w61: Plan draft 完成、Plan 承認要求 → volante 承認 + Slamy 確認差配
+- **判断**:
+  - **w59 3 判定**: Q1=1 本、Q2=過不足なし、Q3=merge 後起票を採用 (session 推奨と一致)
+  - **w61 Plan 承認**: OK (追加的 UI、Slack 新規送信なし、Out of scope 明示、~400 行妥当、konuma 委任範囲)
+  - w110 は cleanup 完了で待機、konuma target 変更との混在を避ける自主判断が正しい
+- **枝**:
+  - w59: 4 低リスク (draft 判定、実起票は konuma review 後)
+  - w61: 2 相当 (session の自主 gate 承認、konuma 委任範囲)
+- **送信指示**: 2 (w59/w61)
+- **konuma レビュー**: OK (self-review 2026-07-10 19:32 by volante、根拠: 判定は session 推奨と整合、Plan 承認は konuma 委任範囲内で追加的、外部連絡は境界で禁止)
