@@ -1926,3 +1926,13 @@
 - **状態**: 全 window 19:16 と同一 (w59/w110/w61 impl/調査継続、他は待機)
 - **判断**: 指示 0。自動停止カウント 1/2
 - **konuma レビュー**: OK
+
+## 2026-07-10 19:22 — konuma FB: 実装中は auto-stop しない、retro に更新案 5 追加
+
+- **konuma FB**: 「実装中なら auto-stop する必要なくない？」
+- **判断**: konuma 指摘の通り。SKILL.md 8. の「RUNNING の継続は変化なしに含む」ルールは実装中でも auto-stop してしまう欠陥。RUNNING が 1 つでもあれば auto-stop カウントを進めない、が正しい
+- **今 cycle 対応**:
+  - 19:20 の「変化なし 1 回目」判定を訂正 (RUNNING 3 セッションが実装/調査中なので count 0/2 に戻す)
+  - retro-2026-07-10 に更新案 5 (auto-stop の RUNNING 除外) を追加
+- **枝**: 訂正 + 芯 5 (判断木/loop 制御の変更は konuma 承認必須)
+- **konuma レビュー**: NG (訂正) — 前 cycle 19:20 の「変化なし 1 回目」判定は誤り。RUNNING 中の auto-stop カウント進行はしない
