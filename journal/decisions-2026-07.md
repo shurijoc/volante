@@ -1742,3 +1742,29 @@
   - PR #315 (forge): OPEN / merge=BLOCKED / Claude Code Review SUCCESS / gitleaks SUCCESS / CI check IN_PROGRESS / human review 待ち (BLOCKED は多分 review 未 or CODEOWNERS 要)
 - **結果**: 記録のみ、konuma に 2 PR review を待たれている旨を STATUS で明記
 - **konuma レビュー**: OK (self-review 2026-07-10 18:38 by volante、根拠: 適切な観察・干渉なし・Fact 実測記録)
+
+## 2026-07-10 18:43 — 巡回 (cron fire) 3 window 完了 + retro 実施
+
+- **repo**: 複数
+- **状態**:
+  - w59 (jingu): **#503 起票済** (aggregate-bank 3 件、goal:nsm、想定 +0〜+3 件)、konuma に body 記法 3 件確認事項
+  - w110 (payroll): 3 設計案完成、推奨 案 B、konuma 自身の #488 コメント (2026-07-07) と一致
+  - w112 (forge mock): draft 完成、案 C (個別判断) 推奨、scratch file 更新
+  - w111: 変化なし (PR #315 review 待ち)、CI 状態確認完了
+  - w61: 変化なし (PR #864 review 待ち)
+  - w24/w113: konuma 管轄
+  - w34: 無視
+- **枝**: 触らない (3 完了報告受領のみ) + retro (7.6 発火条件 = 10 件を満たす)
+- **判断**: 追加差配なし。retro-2026-07-10.md を生成 (4 更新案) して konuma に提示
+- **送信指示**: なし
+- **retro 抽出**:
+  - 18:15 escalation-mistake (枝 4 適用ミス)
+  - 18:24-29 UI アーティファクト誤認 + enter 試行不発
+  - 18:29 bash backtick 誤爆 (送信手順の実装ミス)
+  - 18:38 w112 前提誤り自己修正 (良い動作)
+- **更新案 4 件** (SKILL.md 反映は konuma 承認後):
+  1. 枝 4 低リスクの「衝突」明示
+  2. ❯ input UI アーティファクト検証手順 (7.2 に追加)
+  3. konuma 直介入 window の明示化 (2. or 4. に追加)
+  4. 送信手順の backtick/dollar 対策 (7.3 に追加)
+- **konuma レビュー**: OK (self-review 2026-07-10 18:43 by volante、根拠: 適切な観察、retro 発火条件対応、更新案は事後 konuma review 対象)
