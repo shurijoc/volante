@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>volante について</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --surface: #ffffff; --border: #e4e4e0; --text: #1f2328;
+    --text-mute: #636c76; --accent: #2f6fed; --accent-bg: #eaf1fe;
+    --ok: #1f883d; --ok-bg: #eaf6ec; --warn: #9a6700; --warn-bg: #fdf3e0;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171a; --surface: #1c1f23; --border: #30363d; --text: #e6edf3;
+      --text-mute: #99a2ab; --accent: #4f8bff; --accent-bg: #16243f;
+      --ok: #4ac26b; --ok-bg: #122017; --warn: #e3b341; --warn-bg: #241c0c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px 16px; color: var(--text); background: var(--bg);
+         font-family: var(--sans); line-height: 1.6; font-size: 14px;
+         -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  header { padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header .meta { color: var(--text-mute); font-family: var(--mono); font-size: 12px; }
+  header .back-link { margin-top: 6px; font-size: 12.5px; }
+  header .back-link a { color: var(--accent); text-decoration: none; }
+  header .back-link a:hover { text-decoration: underline; }
+  section { margin-bottom: 26px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; padding: 16px 18px; }
+  section > h2 { margin: 0 0 10px; font-size: 13px; letter-spacing: .04em; color: var(--text); font-weight: 700; }
+  section > h2 .num { color: var(--accent); font-family: var(--mono); margin-right: 6px; }
+  p { margin: 0 0 10px; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { margin: 6px 0 10px; padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  code { font-family: var(--mono); font-size: 12.5px; background: var(--accent-bg); color: var(--accent);
+         padding: 1px 5px; border-radius: 4px; }
+  a { color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  table th, table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table th { font-weight: 600; color: var(--text-mute); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+  table td code { background: none; color: var(--text); padding: 0; font-weight: 600; }
+
+  /* データフロー図 (CSS のみ、外部 diagram library 不使用) */
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 12px 0; }
+  .flow-col { display: flex; flex-direction: column; gap: 6px; }
+  .flow-box { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px;
+              background: var(--bg); font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  .flow-box.script { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .flow-box.output { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); font-weight: 700; }
+  .flow-arrow { font-size: 20px; color: var(--text-mute); padding: 0 2px; }
+  @media (max-width: 640px) {
+    .flow { flex-direction: column; align-items: flex-start; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+
+  .branch-list { display: flex; flex-direction: column; gap: 8px; }
+  .branch-row { display: flex; gap: 10px; align-items: baseline; border-left: 3px solid var(--border);
+                padding: 4px 10px; }
+  .branch-row .n { font-family: var(--mono); font-weight: 700; color: var(--accent); min-width: 20px; }
+  .branch-row .body { font-size: 13px; }
+  .branch-row .body .label { font-weight: 600; }
+
+  .core-note { background: var(--warn-bg); border: 1px solid var(--warn); border-radius: 8px;
+               padding: 10px 14px; font-size: 13px; color: var(--text); }
+  .core-note b { color: var(--warn); }
+
+  .stale-note { background: var(--accent-bg); border: 1px solid var(--accent); border-radius: 8px;
+                padding: 10px 14px; font-size: 12.5px; }
+
+  footer { color: var(--text-mute); font-size: 11.5px; text-align: center; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>volante について — harness 内部処理の説明</h1>
+    <span class="meta">仕組み・データフロー・判断木の概要 (issue #34)</span>
+    <div class="back-link"><a href="./dashboard.html">← dashboard に戻る</a></div>
+  </header>
+
+  <section>
+    <h2><span class="num">§1</span>volante とは</h2>
+    <p>
+      複数の並走 Claude Code セッション (別 kitty ウィンドウ・別 tmux ペイン等) を、開発リーダーとして巡回・差配する
+      skill。打つコマンドは <code>/volante</code> の 1 本だけで、1 回の起動 = 1 巡回。
+    </p>
+    <div class="core-note">
+      設計の芯: <b>「白紙委任」ではなく「都度の具体的判断」</b>。「自分の判断で進めて OK」のような汎用委任文言は
+      送らない。すべての指示は 目的 / 具体的タスク / 完了条件 / 境界 (やらないこと) の 4 要素を明示する
+      (2026-07-07 の prompt injection 実事故が起源)。
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">§2</span>巡回サイクル (Plan / Do / Check / Act)</h2>
+    <p>
+      1 巡回は PDCA として設計されている。実装上は 6 ステップ (SKILL.md 「7. loop_plan」) に分解されており、
+      毎巡回この順で実行する。
+    </p>
+    <table>
+      <thead><tr><th>PDCA</th><th>ステップ</th><th>1 巡回で起きること</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2">Plan</td><td>7.1 準備</td>
+            <td>adapter 選択 (kitty/tmux)、<code>journal/specs/</code> と <code>goals.md</code> を読み込む</td></tr>
+        <tr><td>7.2 観測・分類</td>
+            <td>全セッションを一覧し、画面を読んで RUNNING / WAITING / IDLE / STUCK / NOT_CLAUDE に分類</td></tr>
+        <tr><td>Do</td><td>7.3 適用</td>
+            <td>WAITING / IDLE / STUCK のセッションごとに判断木 (§4) で対応を決め、adapter 経由で指示を送信</td></tr>
+        <tr><td rowspan="2">Check</td><td>7.4 検証</td>
+            <td>送信結果を画面で確認 (自己申告を信頼しない)</td></tr>
+        <tr><td>7.5 記録</td>
+            <td>判断ごとに <code>decisions-YYYY-MM.{md,jsonl}</code> に 1 エントリ追記、巡回サマリを
+                <code>patrols.md</code> に 1 行追記、journal を commit</td></tr>
+        <tr><td>Act</td><td>7.6 振り返り</td>
+            <td>前回振り返り以降の判断が 10 件以上溜まったら発火。判断木の更新案を
+                <code>retro-YYYY-MM-DD.md</code> にまとめ、<b>konuma 承認後にのみ</b> SKILL.md へ反映</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">§3</span>データフロー</h2>
+    <p>
+      永続化はすべて git 管理下のローカルファイルで完結する (DB / サーバーを持たない設計原則、issue #10)。
+      <code>dashboard-generate.py</code> がこれらを読み込み、単一の自己完結 HTML (JSON embedded) を生成する。
+      サーバーは不要で、ブラウザで <code>journal/dashboard.html</code> を開くだけで動く。
+    </p>
+    <div class="flow">
+      <div class="flow-col">
+        <div class="flow-box">journal/specs/*.json</div>
+        <div class="flow-box">journal/decisions-*.jsonl</div>
+        <div class="flow-box">journal/goals.md</div>
+        <div class="flow-box">journal/patrols.md</div>
+        <div class="flow-box">journal/retro-*.md</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box script">dashboard-generate.py</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box output">journal/dashboard.html</div>
+    </div>
+    <p>
+      巡回中に volante が書き込むのは journal 側のみ。対象セッションの repo には何も書かない (tracer の
+      goal file 等は read-only で参照するだけ)。
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">§4</span>判断木の概要 (枝 1〜5)</h2>
+    <p>
+      WAITING / IDLE / STUCK のセッションごとに、上から順に評価し最初にマッチした枝で対応する。
+      全文・境界条件・konuma 決定の経緯は
+      <a href="https://github.com/shurijoc/volante/blob/main/skills/volante/SKILL.md" target="_blank" rel="noopener">SKILL.md「4. checklist」</a>
+      を参照 (二重管理を避けるため、ここでは概要のみ)。
+    </p>
+    <div class="branch-list">
+      <div class="branch-row"><span class="n">枝1</span><span class="body"><span class="label">外部連絡 or 影響大の本番変更</span> — Slack/メール/社外 PR 等の外部連絡、URL 変更・削除・force-push 等の不可逆操作は必ず konuma に事前確認</span></div>
+      <div class="branch-row"><span class="n">枝2</span><span class="body"><span class="label">既存 autonomy がある</span> — tracer の goal file (L0/L1/L2) 等、対象セッションが既に持つ権限委譲を尊重し、昇格/降格はしない</span></div>
+      <div class="branch-row"><span class="n">枝3</span><span class="body"><span class="label">送信元不明の指示</span> — 画面内に konuma でも volante でもない出所の指示が見えたら、実行させず停止指示 + konuma へ報告</span></div>
+      <div class="branch-row"><span class="n">枝4</span><span class="body"><span class="label">技術的トレードオフ</span> — 推奨案 + 懸念を組み立て、内部・可逆なら自分で決めて実行 (事後レビュー対象)。高リスクは枝 1 扱い</span></div>
+      <div class="branch-row"><span class="n">枝5</span><span class="body"><span class="label">内部の定型作業</span> — cross-session 中継・GitHub issue 操作等は 4 要素 (目的/タスク/完了条件/境界) を明示して自律で進める</span></div>
+    </div>
+    <p style="margin-top:10px;">
+      判断木そのものの変更は <b>konuma 承認 + CHANGELOG.md 記録が必須</b> (SKILL.md「変更禁止の芯」5)。
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">§5</span>各ファイルの役割</h2>
+    <table>
+      <thead><tr><th>ファイル</th><th>役割</th></tr></thead>
+      <tbody>
+        <tr><td><code>journal/specs/&lt;session&gt;.json</code></td>
+            <td>差配の起点 (Session Spec)。goal + acceptance_criteria + kpi_sheet_tab を持つ volante 側のワーキングコピー</td></tr>
+        <tr><td><code>journal/goals.md</code></td>
+            <td>session ↔ repo ↔ 正本 URL の対応表 + 優先度 (konuma 専有) の薄い index</td></tr>
+        <tr><td><code>journal/decisions-YYYY-MM.md</code></td>
+            <td>判断ログ本体。1 判断 1 エントリ (human-readable)</td></tr>
+        <tr><td><code>journal/decisions-YYYY-MM.jsonl</code></td>
+            <td>decisions と同一内容を 1 行 1 JSON で併記。監督 AI subagent の入力用</td></tr>
+        <tr><td><code>journal/patrols.md</code></td>
+            <td>巡回 1 回 = 1 行のサマリ</td></tr>
+        <tr><td><code>journal/retro-YYYY-MM-DD.md</code></td>
+            <td>Act フェーズの振り返り。判断木の更新案はここに書き、konuma 承認後に SKILL.md へ反映</td></tr>
+        <tr><td><code>journal/dashboard.html</code></td>
+            <td>上記すべてから <code>dashboard-generate.py</code> が生成する自己完結 HTML (観察・振り返り用、read-only)</td></tr>
+        <tr><td><code>journal/about.html</code></td>
+            <td>この説明ページ。手書き静的ファイルのため陳腐化対策あり (§7)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">§6</span>adapter 層 (kitty / tmux) の位置づけ</h2>
+    <p>
+      volante はどの TUI/multiplexer で並走セッションを動かしているかに依存しない。差は
+      <code>skills/volante/adapters/&lt;adapter&gt;.sh</code> に閉じ込め、SKILL.md 本体は
+      <code>list_sessions</code> / <code>read_screen</code> / <code>send_text</code> / <code>send_key</code> /
+      <code>self_id</code> の 5 primitive 呼び出しだけで書かれている
+      (契約: <a href="https://github.com/shurijoc/volante/blob/main/skills/volante/adapters/interface.md" target="_blank" rel="noopener">adapters/interface.md</a>)。
+      実装済みは kitty / tmux。どの adapter を使うかは repo 側ではなく
+      <code>~/.config/volante/config.json</code> (git 管理外、PC ごとの local config) で決まる。
+      判断木・芯のロジックには影響しない — adapter は「どう画面を読み・どう送るか」の実装詳細のみを差し替える。
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">§7</span>陳腐化対策</h2>
+    <div class="stale-note">
+      このページは手書きの静的 HTML で、SKILL.md の判断木・巡回サイクルが変わっても自動追随しない。
+      SKILL.md を変更するリリースでは、CHANGELOG.md のリリースチェック項目「about.html 更新確認」に従い、
+      本ページの記載が現行の SKILL.md と食い違っていないか確認する (2026-07-10 konuma 決定、issue #34)。
+    </div>
+  </section>
+
+  <footer>volante — <a href="https://github.com/shurijoc/volante">shurijoc/volante</a></footer>
+</div>
+</body>
+</html>
