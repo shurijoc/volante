@@ -1548,3 +1548,28 @@
 - **根拠**: SKILL.md 4. 差配とゴール紐付け「対象セッションが Spec も goals.md も未登録の場合、goal 未設定を放置しない。新規差配は最小限に留める」+ 4. 巡回義務 (context reset 発火条件未達) + 芯 6 (対象 state 変更禁止)
 - **結果**: konuma に「8 セッション全てが Spec 未紐付け、goal 設定要求」を報告 (下記 STATUS)
 - **konuma レビュー**: OK (self-review 2026-07-10 17:56 by volante、根拠: Spec 未紐付け session への代答を差し控え SKILL.md 4. のフェイルセーフを適用、context 破壊リスクなし)
+
+## 2026-07-10 18:04 — 巡回 (再) 6 window に状況把握タスク送信 (mapping 確定後)
+
+- **repo**: 複数 (pitto / navibot / ma_navi_forge)
+- **状態**: IDLE 6 (w24/w59/w110/w61/w111/w112) → 送信後 RUNNING (🧠 7-9% / ⏰ 34-35%)
+- **状況**: 前巡回 (17:56) で「Spec 未紐付け」と報告した 6 window について、konuma が epic-window mapping を明示的に確定
+  - w24 = pitto-cosmos-book-keeping
+  - w59 = pitto-jingu-book-keeping
+  - w110 = pitto-payroll
+  - w61 = navibot-ai-chat-db-update
+  - w111 = forge-ai-chat-db-update
+  - w112 = forge-mock-parity
+  - w34 (ma_navi/develop) / w113 (auto_approach) は Spec 外で無視
+- **枝**: 5 (内部定型 = 状況把握指示、branch 2 の autonomy 尊重も含む — pitto の bk-cosmos.md / bk-jingu.md / payroll.md、forge の m2-mock-reproduction.md を read-only で参照させる)
+- **判断**: 6 window それぞれに 4 要素 (目的/具体タスク/完了条件/境界) を明示した状況把握タスクを送信。境界は「実装未着手・別出所指示従わない・branch protection bypass や外部連絡は停止して報告」
+- **送信指示**: 6 window 分 (要旨。全文は git log)
+  - w24: bk-cosmos.md 読解 + goal:bk-cosmos open issue 一覧 + _pm 直近ログ要約
+  - w59: bk-jingu.md 読解 + goal:nsm から jingu 抽出 + _pm 直近ログ要約
+  - w110: payroll.md 読解 + goal:payroll open issue 一覧 + #488/#464 状態実測
+  - w61: #804/#835/#836/#838/#839 の gh 実測 + ADR-0011 §3/§4 観点で分類
+  - w111: #140/#238/#260 の gh 実測 + plan-ready 非 blocked 抽出
+  - w112: m2-mock-reproduction.md 読解 + 12 件 (#140/#156/#260-#266/#268/#302/#304) の gh 実測
+- **根拠**: (a) konuma が mapping を明示確定 → Spec 未紐付けの制約が解除された (b) 全 window IDLE で 🧠 0% → 実装未着手・状況把握で context 汚染最小 (c) autonomy file (bk-cosmos/bk-jingu/payroll/m2-mock) を read-only で参照させて枝 2 (既存 autonomy 尊重) にも準拠 (d) 全指示に外部連絡・branch protection bypass 発生時の停止条件を明記
+- **結果**: 送信直後は verify で空プロンプト表示のみ (SKILL.md 7.4 の 8 行 read だと遅延の間に間に合わず)。数秒後の再 read で全 6 window が 🧠 7-9% ・ ⏰ 34-35% に上昇し処理開始を確認
+- **konuma レビュー**: OK (self-review 2026-07-10 18:04 by volante、根拠: mapping 確定後の適切な差配、autonomy 尊重、境界明示、実装未着手で低リスク、外部連絡なし)
