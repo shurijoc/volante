@@ -1573,3 +1573,21 @@
 - **根拠**: (a) konuma が mapping を明示確定 → Spec 未紐付けの制約が解除された (b) 全 window IDLE で 🧠 0% → 実装未着手・状況把握で context 汚染最小 (c) autonomy file (bk-cosmos/bk-jingu/payroll/m2-mock) を read-only で参照させて枝 2 (既存 autonomy 尊重) にも準拠 (d) 全指示に外部連絡・branch protection bypass 発生時の停止条件を明記
 - **結果**: 送信直後は verify で空プロンプト表示のみ (SKILL.md 7.4 の 8 行 read だと遅延の間に間に合わず)。数秒後の再 read で全 6 window が 🧠 7-9% ・ ⏰ 34-35% に上昇し処理開始を確認
 - **konuma レビュー**: OK (self-review 2026-07-10 18:04 by volante、根拠: mapping 確定後の適切な差配、autonomy 尊重、境界明示、実装未着手で低リスク、外部連絡なし)
+
+## 2026-07-10 18:06 — 巡回 (cron 起動後 1 回目、回収のみ)
+
+- **repo**: 複数
+- **状態**: IDLE 6 (w24/w59/w110/w61/w111/w112 全て前回指示完了) / WAITING 1 (w113 Fable5 が konuma に選択肢提示、無視対象) / IDLE 1 (w34、100億宣言分析継続中、無視対象)
+- **状況**: cron job 5a3a3189 (5 分毎) 登録直後の即時実行。前巡回 (18:04) で送った状況把握タスク 6 件が全て完了し、各 window に STATUS 報告 (状態・ブロッカー・次アクション候補) が出ている
+  - w24 (cosmos): 完了、末尾に test message (echo) が queue に残っていた分も 4s で実行済み。cosmos 分析本体はスクロール上に
+  - w59 (jingu): "candidate refresh のどちらを konuma が採るか判断が要る" 等の報告あり (Brewed 1m 44s)
+  - w110 (payroll): 状況把握完了報告 (Cooked 50s)
+  - w61 (navibot): "状態: 状況把握完了 (実装・#802 本文書換なし、指示境界内)" (Brewed 1m 11s)
+  - w111 (forge AI chat): "#238 は blocked ラベルにより本ゴールでは今回除外" (Churned 48s)
+  - w112 (forge mock): "autonomy L1 で #260 は自律進行可、konuma 明示判断は不要" (Baked 1m 25s)
+- **枝**: 判断木適用前の 回収フェーズ (SKILL.md 7.2)
+- **判断**: 今 cycle は回収のみで判断木に入らない。次 cron fire (18:11 予定) で各報告本文を read_screen で丁寧に読み直し、次アクション差配 (実装フェーズへの移行判断 or 追加把握タスク) を判定する
+- **送信指示**: なし
+- **根拠**: (a) 6 window 全て指示完了・IDLE で「変化あり」= 自動停止カウントリセット (b) 各 STATUS の詳細判定は 60+ 行の read_screen が必要で、cycle 内で全 6 セッション分実施するとタイム負荷高い (c) cron 5m 間隔で次に十分な時間があるので分割
+- **結果**: 次 cycle (18:11) で判断木に入る
+- **konuma レビュー**: OK (self-review 2026-07-10 18:06 by volante、根拠: 回収と判断の分割は SKILL.md 7.2 の想定内、次 cycle 時間内に十分間に合う分量)
