@@ -17,22 +17,126 @@ conversational flow — does that, matching the convention used by dashboard-gen
 
 Usage:
     epic_tool.py add --slug SLUG --repo REPO --goal GOAL --criteria C [--criteria C ...] \
-        --kpi-gid GID --kpi-name NAME --source SOURCE [--epic-label LABEL] [--repo-root PATH]
+        --kpi-gid GID --kpi-name NAME (--source SOURCE | --create-issue) \
+        [--epic-label LABEL] [--dry-run] [--repo-root PATH]
     epic_tool.py remove SLUG [--repo-root PATH]
     epic_tool.py edit SLUG [--repo REPO] [--source SOURCE] [--goal GOAL] \
         [--criteria C [--criteria C ...]] [--kpi-gid GID] [--kpi-name NAME] \
         [--epic-label LABEL] [--clear-epic-label] [--repo-root PATH]
     epic_tool.py list [--repo-root PATH]
+
+`add` requires exactly one of `--source <existing URL/path>` or `--create-issue`:
+  --source     use the given URL/path as the source of truth. If it is a GitHub issue/PR URL,
+               also add the `epic` label to that issue (creating the label on the repo first
+               if it is missing). Non-GitHub sources skip the label step.
+  --create-issue
+               create a new epic issue on `--repo` via `gh issue create` and use its URL as the
+               source. Title = "[epic] <goal>", body = Goal + Acceptance Criteria, label = `epic`.
+  --dry-run    (with --create-issue) print the title/body/label operations that would happen and
+               exit without writing files or hitting GitHub.
 """
 import argparse
 import json
 import re
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
 
 GOALS_HEADER_CELLS = ["repo", "正本", "session (役割名)", "ゴール 1 行", "優先度 (konuma 所有)", "登録日"]
 UNSET_PRIORITY = "未指定"
+
+EPIC_LABEL_NAME = "epic"
+EPIC_LABEL_COLOR = "BFD4F2"
+EPIC_LABEL_DESCRIPTION = "volante-tracked epic (auto-managed by /volante-epic)"
+GITHUB_ISSUE_URL_RE = re.compile(r"^https://github\.com/([^/]+/[^/]+)/(?:issues|pull)/(\d+)")
+
+
+# ===== gh helpers (add --create-issue / --source label sync) =====
+
+def gh_run(args: list[str], check: bool = True) -> subprocess.CompletedProcess:
+    r = subprocess.run(["gh", *args], capture_output=True, text=True)
+    if check and r.returncode != 0:
+        sys.exit(f"error: gh {' '.join(args)} failed (exit {r.returncode}):\n{r.stderr.strip()}")
+    return r
+
+
+def parse_github_issue_url(url: str) -> tuple[str, int] | None:
+    m = GITHUB_ISSUE_URL_RE.match(url or "")
+    if not m:
+        return None
+    return m.group(1), int(m.group(2))
+
+
+def gh_ensure_epic_label(repo: str) -> None:
+    r = gh_run(["label", "list", "--repo", repo, "--json", "name", "--limit", "200"], check=False)
+    if r.returncode != 0:
+        sys.exit(f"error: gh label list --repo {repo} failed:\n{r.stderr.strip()}")
+    names = {x["name"] for x in json.loads(r.stdout or "[]")}
+    if EPIC_LABEL_NAME in names:
+        return
+    r = gh_run([
+        "label", "create", EPIC_LABEL_NAME,
+        "--repo", repo,
+        "--color", EPIC_LABEL_COLOR,
+        "--description", EPIC_LABEL_DESCRIPTION,
+    ], check=False)
+    if r.returncode != 0:
+        sys.exit(f"error: gh label create failed on {repo}:\n{r.stderr.strip()}")
+
+
+def gh_add_epic_label_to_issue(repo: str, number: int) -> str:
+    r = gh_run(["issue", "view", str(number), "--repo", repo, "--json", "labels"], check=False)
+    if r.returncode != 0:
+        sys.exit(f"error: gh issue view {repo}#{number} failed:\n{r.stderr.strip()}")
+    labels = {x["name"] for x in json.loads(r.stdout or "{}").get("labels", [])}
+    if EPIC_LABEL_NAME in labels:
+        return "already"
+    r = gh_run(["issue", "edit", str(number), "--repo", repo, "--add-label", EPIC_LABEL_NAME], check=False)
+    if r.returncode != 0:
+        sys.exit(f"error: gh issue edit {repo}#{number} --add-label failed:\n{r.stderr.strip()}")
+    return "added"
+
+
+def build_epic_issue_title(goal: str) -> str:
+    return f"[epic] {goal}"
+
+
+def build_epic_issue_body(goal: str, criteria: list[str]) -> str:
+    lines = [
+        "## Goal",
+        "",
+        goal,
+        "",
+        "## Acceptance Criteria",
+        "",
+    ]
+    lines.extend(f"- {c}" for c in criteria)
+    lines.extend([
+        "",
+        "---",
+        "_Auto-created by `/volante-epic add --create-issue`. volante が正本として参照する。_",
+    ])
+    return "\n".join(lines)
+
+
+def gh_create_epic_issue(repo: str, goal: str, criteria: list[str]) -> str:
+    gh_ensure_epic_label(repo)
+    title = build_epic_issue_title(goal)
+    body = build_epic_issue_body(goal, criteria)
+    r = gh_run([
+        "issue", "create",
+        "--repo", repo,
+        "--title", title,
+        "--body", body,
+        "--label", EPIC_LABEL_NAME,
+    ], check=False)
+    if r.returncode != 0:
+        sys.exit(f"error: gh issue create --repo {repo} failed:\n{r.stderr.strip()}")
+    for line in reversed(r.stdout.strip().splitlines()):
+        if line.startswith("http"):
+            return line.strip()
+    sys.exit(f"error: could not find issue URL in gh output:\n{r.stdout!r}")
 
 
 # ===== repo root / paths =====
@@ -220,6 +324,24 @@ def update_goals_row_by_slug(root: Path, slug: str, updates: dict[int, str]) -> 
 def cmd_add(args: argparse.Namespace) -> None:
     root = resolve_root(args.repo_root)
     validate_slug(args.slug)
+
+    if bool(args.source) == bool(args.create_issue):
+        sys.exit("error: exactly one of --source or --create-issue must be given")
+    if args.dry_run and not args.create_issue:
+        sys.exit("error: --dry-run currently only applies to --create-issue")
+
+    if args.dry_run:
+        title = build_epic_issue_title(args.goal)
+        body = build_epic_issue_body(args.goal, args.criteria)
+        print(f"[dry-run] would create epic issue on {args.repo}:")
+        print(f"  title: {title}")
+        print(f"  label: {EPIC_LABEL_NAME} (color {EPIC_LABEL_COLOR}, auto-create if missing)")
+        print(f"  body:")
+        for line in body.splitlines():
+            print(f"    {line}")
+        print("[dry-run] no files written, no gh calls made")
+        return
+
     sp = spec_path(root, args.slug)
     if sp.exists():
         sys.exit(f"error: spec already exists: {sp} (use `edit` instead)")
@@ -237,11 +359,23 @@ def cmd_add(args: argparse.Namespace) -> None:
 
     validate_spec(root, spec)  # kpi_sheet_tab required -> rejects here if omitted (issue #23 dependency)
 
+    if args.create_issue:
+        source = gh_create_epic_issue(args.repo, args.goal, args.criteria)
+        print(f"created epic issue: {source}")
+    else:
+        source = args.source
+        parsed = parse_github_issue_url(source)
+        if parsed:
+            gh_repo, number = parsed
+            gh_ensure_epic_label(gh_repo)
+            result = gh_add_epic_label_to_issue(gh_repo, number)
+            print(f"epic label on {gh_repo}#{number}: {result}")
+
     sp.parent.mkdir(parents=True, exist_ok=True)
     sp.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     add_goals_row(root, [
-        args.repo, args.source, args.slug, args.goal, UNSET_PRIORITY, date.today().isoformat(),
+        args.repo, source, args.slug, args.goal, UNSET_PRIORITY, date.today().isoformat(),
     ])
     print(f"added {sp}")
     print(f"added goals.md row for session '{args.slug}'")
@@ -349,7 +483,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_add.add_argument("--criteria", action="append", required=True, help="repeatable; at least one required")
     p_add.add_argument("--kpi-gid", help="PJCI sheet tab gid (required together with --kpi-name, issue #23)")
     p_add.add_argument("--kpi-name", help="PJCI sheet tab name")
-    p_add.add_argument("--source", required=True, help="正本 URL/path (issue, PR, or goal file path)")
+    p_add.add_argument("--source", help="正本 URL/path (issue, PR, or goal file path). Mutually exclusive with --create-issue.")
+    p_add.add_argument("--create-issue", action="store_true", help="create a new epic issue on --repo via gh and use its URL as source. Mutually exclusive with --source.")
+    p_add.add_argument("--dry-run", action="store_true", help="(with --create-issue) print the issue title/body/label ops and exit without writing files or hitting GitHub.")
     p_add.add_argument("--epic-label", help="optional repo-side epic label (issue #22)")
     p_add.set_defaults(func=cmd_add)
 

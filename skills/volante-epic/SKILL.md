@@ -40,26 +40,55 @@ description: >
    - `acceptance_criteria`: 1 件以上、複数可
    - `kpi_sheet_tab`: PJCI シート (`1WyEk-SLza9RjXfoYmoxn6zNwSKfeu4As7QIlUz0zj4U`) の `gid` と `name`。
      **未回答なら add を拒否する** (issue #23 依存。konuma がタブを未作成ならまずそちらを確認してもらう)
-   - `正本 URL`: issue / PR / goal file path
-   - `epic_label` (任意): 対象 repo 側の epic label
+   - `正本` の扱い: 次のいずれか (v0.17.0 で追加、issue TBD):
+     - **既存の issue/PR/goal file がある** → `--source <URL/path>` を渡す。GitHub URL の場合は
+       スクリプトが対象 issue に `epic` label を自動付与する (label が repo に無ければ作成)。
+       非 GitHub の path (`<repo>/.claude/goals/*.md` 等) の場合は label 付与はスキップ
+     - **無い / 新規に立てたい** → `--create-issue` を渡す。スクリプトが `gh issue create` で
+       `title=[epic] <goal>` / `body=Goal + Acceptance Criteria` / `label=epic` の epic issue を対象
+       repo に起票し、その URL を正本として goals.md に書く。**先に必ず `--dry-run` で title/body を
+       konuma に見せて OK を取ってから本実行**する (下記 2 の手順参照)
+   - `epic_label` (任意): 対象 repo 側の epic label (issue #22 の label 進捗集計用。上述の自動付与
+     とは別軸の任意フィールド)
    - `優先度` は聞かない (konuma 専有。goals.md には常に `未指定` を書く)
-2. 実行:
-   ```bash
-   python3 "$VOLANTE_REPO/skills/volante-epic/scripts/epic_tool.py" --repo-root "$VOLANTE_REPO" add \
-     --slug <slug> --repo <repo> --goal "<goal>" \
-     --criteria "<criteria 1>" --criteria "<criteria 2>" \
-     --kpi-gid <gid> --kpi-name "<name>" --source "<正本 URL>" \
-     [--epic-label "<epic_label>"]
-   ```
-   schema 違反 (kpi_sheet_tab 欠落等) やスラグ重複はスクリプトが exit 1 + エラー文で返す。エラーが出たら
-   対話に戻して該当項目を聞き直す (推測で埋めない)
+2. 実行 (source 分岐):
+   - **既存 URL がある場合**:
+     ```bash
+     python3 "$VOLANTE_REPO/skills/volante-epic/scripts/epic_tool.py" --repo-root "$VOLANTE_REPO" add \
+       --slug <slug> --repo <repo> --goal "<goal>" \
+       --criteria "<criteria 1>" --criteria "<criteria 2>" \
+       --kpi-gid <gid> --kpi-name "<name>" --source "<正本 URL>" \
+       [--epic-label "<epic_label>"]
+     ```
+   - **新規 epic issue を起票する場合** (2 段階: dry-run → 本実行):
+     ```bash
+     # 1. dry-run で title/body を konuma に提示
+     python3 "$VOLANTE_REPO/skills/volante-epic/scripts/epic_tool.py" --repo-root "$VOLANTE_REPO" add \
+       --slug <slug> --repo <repo> --goal "<goal>" \
+       --criteria "<criteria 1>" --criteria "<criteria 2>" \
+       --kpi-gid <gid> --kpi-name "<name>" --create-issue --dry-run
+
+     # 2. konuma の OK を得たら --dry-run を外して本実行
+     python3 "$VOLANTE_REPO/skills/volante-epic/scripts/epic_tool.py" --repo-root "$VOLANTE_REPO" add \
+       --slug <slug> --repo <repo> --goal "<goal>" \
+       --criteria "<criteria 1>" --criteria "<criteria 2>" \
+       --kpi-gid <gid> --kpi-name "<name>" --create-issue \
+       [--epic-label "<epic_label>"]
+     ```
+   - `--source` と `--create-issue` は排他 (両方指定 or 両方省略はエラー)
+   - schema 違反 (kpi_sheet_tab 欠落等) やスラグ重複はスクリプトが exit 1 + エラー文で返す。エラーが出たら
+     対話に戻して該当項目を聞き直す (推測で埋めない)
+   - `gh` の失敗 (権限・network 等) はスクリプトが exit 1 + gh の stderr をそのまま返す。konuma に
+     報告して手動対応 (=gh の設定確認 or 手動起票 → `--source` 経路に切り替え) してもらう
 3. 成功したら commit + push:
    ```bash
    git -C "$VOLANTE_REPO" add journal/specs/<slug>.json journal/goals.md
    git -C "$VOLANTE_REPO" commit -m "epic: add <slug>"
    git -C "$VOLANTE_REPO" push
    ```
-4. 報告: 作成した spec の内容 + goals.md 行 + commit sha
+4. 報告: 作成した spec の内容 + goals.md 行 + commit sha。`--create-issue` を使った場合は起票された
+   issue URL も明記する。`--source` 経路で label 付与が発生した場合はその結果 (`added`/`already`)
+   も添える
 
 ## remove
 
@@ -119,3 +148,6 @@ python3 "$VOLANTE_REPO/skills/volante-epic/scripts/epic_tool.py" --repo-root "$V
 - 対象 repo 側 (`.claude/goals/*.md` 等 tracer 資産) への同時反映
 - slug のリネーム (実質 remove + add。必要なら個別に相談)
 - goals.md の手書き旧形式行 (session セルが slug 形式でない行) の編集・削除
+- `--create-issue` で作成する epic issue の body は最低限 (Goal + Acceptance Criteria) のみ。
+  詳細な設計・タスク分解は `/issue` skill が担う (責務分離)。epic issue に後から追記する分には
+  volante-epic 側は関知しない

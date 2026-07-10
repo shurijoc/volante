@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.17.0] - 2026-07-10
+
+- **`/volante-epic add` に `--create-issue` と `--source` label 自動同期を追加**:
+  - `--source <URL>` 経路: URL が GitHub issue/PR のとき、対象 issue に `epic` label を自動付与
+    (label が repo に無ければ `gh label create` で作成、色 `BFD4F2`、description
+    `volante-tracked epic (auto-managed by /volante-epic)`)。冪等 (既に付いていれば `already` と
+    stdout に出すだけ)。非 GitHub の path (`<repo>/.claude/goals/*.md` 等) の場合は label 付与を
+    スキップする
+  - `--create-issue` 経路: `gh issue create --repo <repo> --title "[epic] <goal>" --body <Goal +
+    Acceptance Criteria> --label epic` で新規 epic issue を起票し、その URL を正本として goals.md
+    に書く。label 作成は `--source` 経路と同じ (repo に無ければ作る)。**必ず `--dry-run` で
+    title/body を konuma に見せて OK を取ってから本実行する** (SKILL.md 手順に 2 段階で明記)
+  - `--source` と `--create-issue` は排他 (両方指定 or 両方省略はエラー)。`--dry-run` は
+    `--create-issue` と併用時のみ有効 (title/body/label ops を stdout に出しファイル書き込み・
+    gh 呼び出しをスキップ)
+  - `gh` の失敗 (権限・network 等) は exit 1 + `gh` の stderr をそのまま返す。SKILL.md 側で
+    konuma に手動対応 (gh 設定確認 or 手動起票 → `--source` 経路に切り替え) を促す
+  - 検証: dry-run (`--create-issue --dry-run`) で title/body/label op が期待どおり stdout に出ること /
+    `--source` と `--create-issue` の相互排他エラーが exit 1 で出ることを実測
+- Spec schema・判断木・芯・dashboard には変更なし。既存 `--source` 経路の呼び出し方は互換
+  (label 付与が追加で走るだけ)
+
 ## [0.16.2] - 2026-07-10
 
 - **dashboard に対話的フィルタ + goal 履歴を追加** (issue #29, #30):
