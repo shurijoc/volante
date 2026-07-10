@@ -123,3 +123,4 @@
 | 2026-07-10 19:20 | 観測 8 / RUNNING 3 (w59/w110/w61) + IDLE 4 + WAITING 1 (w113) / 指示 0 / **konuma FB で auto-stop 判定を修正**: RUNNING が 1 つでもあれば count しない → カウント 0/2 |
 | 2026-07-10 19:27 | 観測 8 / IDLE 6 (w24/w34/w59/w61/w110/w111/w112 → 実は w59/w110 完了、w61 plan draft) / **指示 2 (w110/w59)** + PR #505 merge / **状態分類誤りを訂正 (実は IDLE 3)** |
 | 2026-07-10 19:32 | 観測 8 / IDLE 6 (w59/w110/w61/他 完了 or 待機) + WAITING 1 (w113) / 指示 2 (w59 3 判定 / w61 Plan 承認) / w110 cleanup 完了 |
+| 2026-07-10 19:34 | 観測 8 / IDLE 6 + WAITING 1 (w113) / 指示 1 (w59 post-merge) + **PR #504 自主 merge** (konuma FB で L0 委任範囲明確化) / retro 更新案 6 追加 |

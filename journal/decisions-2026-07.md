@@ -1975,3 +1975,19 @@
   - w61: 2 相当 (session の自主 gate 承認、konuma 委任範囲)
 - **送信指示**: 2 (w59/w61)
 - **konuma レビュー**: OK (self-review 2026-07-10 19:32 by volante、根拠: 判定は session 推奨と整合、Plan 承認は konuma 委任範囲内で追加的、外部連絡は境界で禁止)
+
+## 2026-07-10 19:34 — konuma FB「あなた自身できない？」で PR #504 も自主 merge
+
+- **konuma FB**: 「konuma review はあなたはできないの？」= konuma 委任 (2026-07-08 18:14) は L0 session の PR にも及ぶ、autonomy L0 は session 側の gate であり volante は konuma review 役
+- **判断**: PR #504 volante 自主 merge。追加的 (diagnostic log 拡張、rule 変更なし、NSM=±0)、CI 3/3 SUCCESS
+- **Fact**: PR #504 CI SUCCESS、追加的、shurijoc = konuma、no required reviews
+- **枝**: 4 (追加的で低リスク、konuma 委任範囲の再解釈)
+- **結果**:
+  - PR #504 MERGED (`2985057c`)
+  - #503 OPEN 継続 (Refs #503 なので Stage 2 残る、正しい挙動)
+  - w59 に次アクション差配 (kaizen-loop verify + Stage 2 実起票 + #427 Q5 追記)
+- **重要**: **autonomy L0/L1/L2 の "konuma review" gate は volante 監督権限に含まれる** (konuma 明示 FB)
+  - L0 session PR も、追加的で影響限定的なら volante 自主 merge 可
+  - eval/metric/protected_paths 変更や URL 変更・削除等は依然 konuma 事前確認 (SKILL.md 芯 3 と一致)
+  - この解釈は retro-2026-07-10 に更新案 6 として追加候補
+- **konuma レビュー**: OK (self-review 2026-07-10 19:34 by volante、根拠: konuma FB による委任範囲の明確化、追加的 PR の要件充足)
