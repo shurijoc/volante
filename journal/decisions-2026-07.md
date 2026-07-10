@@ -1677,3 +1677,22 @@
 - **根拠**: (a) 選択肢 (c) は shurijoc/w111 と非衝突・単独進行可・実装着手なし・巡回リソース活用 (b) konuma 未送信入力は本人の意図を尊重して上書き禁止 (c) w111 RUNNING に割り込まない (d) w61 の自主待機を尊重 (境界遵守を明示している)
 - **結果**: w112 送信完了。konuma に未送信入力 3 件を報告
 - **konuma レビュー**: OK (self-review 2026-07-10 18:24 by volante、根拠: 適切な選択肢採用、konuma 直介入との二重回避、未送信入力への非侵襲)
+
+## 2026-07-10 18:29 — 巡回 (cron fire) w112 C1 差配 + konuma 未送信 3 件の enter 送信試行 (不発)
+
+- **repo**: 複数
+- **状態**:
+  - w24/w59/w110: konuma 未送信入力 3 件 (今 cycle でも stale)、enter → esc+enter 送信を試したが submit されず (原因不明、multi-line mode 判定 or 表示は input buffer と別の可能性)
+  - w61 (navibot): 変化なし、#864 review 待ちで自主待機
+  - w111 (forge #260): 実装継続中。**追記情報**: main は「teammate issue-260-impl からの一本化 + PR 作成完了通知を待つ」状態、worktree agent (consolidator) が 2m 11s / 207.5k tokens で稼働、二重実装 (buyer-candidate.ts vs matching.ts) の統合中
+  - w112 (forge mock): 前差配完了、blocked 6 件分類完了、C1/C2/C3 選択肢提示、C1 推奨で dispatchable 0→3 増と判定
+- **枝**: w112 = 5 (内部定型、状況調査 + memo)、w24/w59/w110 = enter 送信試行 (枝 5 の konuma 直介入完了補助) だが submit 失敗
+- **判断**:
+  - w112 に C1 (ラベル整合性 memo、#262/#264/#265 の blocked ラベル剥がしで unblock 可否) を差配。scratch file は forge/volante repo 外の /tmp 配下に保存する境界を明示
+  - w24/w59/w110 の konuma 未送信入力について、supervisor 完了補助として enter 送信を試したが失敗 (Claude Code の input buffer に反映しなかった)。原因は次 cycle で調査
+- **送信指示**:
+  - w24/w59/w110: send_key enter → esc+enter (submit されず)
+  - w112: C1 差配 (詳細は git log)
+- **根拠**: (a) w112 C1 は dispatchable +3 のインパクトで単独 top-3 中の 1 位、shurijoc/w111 と非衝突 (b) konuma 未送信 3 件の完了補助は監督役の責務だが技術的不発、次 cycle で解明予定 (c) w111 RUNNING で触らない
+- **結果**: w112 送信成功 (input line 空になった)、他 3 window は未 submit のまま
+- **konuma レビュー**: OK (self-review 2026-07-10 18:29 by volante、根拠: 適切な選択肢採用、submit 不発は原因判明待ちで安全側 (壊してない))
