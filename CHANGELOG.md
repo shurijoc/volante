@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.17.1] - 2026-07-10
+
+- **dashboard: 生成時埋め込みをやめ `journal/dashboard-data.js` 分離** (issue #31、案 A):
+  - `dashboard-generate.py` を「HTML テンプレート出力」(`render_template`) と「データ書き出し」
+    (`build_payload` + `render_data_js`) に分離し、`--mode {full,template,data}` を追加 (デフォルト
+    `full` = 両方書く、従来どおりの初回セットアップ・手動フル再生成用)。`journal/dashboard.html` は
+    `<script src="dashboard-data.js">` で `window.VOLANTE_DASHBOARD_DATA` を読み込む形に変更。
+    `file://` は `fetch()` を CORS でブロックするが `<script src>` の読み込みはブロックされないため
+    (実測: headless Chrome `--dump-dom` で `file://` 越しに 8 specs 全件・PM table・
+    generated-at/decisions-limit/patrols-limit の動的差し込みを確認、console error なし)
+  - `generated_at` / `decisions_limit` / `patrols_limit` は HTML に焼き込まず `dashboard-data.js` 側の
+    値を JS で毎回反映する形に変更 (テンプレート生成時刻に固定されないようにするため)
+  - **SKILL.md 7.5 (記録) に「dashboard データ書き出し」ステップを追加**: 巡回ごとに
+    `dashboard-generate.py --mode data` を実行し `dashboard-data.js` のみ再生成する。
+    `--mode template` (HTML 本体) は TEMPLATE 変更時のみの手動実行に限定し、通常巡回では走らせない。
+    これにより巡回の journal commit で HTML 全体の diff が出なくなる (形骸化対策の本体)
+  - GitHub API 呼び出し (open issue count / PR 一覧) を毎巡回実行することを許容 (issue #31 不明点、
+    konuma 決定)。完全なリアルタイム化ではなく「巡回ごとに必ず最新化される」が到達点 (issue 本文の
+    設計どおり)
+  - DB / サーバー / hosting は増えていない (`journal/dashboard-data.js` も git 管理下のローカル
+    ファイル。CLAUDE.md 設計原則 issue #10 の検収項目)
+  - 判断木・芯には変更なし (7.5 の運用手順追加のみ)
+
 ## [0.17.0] - 2026-07-10
 
 - **`/volante-epic add` に `--create-issue` と `--source` label 自動同期を追加**:

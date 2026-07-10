@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a self-contained HTML dashboard from volante journal state.
+"""Generate the volante HTML dashboard from journal state (template + data split, issue #31).
 
 Reads:
   - journal/specs/*.json         (Session Spec v1)
@@ -8,15 +8,21 @@ Reads:
   - journal/patrols.md            (last few rows)
   - journal/retro-*.md           (index + truncated body, issue #27)
 
-Outputs:
-  - journal/dashboard.html       (self-contained, JSON embedded via <script>)
+Outputs (issue #31: split so patrol cycles only touch the data file, not the HTML):
+  - journal/dashboard.html       (HTML template skeleton, `--mode template`. Rarely changes —
+                                   only when TEMPLATE itself is edited.)
+  - journal/dashboard-data.js    (`window.VOLANTE_DASHBOARD_DATA = {...}`, `--mode data`.
+                                   Regenerated every patrol cycle per SKILL.md 7.5.)
+  `--mode full` (default) writes both — used for first-time init or a full manual refresh.
 
 Design principle (CLAUDE.md 設計原則, SKILL.md 芯 9):
-  DB / サーバー不要、HTML + JSON でローカル完結。The output is a single .html
-  file with embedded JSON. Open with `open journal/dashboard.html` — no server.
+  DB / サーバー不要、HTML + JSON でローカル完結。`file://` blocks `fetch()` via CORS, but a
+  `<script src="dashboard-data.js">` global-assignment file loads fine under `file://` — that's
+  why data is a .js file, not a plain .json. Open with `open journal/dashboard.html` — no server.
 
-Status: v0.16.1 — 監督 AI 判定の詳細展開 (#26)、retro 本文の折りたたみ表示 (#27)、
-前月以前の decisions ログの横断表示 (#28) を実装。
+Status: v0.17.1 — 生成時埋め込みをやめ dashboard-data.js 分離 (#31)。v0.16.1 で
+監督 AI 判定の詳細展開 (#26)、retro 本文の折りたたみ表示 (#27)、
+前月以前の decisions ログの横断表示 (#28) を実装済み。
 """
 import argparse
 import json
@@ -597,7 +603,7 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="wrap">
   <header>
     <h1>volante dashboard</h1>
-    <span class="meta">__REPO_PATH__ · generated __GENERATED_AT__ (issue #17 MVP)</span>
+    <span class="meta">__REPO_PATH__ · generated <span id="generated-at">(dashboard-data.js 未読込)</span> (issue #17 MVP, data split #31)</span>
   </header>
 
   <div class="tabs">
@@ -652,12 +658,12 @@ TEMPLATE = """<!DOCTYPE html>
       </section>
 
       <section>
-        <h2>Recent decisions (直近 __DECISIONS_LIMIT__ 件中 <span id="decisions-count">0</span> 件表示)</h2>
+        <h2>Recent decisions (直近 <span id="decisions-limit">?</span> 件中 <span id="decisions-count">0</span> 件表示)</h2>
         <div id="decisions" class="timeline"></div>
       </section>
 
       <section>
-        <h2>Recent patrols (直近 __PATROLS_LIMIT__ 行)</h2>
+        <h2>Recent patrols (直近 <span id="patrols-limit">?</span> 行)</h2>
         <table id="patrols"><thead><tr><th>日時</th><th>観測</th><th>IDLE</th><th>RUNNING</th><th>WAITING</th><th>指示</th><th>メモ</th></tr></thead><tbody></tbody></table>
       </section>
 
@@ -671,9 +677,21 @@ TEMPLATE = """<!DOCTYPE html>
   </div>
 </div>
 
-<script id="volante-data" type="application/json">__DATA_JSON__</script>
+<script src="dashboard-data.js"></script>
 <script>
-  const data = JSON.parse(document.getElementById('volante-data').textContent);
+  // issue #31: data now comes from journal/dashboard-data.js (`window.VOLANTE_DASHBOARD_DATA`),
+  // written by `dashboard-generate.py --mode data` every patrol cycle (SKILL.md 7.5). The template
+  // itself (this file) is regenerated far less often (`--mode template`). Fall back to an empty
+  // shape if the data file hasn't been generated yet (or 404s under some non-`open` serving setup)
+  // so the page still renders instead of throwing.
+  const data = window.VOLANTE_DASHBOARD_DATA || {
+    specs: [], decisions: [], decisions_all: [], patrols: [], retros: [], goals: [],
+    spec_history: {}, generated_at: '', decisions_limit: null, patrols_limit: null,
+  };
+  document.getElementById('generated-at').textContent =
+    data.generated_at || '(dashboard-data.js 未生成。skills/volante/scripts/dashboard-generate.py --mode data を実行)';
+  document.getElementById('decisions-limit').textContent = data.decisions_limit ?? '?';
+  document.getElementById('patrols-limit').textContent = data.patrols_limit ?? '?';
 
   // issue #26: fields shown inside the collapsible "詳細" panel for 監督 AI judgement events.
   // Declared early (before the tab-construction loop below, which calls renderEvent via
@@ -1339,20 +1357,28 @@ TEMPLATE = """<!DOCTYPE html>
 """
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--repo-root", type=Path, help="path to volante repo root")
-    ap.add_argument("--out", type=Path, help="output HTML path (default: <repo_root>/journal/dashboard.html)")
-    ap.add_argument("--decisions-limit", type=int, default=20)
-    ap.add_argument("--patrols-limit", type=int, default=10)
-    ap.add_argument("--now", type=str, help="fixed ISO-8601 timestamp for reproducible output (default: now)")
-    ap.add_argument("--no-gh", action="store_true", help="skip gh queries (progress will show '進捗未定義')")
-    args = ap.parse_args()
+def render_template(root: Path) -> str:
+    """issue #31: HTML skeleton only — no data embedded. Loads journal/dashboard-data.js via
+    <script src> at render time. Regenerate with `--mode template` only when TEMPLATE changes."""
+    return TEMPLATE.replace("__REPO_PATH__", escape(str(root)))
 
-    root = args.repo_root or find_repo_root(Path.cwd())
-    if root is None:
-        sys.exit("error: could not locate volante repo root (need journal/ + .claude-plugin/)")
 
+def render_data_js(payload: dict) -> str:
+    """issue #31: serialize payload as a `window.VOLANTE_DASHBOARD_DATA = {...}` assignment so it
+    loads under `file://` (plain JSON `fetch()` is CORS-blocked there; a <script src> is not)."""
+    payload_json = json.dumps(payload, ensure_ascii=False)
+    return (
+        "// Auto-generated by dashboard-generate.py --mode data. Regenerated every patrol cycle\n"
+        "// (SKILL.md 7.5) — do not hand-edit, changes will be overwritten.\n"
+        "window.VOLANTE_DASHBOARD_DATA = " + payload_json.replace("</", "<\\/") + ";\n"
+    )
+
+
+def build_payload(root: Path, args: argparse.Namespace) -> dict:
+    """Compute the full dashboard payload (specs + gh-fetched progress/PRs/issues + decisions +
+    patrols + retros). This is the only part of dashboard generation that hits `gh` / git log, so
+    it's the part that needs to re-run every patrol cycle (issue #31); rendering the HTML template
+    does not."""
     journal = root / "journal"
     specs = load_specs(journal / "specs")
     all_decisions = load_recent_decisions(journal, 0)
@@ -1445,22 +1471,52 @@ def main() -> None:
             "decisions_count": len(matches),
         }
 
-    payload = {"specs": specs, "decisions": decisions, "decisions_all": decisions_all,
-               "patrols": patrols, "retros": retros, "goals": goals_rows,
-               "spec_history": spec_history}
-    payload_json = json.dumps(payload, ensure_ascii=False)
     now_str = args.now or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-    html = (TEMPLATE
-            .replace("__REPO_PATH__", escape(str(root)))
-            .replace("__GENERATED_AT__", escape(now_str))
-            .replace("__DECISIONS_LIMIT__", str(args.decisions_limit))
-            .replace("__PATROLS_LIMIT__", str(args.patrols_limit))
-            .replace("__DATA_JSON__", payload_json.replace("</", "<\\/")))
+    return {"specs": specs, "decisions": decisions, "decisions_all": decisions_all,
+            "patrols": patrols, "retros": retros, "goals": goals_rows,
+            "spec_history": spec_history, "generated_at": now_str,
+            "decisions_limit": args.decisions_limit, "patrols_limit": args.patrols_limit}
 
-    out = args.out or (journal / "dashboard.html")
-    out.write_text(html, encoding="utf-8")
-    print(f"wrote {out} ({len(html)} bytes, {len(specs)} specs, {len(decisions)} decisions)")
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--repo-root", type=Path, help="path to volante repo root")
+    ap.add_argument("--out", type=Path,
+                     help="template HTML output path (default: <repo_root>/journal/dashboard.html)")
+    ap.add_argument("--data-out", type=Path,
+                     help="data JS output path (default: <repo_root>/journal/dashboard-data.js)")
+    ap.add_argument("--mode", choices=["full", "template", "data"], default="full",
+                     help="full: write template+data (default; first-time init / manual full "
+                          "refresh). template: write journal/dashboard.html skeleton only (rare — "
+                          "only when TEMPLATE changes). data: write journal/dashboard-data.js only "
+                          "(every patrol cycle, SKILL.md 7.5, issue #31).")
+    ap.add_argument("--decisions-limit", type=int, default=20)
+    ap.add_argument("--patrols-limit", type=int, default=10)
+    ap.add_argument("--now", type=str, help="fixed ISO-8601 timestamp for reproducible output (default: now)")
+    ap.add_argument("--no-gh", action="store_true", help="skip gh queries (progress will show '進捗未定義')")
+    args = ap.parse_args()
+
+    root = args.repo_root or find_repo_root(Path.cwd())
+    if root is None:
+        sys.exit("error: could not locate volante repo root (need journal/ + .claude-plugin/)")
+
+    journal = root / "journal"
+    out_html = args.out or (journal / "dashboard.html")
+    out_data = args.data_out or (journal / "dashboard-data.js")
+
+    wrote = []
+    if args.mode in ("full", "template"):
+        html = render_template(root)
+        out_html.write_text(html, encoding="utf-8")
+        wrote.append(f"{out_html} ({len(html)} bytes, template)")
+    if args.mode in ("full", "data"):
+        payload = build_payload(root, args)
+        data_js = render_data_js(payload)
+        out_data.write_text(data_js, encoding="utf-8")
+        wrote.append(f"{out_data} ({len(payload['specs'])} specs, {len(payload['decisions'])} decisions)")
+
+    print("wrote " + "; ".join(wrote))
 
 
 if __name__ == "__main__":

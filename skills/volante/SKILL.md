@@ -452,6 +452,16 @@ sleep 0.3
   - 記入フォーマット: `konuma レビュー: OK/NG (self-review YYYY-MM-DD HH:MM by volante、根拠: ...)`
 - 巡回自体の記録を `$VOLANTE_REPO/journal/patrols.md` に 1 行追記:
   `| YYYY-MM-DD HH:MM | 観測 N / WAITING n / 指示 m / 確認待ち k |`
+- **dashboard データ書き出し** (issue #31、上記の decisions/patrols 追記の後に実行): dashboard.html
+  (HTML テンプレート) はそのままで、`journal/dashboard-data.js` だけを毎巡回再生成する。GitHub API
+  呼び出し (open issue count / PR 一覧) を毎巡回行うのは許容 (issue #31 konuma 決定)。テンプレート自体は
+  `skills/volante/scripts/dashboard-generate.py` の `TEMPLATE` を変更したときだけ `--mode template` (or
+  `--mode full`) で再生成する — 通常の巡回では実行しない:
+
+```bash
+python3 "$VOLANTE_REPO/skills/volante/scripts/dashboard-generate.py" --mode data
+```
+
 - 巡回末に journal を commit する:
 
 ```bash
