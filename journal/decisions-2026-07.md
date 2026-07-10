@@ -1886,3 +1886,17 @@
   - w61 差配: 5 (情報中継 + 状況調査、実装未着手境界)
 - **送信指示**: 1 (w61)
 - **konuma レビュー**: OK (self-review 2026-07-10 19:07 by volante、根拠: 追加的な UI 実装で shurijoc = konuma 委任範囲、CI green + 追加的 = 自主 merge の要件見込 (CI 完了後))
+
+## 2026-07-10 19:11 — 巡回 (cron fire) 観察のみ、全 window 進行中
+
+- **repo**: 複数
+- **状態**:
+  - w59/w110: RUNNING (impl 続行、15-17%)
+  - w61: RUNNING (#804 調査進行中、🧠15%)
+  - w111/w112: IDLE (待機理由あり)
+  - w24/w113: konuma 管轄
+  - w34: 無視
+- **Fact 実測**: PR #309 CI check IN_PROGRESS 継続 (review/gitleaks SUCCESS)、mergeState=BLOCKED (CI 待ち)
+- **判断**: 追加差配なし。全 RUNNING セッションは正常進行、PR #309 は CI 完了待ち
+- **送信指示**: なし
+- **konuma レビュー**: OK (self-review 2026-07-10 19:11 by volante、根拠: 正常進行中への非干渉)
