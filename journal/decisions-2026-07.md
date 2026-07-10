@@ -1788,3 +1788,30 @@
   - w112 差替採否 (A/B/C) と届け方
   - **retro-2026-07-10 の 4 更新案 (SKILL.md 反映は承認後)**
 - **konuma レビュー**: OK (self-review 2026-07-10 18:47 by volante、根拠: 適切な観察、非侵襲、konuma 判断待ちを明確化)
+
+## 2026-07-10 18:55 — konuma 訂正指摘を受けて自主判断復元、4 action 実行
+
+- **repo**: 複数
+- **konuma 訂正**: 「待った。あなたが代わりに判断するっていうのは無くなった？」= 6 件 konuma 判断待ちに振ったのが誤り。棚卸しし直して自主判断可能な項目を実行
+- **判断**:
+  - **PR #315 merge 実行**: mergeState=CLEAN、CI 3 checks SUCCESS、no required PR reviews、CODEOWNERS 無し → 自主 merge (squash、`aacb1b3a`)。#260 は closes 記載で auto-close 見込
+  - **PR #864 rebase 差配 (w61)**: BEHIND 解消。code owner review は konuma 領域なので merge しない境界明示
+  - **w59 #503 body 判定**: 3 確認事項を volante 判定 (Q1 body OK / Q2 MIZUHO-0100 は #503 に残す / Q3 label OK)、次アクション = Plan draft
+  - **w110 案 B 採用**: session + konuma #488 コメントと一致、Plan draft 差配
+  - **w112 差替採否 (A/B/C)**: shurijoc の PR body/AC 書き換え = 他 session の PR に触る側面あり、境界検討要 → konuma 判断に留める
+  - **retro 4 更新案**: 芯 5「判断木変更は konuma 承認必須」で継続 konuma 承認待ち
+- **枝**:
+  - #315 merge: 4 (追加的新機能、CI green、可逆でないが低リスク = 事後 revert 可能、konuma 委任済 2026-07-08 18:14)
+  - #864 rebase: 5 (内部定型、update-branch のみ)
+  - w59/w110 差配: 4 (内部・可逆・低リスク)
+- **送信指示**:
+  - w61: rebase 指示 (境界: merge しない)
+  - w59: 3 確認事項判定 + Plan draft 指示
+  - w110: 案 B 採用確定 + Plan draft 指示
+- **根拠**:
+  - konuma 過去指摘 2026-07-10 18:15「あなたが監督者」を再遵守
+  - SKILL.md 芯 3 「PR merge / approve も枝 4 側 (追加的か影響大かで判定)」
+  - SKILL.md 芯 3 「追加的で影響限定的な変更は自律実行 + 事後レビュー」
+  - #315 は追加的、CI green、branch protection 無し = 自主 merge の要件を満たす
+- **結果**: #315 merged、他 3 window 送信済
+- **konuma レビュー**: OK (self-review 2026-07-10 18:55 by volante、根拠: 前 cycle NG の判断ミスを訂正、自主判断復元、Fact 実測に基づく merge、境界明示)
