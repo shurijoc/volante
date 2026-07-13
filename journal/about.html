@@ -23,7 +23,7 @@
   body { margin: 0; padding: 24px 16px; color: var(--text); background: var(--bg);
          font-family: var(--sans); line-height: 1.6; font-size: 14px;
          -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 900px; margin: 0 auto; }
+  .wrap { max-width: 960px; margin: 0 auto; }
   header { padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
   header h1 { margin: 0 0 4px; font-size: 20px; }
   header .meta { color: var(--text-mute); font-family: var(--mono); font-size: 12px; }
@@ -36,8 +36,8 @@
   section > h2 .num { color: var(--accent); font-family: var(--mono); margin-right: 6px; }
   p { margin: 0 0 10px; }
   p:last-child { margin-bottom: 0; }
-  ul, ol { margin: 6px 0 10px; padding-left: 22px; }
-  ul:last-child, ol:last-child { margin-bottom: 0; }
+  ul { margin: 6px 0 10px; padding-left: 22px; }
+  ul:last-child { margin-bottom: 0; }
   li { margin-bottom: 4px; }
   code { font-family: var(--mono); font-size: 12.5px; background: var(--accent-bg); color: var(--accent);
          padding: 1px 5px; border-radius: 4px; }
@@ -47,29 +47,61 @@
   table th { font-weight: 600; color: var(--text-mute); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
   table td code { background: none; color: var(--text); padding: 0; font-weight: 600; }
 
-  /* データフロー図 (CSS のみ、外部 diagram library 不使用) */
-  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 12px 0 0; }
-  .flow-col { display: flex; flex-direction: column; gap: 6px; }
-  .flow-box { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px;
-              background: var(--bg); font-family: var(--mono); font-size: 12px; white-space: nowrap; }
-  .flow-box.script { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); font-weight: 700; }
-  .flow-box.output { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); font-weight: 700; }
-  .flow-arrow { font-size: 20px; color: var(--text-mute); padding: 0 2px; }
-  @media (max-width: 640px) {
-    .flow { flex-direction: column; align-items: flex-start; }
-    .flow-arrow { transform: rotate(90deg); }
-  }
-
-  .branch-list { display: flex; flex-direction: column; gap: 8px; }
-  .branch-row { display: flex; gap: 10px; align-items: baseline; border-left: 3px solid var(--border);
-                padding: 4px 10px; }
-  .branch-row .n { font-family: var(--mono); font-weight: 700; color: var(--accent); min-width: 20px; }
-  .branch-row .body { font-size: 13px; }
-  .branch-row .body .label { font-weight: 600; }
-
   .core-note { background: var(--warn-bg); border: 1px solid var(--warn); border-radius: 8px;
                padding: 10px 14px; font-size: 13px; color: var(--text); }
   .core-note b { color: var(--warn); }
+
+  /* ===== 図の共通部品 (CSS のみ、JS・外部リソース不使用。色は CSS 変数で light/dark 両対応) ===== */
+  .diagram { overflow-x: auto; padding: 4px 0; }
+  .arrow-h { font-size: 18px; color: var(--text-mute); padding: 0 2px; align-self: center; flex: none; }
+  .arrow-v { color: var(--text-mute); font-size: 11.5px; padding: 2px 0 2px 26px; }
+
+  /* §2 PDCA ステップチェーン */
+  .pdca-flow { display: flex; align-items: stretch; gap: 6px; min-width: max-content; }
+  .pdca-group { display: flex; flex-direction: column; border: 1px solid var(--border);
+                border-radius: 10px; overflow: hidden; background: var(--bg); width: 190px; flex: none; }
+  .pdca-band { background: var(--accent-bg); color: var(--accent); font-family: var(--mono);
+               font-weight: 700; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+               text-align: center; padding: 4px 8px; border-bottom: 1px solid var(--border); }
+  .pdca-group.act .pdca-band { background: var(--warn-bg); color: var(--warn); }
+  .pdca-steps { display: flex; flex-direction: column; gap: 6px; padding: 8px; flex: 1; }
+  .step { border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 6px 9px; }
+  .step .sid { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 700; margin-right: 4px; }
+  .step .sname { font-size: 12.5px; font-weight: 600; }
+  .step .sdesc { font-size: 11.5px; color: var(--text-mute); line-height: 1.5; margin-top: 2px; }
+  .pdca-loop { color: var(--text-mute); font-size: 11.5px; margin-top: 6px; font-family: var(--mono); }
+
+  /* §3 データフロー */
+  .flow { display: flex; align-items: center; gap: 10px; min-width: max-content; }
+  .flow-col { display: flex; flex-direction: column; gap: 8px; }
+  .flow-group { border: 1px dashed var(--border); border-radius: 10px; padding: 8px;
+                display: flex; flex-direction: column; gap: 6px; }
+  .flow-group-label { font-size: 10.5px; color: var(--text-mute); text-transform: uppercase;
+                      letter-spacing: .06em; font-weight: 700; }
+  .flow-box { border: 1px solid var(--border); border-radius: 8px; padding: 7px 11px;
+              background: var(--bg); font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  .flow-box .sub { display: block; font-family: var(--sans); font-size: 10.5px; color: var(--text-mute); }
+  .flow-box.script { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .flow-box.script .sub { color: var(--accent); opacity: .8; }
+  .flow-box.output { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); font-weight: 700; }
+
+  /* §4 判断木フローチャート */
+  .tree { display: flex; flex-direction: column; min-width: max-content; }
+  .tree-start { border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+                padding: 6px 11px; font-size: 12.5px; font-weight: 600; width: max-content; }
+  .tree-row { display: flex; align-items: center; gap: 8px; }
+  .tree-cond { border: 1px solid var(--accent); background: var(--accent-bg); border-radius: 8px;
+               padding: 6px 11px; font-size: 12.5px; width: 330px; flex: none; }
+  .tree-cond .n { font-family: var(--mono); font-weight: 700; color: var(--accent); margin-right: 6px; }
+  .tree-match { color: var(--text-mute); font-size: 11.5px; white-space: nowrap; flex: none; }
+  .tree-action { border-radius: 8px; padding: 6px 11px; font-size: 12.5px; max-width: 420px; }
+  .tree-action.human { border: 1px solid var(--warn); background: var(--warn-bg); }
+  .tree-action.auto { border: 1px solid var(--ok); background: var(--ok-bg); }
+  .tree-legend { display: flex; gap: 14px; margin-top: 10px; font-size: 11.5px; color: var(--text-mute); }
+  .tree-legend .chip { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+                       margin-right: 4px; }
+  .tree-legend .chip.human { background: var(--warn-bg); border: 1px solid var(--warn); }
+  .tree-legend .chip.auto { background: var(--ok-bg); border: 1px solid var(--ok); }
 
   footer { color: var(--text-mute); font-size: 11.5px; text-align: center; margin-top: 24px; }
 </style>
@@ -97,68 +129,125 @@
 
   <section>
     <h2><span class="num">§2</span>巡回サイクル (Plan / Do / Check / Act)</h2>
-    <table>
-      <thead><tr><th>PDCA</th><th>ステップ</th><th>1 巡回で起きること</th></tr></thead>
-      <tbody>
-        <tr><td rowspan="2">Plan</td><td>7.1 準備</td>
-            <td>adapter 選択 (kitty/tmux)、<code>journal/specs/</code> と <code>goals.md</code> を読み込む</td></tr>
-        <tr><td>7.2 観測・分類</td>
-            <td>全セッションの画面を読み RUNNING / WAITING / IDLE / STUCK / NOT_CLAUDE に分類</td></tr>
-        <tr><td>Do</td><td>7.3 適用</td>
-            <td>WAITING / IDLE / STUCK ごとに判断木 (§4) で対応を決め、adapter 経由で指示を送信</td></tr>
-        <tr><td rowspan="2">Check</td><td>7.4 検証</td>
-            <td>送信結果を画面で確認 (自己申告を信頼しない)</td></tr>
-        <tr><td>7.5 記録</td>
-            <td>1 判断 1 エントリを <code>decisions-YYYY-MM.{md,jsonl}</code> に、巡回サマリ 1 行を
-                <code>patrols.md</code> に追記。<code>dashboard-data.js</code> を再生成し journal を commit</td></tr>
-        <tr><td>Act</td><td>7.6 振り返り</td>
-            <td>判断 10 件以上溜まったら発火。更新案を <code>retro-YYYY-MM-DD.md</code> に書き、
-                <b>konuma 承認後にのみ</b> SKILL.md へ反映</td></tr>
-      </tbody>
-    </table>
+    <div class="diagram">
+      <div class="pdca-flow">
+        <div class="pdca-group">
+          <div class="pdca-band">Plan</div>
+          <div class="pdca-steps">
+            <div class="step"><span class="sid">7.1</span><span class="sname">準備</span>
+              <div class="sdesc">adapter 選択 (kitty/tmux)、specs/ と goals.md を読込</div></div>
+            <div class="step"><span class="sid">7.2</span><span class="sname">観測・分類</span>
+              <div class="sdesc">全セッションの画面を RUNNING / WAITING / IDLE / STUCK / NOT_CLAUDE に分類</div></div>
+          </div>
+        </div>
+        <div class="arrow-h">→</div>
+        <div class="pdca-group">
+          <div class="pdca-band">Do</div>
+          <div class="pdca-steps">
+            <div class="step"><span class="sid">7.3</span><span class="sname">適用</span>
+              <div class="sdesc">WAITING / IDLE / STUCK ごとに判断木 (§4) で対応を決め、adapter 経由で指示を送信</div></div>
+          </div>
+        </div>
+        <div class="arrow-h">→</div>
+        <div class="pdca-group">
+          <div class="pdca-band">Check</div>
+          <div class="pdca-steps">
+            <div class="step"><span class="sid">7.4</span><span class="sname">検証</span>
+              <div class="sdesc">送信結果を画面で確認 (自己申告を信頼しない)</div></div>
+            <div class="step"><span class="sid">7.5</span><span class="sname">記録</span>
+              <div class="sdesc">decisions / patrols 追記、dashboard-data.js 再生成、journal commit</div></div>
+          </div>
+        </div>
+        <div class="arrow-h">→</div>
+        <div class="pdca-group act">
+          <div class="pdca-band">Act</div>
+          <div class="pdca-steps">
+            <div class="step"><span class="sid">7.6</span><span class="sname">振り返り</span>
+              <div class="sdesc">判断 10 件以上で発火。更新案を retro に書き、konuma 承認後にのみ SKILL.md へ反映</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="pdca-loop">↻ 7.6 のあとは次巡回の 7.1 へ (1 起動 = 1 巡回、定期実行は /loop で外側から回す)</div>
+    </div>
   </section>
 
   <section>
     <h2><span class="num">§3</span>データフロー</h2>
+    <div class="diagram">
+      <div class="flow">
+        <div class="flow-col">
+          <div class="flow-group">
+            <div class="flow-group-label">journal/ (git 管理下)</div>
+            <div class="flow-box">specs/*.json</div>
+            <div class="flow-box">decisions-*.jsonl</div>
+            <div class="flow-box">goals.md</div>
+            <div class="flow-box">patrols.md</div>
+            <div class="flow-box">retro-*.md</div>
+          </div>
+          <div class="flow-group">
+            <div class="flow-group-label">実行時取得</div>
+            <div class="flow-box">GitHub API (gh)<span class="sub">PR / issue / epic 進捗</span></div>
+          </div>
+        </div>
+        <div class="arrow-h">→</div>
+        <div class="flow-box script">dashboard-generate.py<span class="sub">--mode data (巡回 7.5 で毎回)</span></div>
+        <div class="arrow-h">→</div>
+        <div class="flow-box output">dashboard-data.js</div>
+        <div class="arrow-h">→</div>
+        <div class="flow-box">dashboard.html<span class="sub">&lt;script src&gt; で読込、ブラウザで開くだけ</span></div>
+      </div>
+    </div>
     <ul>
       <li>永続化はすべて git 管理下のローカルファイル。DB / サーバーを持たない (issue #10)</li>
-      <li>巡回ごとに <code>dashboard-generate.py --mode data</code> が journal を読んで
-          <code>dashboard-data.js</code> を書き出し、<code>dashboard.html</code> が
-          <code>&lt;script src&gt;</code> でそれを読む。ブラウザで開くだけで動く (issue #31)</li>
-      <li>volante が書き込むのは journal 側のみ。対象セッションの repo には何も書かない
-          (tracer goal file 等は read-only)</li>
+      <li>volante が書き込むのは journal 側のみ。対象セッションの repo には何も書かない (tracer goal file 等は read-only)</li>
     </ul>
-    <div class="flow">
-      <div class="flow-col">
-        <div class="flow-box">journal/specs/*.json</div>
-        <div class="flow-box">journal/decisions-*.jsonl</div>
-        <div class="flow-box">journal/goals.md</div>
-        <div class="flow-box">journal/patrols.md</div>
-        <div class="flow-box">journal/retro-*.md</div>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box script">dashboard-generate.py --mode data</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box output">dashboard-data.js</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">dashboard.html (script src で読込)</div>
-    </div>
   </section>
 
   <section>
     <h2><span class="num">§4</span>判断木の概要 (枝 1〜5)</h2>
-    <p>
-      上から順に評価し最初にマッチした枝で対応。全文は
-      <a href="https://github.com/shurijoc/volante/blob/main/skills/volante/SKILL.md" target="_blank" rel="noopener">SKILL.md「4. checklist」</a>
+    <div class="diagram">
+      <div class="tree">
+        <div class="tree-start">WAITING / IDLE / STUCK のセッション</div>
+        <div class="arrow-v">↓ 上から順に評価</div>
+        <div class="tree-row">
+          <div class="tree-cond"><span class="n">枝1</span>外部連絡 or 影響大の本番変更 (Slack/メール/社外 PR、URL 変更・削除・force-push 等)</div>
+          <div class="tree-match">該当 →</div>
+          <div class="tree-action human">konuma に事前確認 (自律実行させない)</div>
+        </div>
+        <div class="arrow-v">↓ 非該当</div>
+        <div class="tree-row">
+          <div class="tree-cond"><span class="n">枝2</span>既存 autonomy がある (tracer goal file の L0/L1/L2 等)</div>
+          <div class="tree-match">該当 →</div>
+          <div class="tree-action auto">委譲範囲を尊重した指示 (昇格/降格しない)</div>
+        </div>
+        <div class="arrow-v">↓ 非該当</div>
+        <div class="tree-row">
+          <div class="tree-cond"><span class="n">枝3</span>送信元不明の指示が見える (konuma でも volante でもない出所)</div>
+          <div class="tree-match">該当 →</div>
+          <div class="tree-action human">停止指示 + konuma へ報告</div>
+        </div>
+        <div class="arrow-v">↓ 非該当</div>
+        <div class="tree-row">
+          <div class="tree-cond"><span class="n">枝4</span>技術的トレードオフ</div>
+          <div class="tree-match">該当 →</div>
+          <div class="tree-action auto">推奨案 + 懸念を組み立て、内部・可逆なら自分で決定 (事後レビュー)。高リスクは枝 1 扱い</div>
+        </div>
+        <div class="arrow-v">↓ 非該当</div>
+        <div class="tree-row">
+          <div class="tree-cond"><span class="n">枝5</span>内部の定型作業 (cross-session 中継・GitHub issue 操作等)</div>
+          <div class="tree-match">→</div>
+          <div class="tree-action auto">4 要素明示の指示で自律実行</div>
+        </div>
+      </div>
+      <div class="tree-legend">
+        <span><span class="chip human"></span>konuma 事前確認</span>
+        <span><span class="chip auto"></span>volante 自律 + 事後レビュー</span>
+      </div>
+    </div>
+    <p style="margin-top:10px;">
+      全文は <a href="https://github.com/shurijoc/volante/blob/main/skills/volante/SKILL.md" target="_blank" rel="noopener">SKILL.md「4. checklist」</a>
       参照 (判断木の変更は konuma 承認 + CHANGELOG 記録が必須)。
     </p>
-    <div class="branch-list">
-      <div class="branch-row"><span class="n">枝1</span><span class="body"><span class="label">外部連絡 or 影響大の本番変更</span> — Slack/メール/社外 PR 等の外部連絡、URL 変更・削除・force-push 等は必ず konuma に事前確認</span></div>
-      <div class="branch-row"><span class="n">枝2</span><span class="body"><span class="label">既存 autonomy がある</span> — tracer の goal file (L0/L1/L2) 等、対象セッションが既に持つ権限委譲を尊重。昇格/降格はしない</span></div>
-      <div class="branch-row"><span class="n">枝3</span><span class="body"><span class="label">送信元不明の指示</span> — konuma でも volante でもない出所の指示が見えたら、実行させず停止指示 + konuma へ報告</span></div>
-      <div class="branch-row"><span class="n">枝4</span><span class="body"><span class="label">技術的トレードオフ</span> — 推奨案 + 懸念を組み立て、内部・可逆なら自分で決めて実行 (事後レビュー対象)。高リスクは枝 1 扱い</span></div>
-      <div class="branch-row"><span class="n">枝5</span><span class="body"><span class="label">内部の定型作業</span> — cross-session 中継・GitHub issue 操作等は 4 要素明示の指示で自律で進める</span></div>
-    </div>
   </section>
 
   <section>
