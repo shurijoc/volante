@@ -131,3 +131,4 @@
 | 2026-07-13 13:29 | 観測 8 / IDLE 7 + 空 1 (w34 ゴール未登録) / 指示 4 (w111/w59/w61/w112) / konuma 4 判断回収 (mock-parity 案C・Q5 送信は konuma 専権・w24 のみ enter・Slamy 要否再検討)。w24 enter×2 不発 (UI アーティファクト疑い)、w113/w110 は konuma 領域待ち |
 | 2026-07-13 13:52 | 13:29 巡回の追加対応 / 指示 1 (w24 正規差配) / 神宮先生返信を gws 実測 (7/15 14:00-16:00 MTG 日程) → 返信下書き + 仮予定作成 (送信・invite は konuma) / konuma FB: 入力欄未送信テキストは UI アーティファクト確定 |
 | 2026-07-13 14:05 | 完了報告回収 (w61/w111/w112) / konuma 2 判断 (Option A・mock parity 新推奨) / #804 blocked 除去 / 指示 2 (w61 実装着手・w112 起票+body 更新) / w24 RUNNING 継続 |
+| 2026-07-13 14:25 | 完了回収 3 件 (w24 drilldown 枯渇 Fact / w61 PR #872 作成 / w112 ma_navi 2 本起票 + forge 3 body 更新) / 指示 0 / PR #872 CI 監視中 / konuma 判断待ち 7 項目積み上がり |

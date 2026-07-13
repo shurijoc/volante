@@ -2102,3 +2102,20 @@
 - **送信指示**: 2 件 (w61/w112、scratchpad/*-instruction2.txt、submit・実行開始確認済み)
 - **結果**: 両 window 実行開始。#804 unblock 済み
 - **konuma レビュー**: OK (self-review 2026-07-13 14:05 by volante、根拠: 方式・方針の 2 判断とも konuma 事前確認を取得してから実行。ラベル除去・issue 起票は承認済み方針の内部作業)
+
+## 2026-07-13 14:25 — 差配 3 件の完了回収 (w24/w61/w112)、PR #872 CI 監視開始
+
+- **repo**: pitto (w24) / navibot (w61) / ma_navi_forge + ma_navi (w112)
+- **状態**: 3 window とも差配タスク完了・IDLE
+- **状況・Fact (gh 実測)**:
+  - w24: 候補 4 drilldown 完了。「cosmos 自力弾は真に枯渇」の Fact 確定。0.99 圏へは matcher 1:N 改修 or 楽天SP 構造対応 (いずれも konuma 専権) が必要、Tier 3 rule 追加のみでは +0〜3 件が上限。read-only 境界遵守・tracked output 未変更
+  - w61: 実装 + テスト + PR #872 作成完了 (+903 -32、closes #804)。CI IN_PROGRESS / mergeStateStatus BLOCKED / review 未。#802 言及 open 5 → 3 (残 #835/#836/#839 は全て外部依存)。境界遵守 (Slamy 未変更・ADR §4 本体未書換)
+  - w112: ma-navi/ma_navi#17356 (filter 追加) + #17357 (JSON 列追加) 起票済み (OPEN 実測)。forge #262/#264/#265 body 更新完了。blocked/plan-ready 維持、@mention なし
+- **枝**: 5 (回収・監視のみ、新規指示なし)
+- **判断**: 3 window に追加指示なし (全て konuma 判断待ちの健全な停止)。PR #872 は CI 完了を background 監視し、結果を konuma 報告に含める。merge は navibot 運用上 code owner review (konuma) が必要なため volante は実行しない
+- **送信指示**: なし
+- **konuma 判断待ち (新規積み上がり)**:
+  - w24: (a) 候補 A spike 承認 (b) 候補 B/D 方針決裁 (c) strict ratchet 適用 (d) cosmos 達成宣言 or 別ゴール移行
+  - w61 関連: PR #872 の review + merge (CI green 後)
+  - w112 関連: #17356/#17357 の実装担当アサイン + forge #262 の PR1〜PR3 先行 unblock 可否
+- **konuma レビュー**: OK (self-review 2026-07-13 14:25 by volante、根拠: 回収のみで介入不要の判断は状態分類どおり)
