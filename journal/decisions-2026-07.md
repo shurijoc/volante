@@ -2119,3 +2119,18 @@
   - w61 関連: PR #872 の review + merge (CI green 後)
   - w112 関連: #17356/#17357 の実装担当アサイン + forge #262 の PR1〜PR3 先行 unblock 可否
 - **konuma レビュー**: OK (self-review 2026-07-13 14:25 by volante、根拠: 回収のみで介入不要の判断は状態分類どおり)
+
+## 2026-07-13 14:32 — PR #872 レビュー + squash merge (konuma 委任)、#804 close、w61 後片付け差配
+
+- **repo**: ma-navi/navibot
+- **状態**: w61 IDLE → 後片付け差配で RUNNING
+- **状況**: konuma 指示「#872 レビューして問題なければ merge して」(明示委任)。volante が diff 全文 (1063 行) をレビューして merge 判断
+- **枝**: 4 (PR merge、konuma 委任 + 内容判定)
+- **レビュー結果 (merge 判断根拠、枝 1/4 の明記ルール)**:
+  - 内容: 追加的 (新規 mutation-approval.ts + pending-log 拡張。既存動作の変更は read 関数の互換リファクタのみ)
+  - 設計: fail-closed 三重ガード (thread/subjectUser/TTL) + Forge 側 confirm の二重検証の多層防御。public channel 拒否。ambiguous 再確認 (konuma 懸念の誤入力対策) 実装済み。subject 不一致は silent fall-through で攻撃者に情報を与えない
+  - 懸念 2 点 (non-blocker): (1) `OK` が承認 strict match に含まれ、pending 中 thread での別意図の `OK` が承認になりうる (SmartLL 踏襲で一貫、UX 判断として許容) (2) expiresAt 秒単位前提 (`*1000`) — 仮に単位不一致でも Forge 側 TTL が真値で silent 実行には至らない
+  - CI: Test & Coverage SUCCESS / mergeStateStatus CLEAN / reviewDecision 空 (required review なし)。--admin 等の bypass 不使用
+  - merge 方式: squash (main の直近コミットが全て「title (#N)」形式 = repo 慣例)
+- **結果 (gh 実測)**: MERGED 2026-07-13T05:29:13Z、#804 CLOSED (auto-close)。**#802 言及 open 5 → 3** (残 #835/#836/#839、全て外部依存)。w61 に branch/worktree cleanup + 残 3 issue の依存状況整理を差配 (実行開始確認済み)
+- **konuma レビュー**: OK (self-review 2026-07-13 14:32 by volante、根拠: konuma 明示委任 + CI green + 追加的内容 + bypass なし。懸念 2 点は本エントリに開示済み)

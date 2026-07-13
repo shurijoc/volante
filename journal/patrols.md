@@ -132,3 +132,4 @@
 | 2026-07-13 13:52 | 13:29 巡回の追加対応 / 指示 1 (w24 正規差配) / 神宮先生返信を gws 実測 (7/15 14:00-16:00 MTG 日程) → 返信下書き + 仮予定作成 (送信・invite は konuma) / konuma FB: 入力欄未送信テキストは UI アーティファクト確定 |
 | 2026-07-13 14:05 | 完了報告回収 (w61/w111/w112) / konuma 2 判断 (Option A・mock parity 新推奨) / #804 blocked 除去 / 指示 2 (w61 実装着手・w112 起票+body 更新) / w24 RUNNING 継続 |
 | 2026-07-13 14:25 | 完了回収 3 件 (w24 drilldown 枯渇 Fact / w61 PR #872 作成 / w112 ma_navi 2 本起票 + forge 3 body 更新) / 指示 0 / PR #872 CI 監視中 / konuma 判断待ち 7 項目積み上がり |
+| 2026-07-13 14:32 | PR #872 レビュー + squash merge (konuma 委任) / #804 auto-close / #802 言及 open 5→3 / 指示 1 (w61 cleanup) |
