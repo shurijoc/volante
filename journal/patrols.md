@@ -128,3 +128,4 @@
 | 2026-07-10 19:41 | 観測 8 / IDLE 7 (w59/w61 完了 + 他) + WAITING 1 (w113) / 指示 0 / **w59 #506 Stage 2 起票 + #427 Q5 comment 追加確認**、両 window konuma 判断待ち |
 | 2026-07-10 19:46 | 観測 8 / IDLE 7 + WAITING 1 (w113) / 指示 0 / **無変化 1/2** (次 cycle 無変化なら auto-stop、konuma 判断多数待ち) |
 | 2026-07-10 19:50 | ループ自動停止 (2 巡回連続変化なし)。cron job 5a3a3189 削除済み |
+| 2026-07-13 13:29 | 観測 8 / IDLE 7 + 空 1 (w34 ゴール未登録) / 指示 4 (w111/w59/w61/w112) / konuma 4 判断回収 (mock-parity 案C・Q5 送信は konuma 専権・w24 のみ enter・Slamy 要否再検討)。w24 enter×2 不発 (UI アーティファクト疑い)、w113/w110 は konuma 領域待ち |

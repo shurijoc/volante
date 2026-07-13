@@ -2050,3 +2050,23 @@
 - **判断**: cron job 5a3a3189 削除、final_report 出す
 - **判断根拠**: RUNNING 0、全 IDLE で konuma 判断多数待ち、介入余地なし
 - **konuma レビュー**: OK
+
+## 2026-07-13 13:29 — 再開巡回 (3 日ぶり手動 /volante)、konuma 4 判断回収 + 差配 4 件
+
+- **repo**: 横断 (pitto / navibot / ma_navi_forge / auto_approach)
+- **状態**: IDLE 7 (w24/w59/w61/w110/w111/w112/w113) + 空 1 (w34、/clear 済み・ゴール未登録)
+- **状況**: 2026-07-10 19:50 ループ自動停止以降の再開巡回。konuma 判断待ちが 3 日分滞留。gh 実測で forge PR #315 が 07-10 18:54 JST merge 済み (w111 画面は「レビュー待ち」のまま古い)、scope:ai-agent open は #238 (blocked) のみ、#427 comments 6 (Q5 未送信)、#506/#804/#488 無変化、auto_approach PR #2670 CI 全 green・CLEAN
+- **枝**: w111=5 / w59=5 / w61=5 / w112=5 (konuma 採択の実行) / w24=konuma 承認送信 / w113=触らない / w110=触らない / w34=触らない (ゴール未登録)
+- **判断**:
+  1. w111 差配 (自律、枝 5): #315 merged の回収 + #238 (blocked) の navibot 側 allowlist 合意 draft 準備を read-only で指示
+  2. konuma へ AskUserQuestion 4 問 → 回答: (a) mock-parity blocked 3 件は案 C (個別判断、w112 推奨内訳込み) 採択、(b) **#427 Q5 の外部送信は「承認は絶対にしない。私が送ります」= 外部送信は konuma 専権で承認委譲なし** + 神宮先生から返信きてるはずで確認要請、(c) 未送信入力は w24 のみ volante 送信・w113 は konuma 自身、(d) w61 Slamy 起票は「slamy 必要だっけ?」と前提を疑う質問返し
+  3. w24: konuma 承認に基づき enter 送信 ×2 → いずれも submit されず画面無変化。UI アーティファクト疑いで 3 回目は送らず中止 (2026-07-10 enter 誤送信起源のルール準拠)
+  4. w59 差配 (枝 5): konuma 決定の中継 + 神宮先生返信の痕跡確認 (volante の Slack 検索は 0 件 = 実測不可、メール等の可能性)。境界: 外部送信・#427 body 編集・実装着手禁止
+  5. w61 差配 (枝 5): konuma の「Slamy 必要?」を中継し、blocks 必須性の再検証 + 回避案比較を read-only で指示。Draft A/B/C は温存
+  6. w112 差配 (枝 5): 案 C 採択を中継、検証 3 件 (#262 domain fit / #264 commissionType grep / #265 kind seed) を指示。検証 clear の issue のみ body/AC 書き換え + blocked 剥がしまで許可 (konuma 採択範囲内)、微妙なら draft 止まり
+  7. w113: 触らない (入力欄の terraform apply 指示は konuma 自身が送信すると回答)
+  8. w110: 触らない (goal file commit / #488 close / L2 継続の konuma 領域 3 件が未処置のまま継続)
+- **送信指示**: 4 件 (w111/w59/w61/w112、全文は scratchpad の *-instruction.txt。全て 4 要素明示・submit を read_screen で確認済み)
+- **根拠**: 枝 1 該当 (外部連絡・本番変更) は全て konuma 確認を取り、回答を得てから差配。内部 read-only 検討・準備作業のみ自律差配。context reset は全 IDLE が konuma 判断保留 or 差配対象のため見送り (副条件)
+- **結果**: 4 window とも実行開始確認済み。次巡回で STATUS 回収
+- **konuma レビュー**: OK (self-review 2026-07-13 13:29 by volante、根拠: 外部連絡は全て konuma 専権に倒し、konuma 4 回答を正確に中継。ただし w24 submit 不発は未解決で報告に明記)
