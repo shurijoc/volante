@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.18.0] - 2026-07-13
+
+retro-2026-07-10 の更新案 6 件を konuma 個別承認 (2026-07-13、1 件ずつ確認) を経て SKILL.md に反映:
+
+- **枝 4**: spec 間の issue 割当衝突・window 間の作業重複は自主判断で交通整理する (konuma に振らない)。
+  2026-07-10 18:15 escalation-mistake が起源
+- **7.2 観測・分類**: IDLE の `❯ input` に text が見えても、直近 5 分で 🧠/⏰ % 変化なし + queue
+  インジケータ無しなら UI アーティファクトと判定し送信しない。2026-07-10 の enter 誤送信が起源
+- **2. canonical_model**: konuma 直介入 window の明示化。konuma 明示で把握し一切触らない
+  (差配・enter 送信・上書き禁止)。明示なき window は volante 監督責任
+- **7.3 送信手順**: body に backtick / `$` を含む場合は scratch file + `BODY=$(cat file)` で読む。
+  2026-07-10 18:29 の command substitution 誤爆が起源。adapter 側の構造的修正 (send_text の
+  stdin/file 入力対応) は別 issue に切り出し
+- **8. ループ自動停止**: RUNNING/WAITING/STUCK が 1 つでもあれば auto-stop カウントを進めない
+  (旧「RUNNING の継続は変化なしに含む」を置換)。konuma FB 2026-07-10 19:20 が起源
+- **枝 2**: autonomy L0/L1/L2 の konuma review gate は volante が代行できる。追加的で影響限定的な PR は
+  L0 session でも自主 merge 可、eval/metric/protected_paths・URL 変更・削除等は従来どおり konuma 事前確認。
+  芯 3 は変更せず枝 2 側に「委任の解釈」として追記 (konuma FB 2026-07-10 19:34 が起源)
+
+判断木の変更は konuma 承認済み (芯 5 遵守)。Spec schema・dashboard には変更なし。
+
 ## [0.17.0] - 2026-07-10
 
 - **`/volante-epic add` に `--create-issue` と `--source` label 自動同期を追加**:
