@@ -2087,3 +2087,18 @@
 - **根拠**: 外部送信・invite は全て回避しゲート手前で止めた。仮予定は内部・可逆 (削除可)
 - **結果**: 下書き・仮予定作成済み。w24 実行開始。konuma の残作業 = 下書きに URL 挿入して送信
 - **konuma レビュー**: 未 (下書き文面・仮予定は konuma 確認待ち)
+
+## 2026-07-13 14:05 — konuma 判断 2 件回収 (Option A / mock parity 新推奨)、#804 unblock + 差配 2 件
+
+- **repo**: navibot (w61) + ma_navi_forge/ma_navi (w112)
+- **状態**: w61/w111/w112 差配タスク完了・IDLE (13:30 差配分)、w24 RUNNING、w59 完了済み
+- **状況**: 13:30 差配の完了報告を回収。w61 は「Slamy 改修不要」と再判定 (ADR は「ボタン / 返信」OR 要件、text-reply で #804 単独実装可、~400→~200 行)。w112 は案 C (差替) を検証し **3 件とも単純差替不成立** と判明 (#264 は ma_navi 5 箇所で確定誤集計、#265 は条項フィールド格納先なし)。書き換え条件未達のため境界どおり draft 止まりで返した (境界遵守が機能した好例)。w111 は #238 の allowlist draft 完成、ただし navibot 側 /skills/registry 実装が先行必須で Forge 単独 close 不可
+- **枝**: 4 (konuma 事前確認済みの実行) + 5 (差配)
+- **判断**:
+  1. konuma へ AskUserQuestion 2 問 → (a) #804 は Option A (text-reply 承認/却下) 採用、(b) mock parity は新推奨 (#262=PublicNnNeed 拡張 / #264=filter 追加 PR 先行 / #265=JSON 列 migration) 採用
+  2. navibot #804 の blocked ラベル除去を volante 直で実行 (Option A 採用で Slamy 前提が消滅。内部 metadata、konuma 採用済み方針の実行)。残 labels = enhancement/lv4-core (gh 実測)
+  3. w61 差配: Plan を Option A 前提に更新 (誤入力対策の再確認フロー込み) → 実装 → テスト green → PR 作成まで。merge 判断は次巡回で volante
+  4. w112 差配: ma-navi/ma_navi に先行 issue 2 本 (filter 追加 / JSON 列 migration) を実起票 + forge 3 issue の body/AC を新方針に書き換え。blocked は ma_navi 側 PR merge まで維持、@mention なし
+- **送信指示**: 2 件 (w61/w112、scratchpad/*-instruction2.txt、submit・実行開始確認済み)
+- **結果**: 両 window 実行開始。#804 unblock 済み
+- **konuma レビュー**: OK (self-review 2026-07-13 14:05 by volante、根拠: 方式・方針の 2 判断とも konuma 事前確認を取得してから実行。ラベル除去・issue 起票は承認済み方針の内部作業)
