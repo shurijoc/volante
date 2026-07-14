@@ -2168,3 +2168,14 @@
 - **根拠**: F-1 縮小は監査推奨 + 「白紙委任の禁止」memory と整合。全適用は konuma 承認取得後のみ実施 (縮小後の新ルールとも整合)
 - **結果**: memory 統治ループ round 2 完了 (status done)。次回 window は次周期 or 大規模リファクタ直後
 - **konuma レビュー**: OK (self-review 2026-07-14 16:43 by volante、根拠: 全適用が konuma 明示承認済み。反省点 1 件 — 初回 F-2/F-4 質問が原文なしで判断材料不足だった。retro 素材: 承認質問には before/after 実物を必ず添える)
+
+## 2026-07-14 17:00 — konuma FB「memory に書いてない？」→ FB の永続化先を確認して L1 追記
+
+- **repo**: /Users/navi (home L1 rules)
+- **状態**: konuma 指摘 — 今回の教訓 (承認質問に実物添付) が decisions の retro 素材止まりで揮発
+- **枝**: 1 相当 (L1 書き換え、F-1 縮小後の承認ゲート対象) — AskUserQuestion で before/after preview 提示 → konuma 承認
+- **判断**: question-style.md の How to apply に「承認質問には対象の実物を添える」1 項目を追記。epic 優先度は goals.md が正本のため memory 非転記、F-1 は既存「白紙委任の禁止」と整合のため追記不要と整理して konuma に提示
+- **送信指示**: なし
+- **根拠**: 全セッション共通の質問品質 FB は memory (project 局所) より L1 が適切。cc-fb の「FB は memory でなく harness 側へ」と一致。commit は konuma の未コミット M と混ざるため実施せず
+- **結果**: 追記済み (未 commit、konuma の refactor に同乗して commit される想定)
+- **konuma レビュー**: OK (追記文言・置き場とも konuma 承認済み preview どおり)
