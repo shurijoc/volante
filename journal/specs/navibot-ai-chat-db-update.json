@@ -1,5 +1,5 @@
 {
-  "goal": "navibot #802 (ADR-0011 個人スコープ操作) を本文で言及する navibot open issue を 0 にする (現在 5 件: #804/#835/#836/#838/#839)",
+  "goal": "navibot #802 (ADR-0011 個人スコープ操作) を本文で言及する navibot open issue を 0 にする (2026-07-14 実測 2 件: #900/#836。#804 は PR #872 merge で close、#900 は #835 out-of-scope 分の新規切り出し)",
   "acceptance_criteria": [
     "ma-navi/navibot で #802 を本文で言及する open issue 数 = 0",
     "ADR-0011 Consequences a〜f の統合層実装が完了している",

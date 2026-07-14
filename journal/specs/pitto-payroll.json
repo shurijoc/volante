@@ -1,7 +1,10 @@
 {
-  "goal": "payroll 照合 kaizen の再開 (07-08 打ち合わせ後)。待機中はインフラ弾 #488/#464 消化",
+  "goal": "payroll は「照合 kaizen」から方向転換 (konuma 決定 2026-07-14 volante 経由確認): payroll-import の kaizen-loop 統合 (#534) — snapshot/verify/gate/diagnose で field_exact_rate 改善を数値ゲート付きで回せる状態にする (進行中: PR #539、2026-07-14 時点 CI FAILURE あり fix 中)",
   "acceptance_criteria": [
-    "07-08 打ち合わせ後、payroll 照合 kaizen の実装再開が着手されている",
-    "待機中に ma-navi/pitto の #488 と #464 の対応が進んでいる"
+    "pitto PR #539 が CI green で merge され #534 が close されている",
+    "payroll-import で snapshot → 実装 → verify/gate → diagnose の kaizen サイクルが実行可能になっている",
+    "P2/P3 以降の精度改善 (朝手当 carve-out、備考 mining 等) を数値ゲート付きで着手できる状態になっている",
+    "旧目標 (照合 target 100%、#365) と tracer goal file (pitto/.claude/goals/payroll.md) の扱いが konuma 判断で明確化されている",
+    "インフラ弾は #488 が残 (#464 は close 済み)"
   ]
 }

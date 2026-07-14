@@ -2134,3 +2134,20 @@
   - merge 方式: squash (main の直近コミットが全て「title (#N)」形式 = repo 慣例)
 - **結果 (gh 実測)**: MERGED 2026-07-13T05:29:13Z、#804 CLOSED (auto-close)。**#802 言及 open 5 → 3** (残 #835/#836/#839、全て外部依存)。w61 に branch/worktree cleanup + 残 3 issue の依存状況整理を差配 (実行開始確認済み)
 - **konuma レビュー**: OK (self-review 2026-07-13 14:32 by volante、根拠: konuma 明示委任 + CI green + 追加的内容 + bypass なし。懸念 2 点は本エントリに開示済み)
+
+## 2026-07-14 16:24 — epic 週次整理 (konuma 依頼「今週のepicを整理したい」)
+
+- **repo**: volante journal (specs/goals.md) + pitto/navibot/ma_navi_forge (gh 実測のみ) + home (memory 監査)
+- **状態**: 観測 4 セッション — w59 RUNNING (impl-534 稼働・PR #539 fix 委譲中) / w110 RUNNING (subagent 2 本で navi source 調査中) / w61 WAITING (CRM 承認フローテストの 3 パラメータ konuma 待ち) / w112 IDLE (#264/#265 defer 承認の konuma 待ち)
+- **状況 (gh 実測 2026-07-14)**: 達成済み 3 epic — pitto #495/PR#496 (merged)、forge #211 (CLOSED)、forge #313 (CLOSED + scope:ai-agent open 0)。件数乖離 2 件 — navibot #802 言及 open 5→2 (#900/#836)、forge-mock-parity 12→5 (#264/#265/#266/#268/#304)。payroll は #534/PR#539 (kaizen-loop 統合) へ方向転換が進行中で Spec と乖離 (大幅な再定義に該当)
+- **枝**: 乖離チェック (低リスク側は自律) + 枝 1 相当 (Spec 大幅再定義・優先度は konuma 事前確認) + 5 (memory 監査の subagent 起動)
+- **判断**:
+  1. 自律 (低リスク): navibot-ai-chat-db-update / forge-mock-parity の Spec 件数追随。達成済み 2 spec (pitto-kaizen / forge-ai-chat-db-update) を specs/_archive/ へ移動。goals.md を「進行中 / 達成済み」2 セクションに再構成
+  2. konuma 事前確認 (AskUserQuestion 3 問) → 回答: (a) 今週の高 = navibot×Forge 統合系 + payroll (CSV/kaizen-loop 方向転換) + book-keeping の navi 分 (b) payroll Spec 書き換え承認 (c) memory 監査「すぐ実施」
+  3. 回答の転記: goals.md 優先度列を konuma 決定として更新 (volante の仮置きではなく konuma 回答の転記)。payroll Spec を #534 ベースに再定義
+  4. memory 監査 round 2 を read-only subagent (opus, background) で起動。境界 = 対象ファイル書き換え禁止・新規ログ 1 ファイルのみ・適用は konuma 承認後
+  5. 4 セッションへの送信指示なし (w59/w110 は RUNNING で触らない、w61/w112 は konuma 判断待ちの健全な停止)
+- **送信指示**: なし (セッション向け)。subagent 起動 1 件 (memory-audit-r2)
+- **根拠**: 件数追随・archive は index 維持で低リスク (git 管理下で可逆)。payroll 再定義と優先度は konuma 専有/枝 1 相当のため事前確認を取得してから反映
+- **結果**: specs 3 件更新 + 2 件 archive + goals.md 再構成済み。memory 監査は background 実行中 (提案リストは konuma 承認待ちで返る)
+- **konuma レビュー**: OK (self-review 2026-07-14 16:24 by volante、根拠: konuma 専有領域は全て事前確認済み回答の転記。自律分は低リスク index 追随のみ)

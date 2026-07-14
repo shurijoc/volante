@@ -1,8 +1,8 @@
 {
-  "goal": "mock 差分対象の open issue (ma_navi_forge の scope:forge + plan-ready) を 0 にする (現在 12 件)",
+  "goal": "mock 差分対象の open issue (ma_navi_forge の scope:forge + plan-ready) を 0 にする (2026-07-14 実測 5 件: #264/#265/#266/#268/#304。#261/#262/#263 は not planned close 済み)",
   "acceptance_criteria": [
     "ma-navi/ma_navi_forge の scope:forge + plan-ready open issue 数 = 0",
-    "対象 12 issue (#140/#156/#260/#261/#262/#263/#264/#265/#266/#268/#302/#304) 全ての実装が完了し close されている",
+    "残 5 issue (#264/#265/#266/#268/#304) の実装完了 or 明示的な close 判断 (not planned) がなされている",
     "PR 済分は review + merge が完了している",
     "forge 本番の主要導線 (deals / companies / mobile 等) が mock と乖離のない状態で動作している"
   ],

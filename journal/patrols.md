@@ -133,3 +133,4 @@
 | 2026-07-13 14:05 | 完了報告回収 (w61/w111/w112) / konuma 2 判断 (Option A・mock parity 新推奨) / #804 blocked 除去 / 指示 2 (w61 実装着手・w112 起票+body 更新) / w24 RUNNING 継続 |
 | 2026-07-13 14:25 | 完了回収 3 件 (w24 drilldown 枯渇 Fact / w61 PR #872 作成 / w112 ma_navi 2 本起票 + forge 3 body 更新) / 指示 0 / PR #872 CI 監視中 / konuma 判断待ち 7 項目積み上がり |
 | 2026-07-13 14:32 | PR #872 レビュー + squash merge (konuma 委任) / #804 auto-close / #802 言及 open 5→3 / 指示 1 (w61 cleanup) |
+| 2026-07-14 16:24 | 観測 4 (RUNNING 2 w59/w110 / WAITING 1 w61 / IDLE 1 w112) / 指示 0 / epic 週次整理: 達成 3 epic を整理・spec 2 件 archive・件数追随 2 件・payroll Spec 再定義 (konuma 承認)・優先度 konuma 決定転記・memory 監査 round 2 起動 |
