@@ -2151,3 +2151,20 @@
 - **根拠**: 件数追随・archive は index 維持で低リスク (git 管理下で可逆)。payroll 再定義と優先度は konuma 専有/枝 1 相当のため事前確認を取得してから反映
 - **結果**: specs 3 件更新 + 2 件 archive + goals.md 再構成済み。memory 監査は background 実行中 (提案リストは konuma 承認待ちで返る)
 - **konuma レビュー**: OK (self-review 2026-07-14 16:24 by volante、根拠: konuma 専有領域は全て事前確認済み回答の転記。自律分は低リスク index 追随のみ)
+
+## 2026-07-14 16:43 — memory 監査 round 2 の提案回収と承認後適用 (F-1/F-2/F-4)
+
+- **repo**: /Users/navi (home) — memory 統治ループ epic
+- **状態**: 監査 subagent (memory-audit-r2、opus、read-only) が proposals-ready で完了報告
+- **状況**: findings 4 件 — F-1 (L1 自動適用 memory が実運用と矛盾) / F-2 (dangling wiki-link) / F-3 (重複疑い→維持判定) / F-4 (subagent-model.md が git 未追跡なのに CLAUDE.md が強制依存)。subagent の read-only 遵守 (checksum 不変・HEAD 不動) は報告で確認
+- **枝**: 1 相当 (L1/L2 本文適用・home repo commit は konuma 事前確認) — AskUserQuestion 2 回で全件確認
+- **判断**:
+  1. F-1: konuma「案1に縮小」→ feedback_memory_audit_autonomy.md を「提案の自律作成まで自律、L1 書き換え適用は承認ゲート維持」に書き換え (.bak-20260714)
+  2. F-2: 初回質問が抽象的で konuma「もともと何だったのか分からない」→ before/after 実物 preview で再提示し承認 → [[subagent-prompts ルール]] を平文パスに置換 (.bak-20260714)
+  3. F-4: preview (実行コマンド・巻き込み回避) 提示で承認 → subagent-model.md を単独 commit c6ddbd4 (push なし、CLAUDE.md/question-style.md の M は非ステージ維持)
+  4. F-3: 監査の維持判定どおり処置なし
+  5. 監査ログを status done + 承認後適用セクション追記で更新
+- **送信指示**: なし (セッション向け)。subagent は完了済み
+- **根拠**: F-1 縮小は監査推奨 + 「白紙委任の禁止」memory と整合。全適用は konuma 承認取得後のみ実施 (縮小後の新ルールとも整合)
+- **結果**: memory 統治ループ round 2 完了 (status done)。次回 window は次周期 or 大規模リファクタ直後
+- **konuma レビュー**: OK (self-review 2026-07-14 16:43 by volante、根拠: 全適用が konuma 明示承認済み。反省点 1 件 — 初回 F-2/F-4 質問が原文なしで判断材料不足だった。retro 素材: 承認質問には before/after 実物を必ず添える)
